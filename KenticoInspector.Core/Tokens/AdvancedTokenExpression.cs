@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using KenticoInspector.Core.Constants;
 
 namespace KenticoInspector.Core.Tokens
 {
@@ -11,11 +12,6 @@ namespace KenticoInspector.Core.Tokens
     internal class AdvancedTokenExpression : ITokenExpression
     {
         private static readonly char[] expressionBoundary = new[] { '/', '/' };
-        private const char simpleDelimiter = '|';
-        private const char caseDelimiter = ':';
-        private const char equals = '=';
-        private const char lessThan = '<';
-        private const char moreThan = '>';
 
         public string Resolve(string tokenExpression, IDictionary<string, object> tokenDictionary)
         {
@@ -57,7 +53,7 @@ namespace KenticoInspector.Core.Tokens
             string defaultValue = null;
 
             var casePairs = tokenExpression
-                .Split(new[] { simpleDelimiter }, StringSplitOptions.RemoveEmptyEntries)
+                .Split(new[] { TokenExpressionConstants.SimpleDelimiter }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(casePair => GetCasePair(casePair, ref defaultValue))
                 .Where(casePair => casePair.caseValue != null)
                 .ToList();
@@ -67,7 +63,7 @@ namespace KenticoInspector.Core.Tokens
 
         private static ((string, string, char), string caseValue) GetCasePair(string casePair, ref string defaultValue)
         {
-            var pair = casePair.Split(new[] { caseDelimiter }, StringSplitOptions.RemoveEmptyEntries);
+            var pair = casePair.Split(new[] { TokenExpressionConstants.CaseDelimiter }, StringSplitOptions.RemoveEmptyEntries);
 
             if (pair.Length < 2)
             {
@@ -80,8 +76,8 @@ namespace KenticoInspector.Core.Tokens
 
         private static (string, string, char) GetCaseKey(string caseKey)
         {
-            var key = caseKey.Split(new[] { equals, lessThan, moreThan }, StringSplitOptions.RemoveEmptyEntries);
-            char operation = equals;
+            var key = caseKey.Split(new[] { TokenExpressionConstants.Equals, TokenExpressionConstants.LessThan, TokenExpressionConstants.MoreThan }, StringSplitOptions.RemoveEmptyEntries);
+            char operation = TokenExpressionConstants.Equals;
 
             switch (key.Length)
             {
@@ -89,13 +85,13 @@ namespace KenticoInspector.Core.Tokens
                     return (key[0], null, operation);
 
                 case 2:
-                    if (caseKey.Contains(moreThan)) operation = moreThan;
-                    if (caseKey.Contains(lessThan)) operation = lessThan;
+                    if (caseKey.Contains(TokenExpressionConstants.MoreThan)) operation = TokenExpressionConstants.MoreThan;
+                    if (caseKey.Contains(TokenExpressionConstants.LessThan)) operation = TokenExpressionConstants.LessThan;
 
                     return (key[0], key[1], operation);
             }
 
-            throw new ArgumentException($"Case key '{caseKey}' looks like an advanced case key but does not contain zero or one {equals}.");
+            throw new ArgumentException($"Case key '{caseKey}' looks like an advanced case key but does not contain zero or one {TokenExpressionConstants.Equals}.");
         }
 
         private bool TryResolveToken(IDictionary<string, object> tokenDictionary, (string token, string value, char operation) caseKey, string caseValue, out string resolvedValue)
@@ -107,8 +103,8 @@ namespace KenticoInspector.Core.Tokens
                 switch (token)
                 {
                     case int intValue when token is int && intValue == 1:
-                    case int lessThanValue when token is int && caseKey.operation == lessThan && lessThanValue < int.Parse(caseKey.value.ToString()):
-                    case int moreThanValue when token is int && caseKey.operation == moreThan && moreThanValue > int.Parse(caseKey.value.ToString()):
+                    case int lessThanValue when token is int && caseKey.operation == TokenExpressionConstants.LessThan && lessThanValue < int.Parse(caseKey.value.ToString()):
+                    case int moreThanValue when token is int && caseKey.operation == TokenExpressionConstants.MoreThan && moreThanValue > int.Parse(caseKey.value.ToString()):
                     case var _ when token?.ToString() == caseKey.value:
                         resolvedValue = caseValue;
 
