@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Xml;
 
-namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models
+namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data
 {
     public class CmsVersionHistoryItem
     {
         private int _coupledDataId = -1;
 
         public int VersionHistoryID { get; set; }
+
         public int DocumentID { get; set; }
+
         public XmlDocument NodeXml { get; set; }
+
         public int VersionClassID { get; set; }
+
         public DateTime WasPublishedFrom { get; set; }
 
         public int CoupledDataID
@@ -29,9 +33,8 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models
         private int GetCoupledDataId()
         {
             var foreignKeyRaw = NodeXml.SelectSingleNode("//DocumentForeignKeyValue")?.InnerText;
-            int foreignKey;
 
-            return int.TryParse(foreignKeyRaw, out foreignKey) ? foreignKey : -1;
+            return int.TryParse(foreignKeyRaw, out int foreignKey) ? foreignKey : -1;
         }
     }
 }

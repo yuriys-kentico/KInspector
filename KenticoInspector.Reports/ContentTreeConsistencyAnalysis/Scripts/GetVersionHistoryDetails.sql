@@ -4,5 +4,9 @@
 	VersionClassID,
 	VersionHistoryID,
     WasPublishedFrom
-FROM CMS_VersionHistory
-WHERE VersionHistoryID in @IDs
+
+    FROM 
+        CMS_VersionHistory
+    
+        WHERE 
+            VersionHistoryID IN @latestVersionHistoryIds

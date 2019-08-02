@@ -4,7 +4,7 @@
     {
         public static string BaseDirectory = $"{nameof(ContentTreeConsistencyAnalysis)}/Scripts";
 
-        public static string GetCmsClassItems = $"{BaseDirectory}/{nameof(GetCmsClassItems)}.sql";
+        public static string GetCmsClass = $"{BaseDirectory}/{nameof(GetCmsClass)}.sql";
         public static string GetCmsDocumentCoupledDataItems = $"{BaseDirectory}/{nameof(GetCmsDocumentCoupledDataItems)}.sql";
         public static string GetDocumentIdsWithMissingTreeNode = $"{BaseDirectory}/{nameof(GetDocumentIdsWithMissingTreeNode)}.sql";
         public static string GetDocumentNodeDetails = $"{BaseDirectory}/{nameof(GetDocumentNodeDetails)}.sql";

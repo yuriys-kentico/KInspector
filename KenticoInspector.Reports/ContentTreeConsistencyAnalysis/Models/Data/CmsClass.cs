@@ -2,17 +2,21 @@
 using System.Linq;
 using System.Xml;
 
-namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models
+namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data
 {
-    public class CmsClassItem
+    public class CmsClass
     {
         private List<CmsClassField> _classFields = null;
         private string _classIdColumn = null;
 
         public string ClassDisplayName { get; set; }
+
         public XmlDocument ClassFormDefinitionXml { get; set; }
+
         public int ClassID { get; set; }
+
         public string ClassName { get; set; }
+
         public string ClassTableName { get; set; }
 
         public List<CmsClassField> ClassFields
@@ -34,7 +38,10 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models
             {
                 if (_classIdColumn == null && ClassFormDefinitionXml != null)
                 {
-                    _classIdColumn = ClassFields.Where(x => x.IsIdColumn).Select(x => x.Column).FirstOrDefault();
+                    _classIdColumn = ClassFields
+                        .Where(x => x.IsIdColumn)
+                        .Select(x => x.Column)
+                        .FirstOrDefault();
                 }
 
                 return _classIdColumn;
@@ -44,6 +51,7 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models
         private List<CmsClassField> GetFieldsFromXml()
         {
             var fields = new List<CmsClassField>();
+
             var fieldsXml = ClassFormDefinitionXml.SelectNodes("/form/field");
 
             foreach (XmlNode field in fieldsXml)

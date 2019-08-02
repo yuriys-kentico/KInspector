@@ -1,4 +1,4 @@
-﻿namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
+﻿namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models
 {
     public class FieldTypes
     {

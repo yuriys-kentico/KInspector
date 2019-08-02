@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Globalization;
 
-namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models
+using Newtonsoft.Json;
+
+namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Results
 {
     public class VersionHistoryMismatchResult
     {
@@ -14,8 +15,11 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models
         }
 
         public int DocumentNodeId { get; set; }
+
         public string FieldName { get; set; }
+
         public string DocumentValue { get; set; }
+
         public string VersionHistoryValue { get; set; }
 
         [JsonIgnore]
@@ -30,12 +34,11 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models
         private void ProcessItemValues(string fieldType, string versionHistoryXmlValue, object coupledDataColumnValue)
         {
             var hasAtLeastOneNullValue = versionHistoryXmlValue == null || coupledDataColumnValue == null;
+
             if (hasAtLeastOneNullValue)
             {
                 DocumentValue = coupledDataColumnValue?.ToString();
                 VersionHistoryValue = versionHistoryXmlValue;
-
-                var areBothValuesNull = versionHistoryXmlValue == null && coupledDataColumnValue == null;
             }
             else
             {
