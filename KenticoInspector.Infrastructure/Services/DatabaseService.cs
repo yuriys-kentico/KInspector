@@ -19,7 +19,7 @@ namespace KenticoInspector.Infrastructure.Services
             {
                 if (_connection == null)
                 {
-                    throw new Exception("You must run 'ConfigureForInstance' first.");
+                    throw new Exception($"You must run '{nameof(Configure)}' first.");
                 }
 
                 return _connection;
@@ -78,7 +78,8 @@ namespace KenticoInspector.Infrastructure.Services
         public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFileGeneric(string relativeFilePath, IDictionary<string, string> literalReplacements, dynamic parameters)
         {
             var query = FileHelper.GetSqlQueryText(relativeFilePath, literalReplacements);
-            return Connection.Query(query, (object)parameters).Select(x => (IDictionary<string, object>)x);
+            return Connection.Query(query, (object)parameters)
+                .Select(x => (IDictionary<string, object>)x);
         }
 
         public T ExecuteSqlFromFileScalar<T>(string relativeFilePath)

@@ -28,22 +28,22 @@
     <None Update="ApplicationRestartAnalysis\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ApplicationRestartAnalysis\Scripts\GetEventLog.sql">
+    <None Update="ApplicationRestartAnalysis\Scripts\GetEventLogStartOrEndEvents.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ClassTableValidation\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ClassTableValidation\Scripts\GetCmsClass.sql">
+    <None Update="ClassTableValidation\Scripts\GetCmsClassesWithMissingTable.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ClassTableValidation\Scripts\GetInformationSchemaTables.sql">
+    <None Update="ClassTableValidation\Scripts\GetInformationSchemaTablesWithMissingClass.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ContentTreeConsistencyAnalysis\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ContentTreeConsistencyAnalysis\Scripts\GetCmsClassItems.sql">
+    <None Update="ContentTreeConsistencyAnalysis\Scripts\GetCmsClass.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ContentTreeConsistencyAnalysis\Scripts\GetCmsDocumentCoupledDataItems.sql">
