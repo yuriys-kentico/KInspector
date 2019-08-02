@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <LangVersion>7.1</LangVersion>
-    <Version/>
-    <PackageVersion/>
-    <AssemblyVersion/>
-    <FileVersion/>
-    <InformationalVersion/>
+    <Version />
+    <PackageVersion />
+    <AssemblyVersion />
+    <FileVersion />
+    <InformationalVersion />
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,16 +28,16 @@
     <None Update="ApplicationRestartAnalysis\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ApplicationRestartAnalysis\Scripts\ApplicationRestartEvents.sql">
+    <None Update="ApplicationRestartAnalysis\Scripts\GetEventLog.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ClassTableValidation\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ClassTableValidation\Scripts\ClassesWithNoTable.sql">
+    <None Update="ClassTableValidation\Scripts\GetCmsClass.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ClassTableValidation\Scripts\TablesWithNoClass.sql">
+    <None Update="ClassTableValidation\Scripts\GetInformationSchemaTables.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ContentTreeConsistencyAnalysis\Metadata\en-US.yaml">
@@ -130,7 +130,7 @@
     <None Update="TransformationSecurityAnalysis\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TransformationSecurityAnalysis\Scripts\GetPages.sql">
+    <None Update="TransformationSecurityAnalysis\Scripts\GetTreeNodes.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TransformationSecurityAnalysis\Scripts\GetPageTemplates.sql">
