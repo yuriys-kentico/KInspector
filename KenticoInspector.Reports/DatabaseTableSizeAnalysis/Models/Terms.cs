@@ -4,7 +4,13 @@ namespace KenticoInspector.Reports.DatabaseTableSizeAnalysis.Models
 {
     public class Terms
     {
-        public Term CheckResultsTableForAnyIssues { get; set; }
+        public Term InformationSummary { get; set; }
+
+        public TableNames TableNames { get; set; }
+    }
+
+    public class TableNames
+    {
         public Term Top25Results { get; set; }
     }
 }

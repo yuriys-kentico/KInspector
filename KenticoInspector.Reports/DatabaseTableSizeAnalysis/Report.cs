@@ -1,11 +1,13 @@
-﻿using KenticoInspector.Core;
+﻿using System;
+using System.Collections.Generic;
+
+using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Data;
 using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Models;
-using System;
-using System.Collections.Generic;
 
 namespace KenticoInspector.Reports.DatabaseTableSizeAnalysis
 {
@@ -20,24 +22,32 @@ namespace KenticoInspector.Reports.DatabaseTableSizeAnalysis
 
         public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12");
 
-        public override IList<string> Tags => new List<string> {
+        public override IList<string> Tags => new List<string>
+        {
             ReportTags.Health
         };
 
         public override ReportResults GetResults()
         {
-            var top25LargestTables = databaseService.ExecuteSqlFromFile<DatabaseTableSizeResult>(Scripts.GetTop25LargestTables);
+            var top25LargestTables = databaseService.ExecuteSqlFromFile<DatabaseTableSize>(Scripts.GetTop25LargestTables);
+
+            return CompileResults(top25LargestTables);
+        }
+
+        private ReportResults CompileResults(IEnumerable<DatabaseTableSize> top25LargestTables)
+        {
+            var databaseTableSizeResult = new TableResult<DatabaseTableSize>
+            {
+                Name = Metadata.Terms.TableNames.Top25Results,
+                Rows = top25LargestTables
+            };
 
             return new ReportResults
             {
                 Type = ReportResultsType.Table,
                 Status = ReportResultsStatus.Information,
-                Summary = Metadata.Terms.CheckResultsTableForAnyIssues,
-                Data = new TableResult<DatabaseTableSizeResult>()
-                {
-                    Name = Metadata.Terms.Top25Results,
-                    Rows = top25LargestTables
-                }
+                Summary = Metadata.Terms.InformationSummary,
+                Data = databaseTableSizeResult
             };
         }
     }

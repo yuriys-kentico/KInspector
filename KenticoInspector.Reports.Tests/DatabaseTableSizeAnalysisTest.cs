@@ -1,8 +1,11 @@
-﻿using KenticoInspector.Core.Constants;
+﻿using System.Collections.Generic;
+
+using KenticoInspector.Core.Constants;
 using KenticoInspector.Reports.DatabaseTableSizeAnalysis;
+using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Data;
 using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Models;
+
 using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace KenticoInspector.Reports.Tests
 {
@@ -22,9 +25,9 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnInformationStatus()
         {
             // Arrange
-            IEnumerable<DatabaseTableSizeResult> dbResults = GetCleanResults();
+            IEnumerable<DatabaseTableSize> dbResults = GetCleanResults();
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFile<DatabaseTableSizeResult>(Scripts.GetTop25LargestTables))
+                .Setup(p => p.ExecuteSqlFromFile<DatabaseTableSize>(Scripts.GetTop25LargestTables))
                 .Returns(dbResults);
 
             // Act
@@ -35,12 +38,13 @@ namespace KenticoInspector.Reports.Tests
             Assert.That(results.Status == ReportResultsStatus.Information);
         }
 
-        private List<DatabaseTableSizeResult> GetCleanResults()
+        private List<DatabaseTableSize> GetCleanResults()
         {
-            var results = new List<DatabaseTableSizeResult>();
+            var results = new List<DatabaseTableSize>();
+
             for (var i = 0; i < 25; i++)
             {
-                results.Add(new DatabaseTableSizeResult() { TableName = $"table {i}", Rows = i, BytesPerRow = i, SizeInMB = i });
+                results.Add(new DatabaseTableSize() { TableName = $"table {i}", Rows = i, BytesPerRow = i, SizeInMB = i });
             }
 
             return results;

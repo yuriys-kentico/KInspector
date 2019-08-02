@@ -1,6 +1,6 @@
-﻿namespace KenticoInspector.Reports.DatabaseTableSizeAnalysis
+﻿namespace KenticoInspector.Reports.DatabaseTableSizeAnalysis.Data
 {
-    public class DatabaseTableSizeResult
+    public class DatabaseTableSize
     {
         public string TableName { get; set; }
 
