@@ -2,7 +2,7 @@
 
 namespace KenticoInspector.Reports.ApplicationRestartAnalysis.Models
 {
-    public class ApplicationRestartEvent
+    public class CmsEventLog
     {
         public string EventCode { get; set; }
 

@@ -23,9 +23,9 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnEmptyResult_When_DatabaseHasNoEvents()
         {
             // Arrange
-            var applicationRestartEvents = new List<ApplicationRestartEvent>();
+            var applicationRestartEvents = new List<CmsEventLog>();
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFile<ApplicationRestartEvent>(Scripts.ApplicationRestartEvents))
+                .Setup(p => p.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetEventLog))
                 .Returns(applicationRestartEvents);
 
             // Act
@@ -40,16 +40,16 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnResult_When_DatabaseHasEvents()
         {
             // Arrange
-            var applicationRestartEvents = new List<ApplicationRestartEvent>();
+            var applicationRestartEvents = new List<CmsEventLog>();
 
-            applicationRestartEvents.Add(new ApplicationRestartEvent
+            applicationRestartEvents.Add(new CmsEventLog
             {
                 EventCode = "STARTAPP",
                 EventTime = DateTime.Now.AddHours(-1),
                 EventMachineName = "Server-01"
             });
 
-            applicationRestartEvents.Add(new ApplicationRestartEvent
+            applicationRestartEvents.Add(new CmsEventLog
             {
                 EventCode = "ENDAPP",
                 EventTime = DateTime.Now.AddHours(-1).AddMinutes(-1),
@@ -57,7 +57,7 @@ namespace KenticoInspector.Reports.Tests
             });
 
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFile<ApplicationRestartEvent>(Scripts.ApplicationRestartEvents))
+                .Setup(p => p.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetEventLog))
                 .Returns(applicationRestartEvents);
 
             // Act
@@ -72,9 +72,9 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnTableResultType()
         {
             // Arrange
-            var applicationRestartEvents = new List<ApplicationRestartEvent>();
+            var applicationRestartEvents = new List<CmsEventLog>();
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFile<ApplicationRestartEvent>(Scripts.ApplicationRestartEvents))
+                .Setup(p => p.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetEventLog))
                 .Returns(applicationRestartEvents);
 
             // Act
