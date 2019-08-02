@@ -12,6 +12,8 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
     [DebuggerDisplay("{FullName} Issues:{Issues.Count}")]
     public class CmsTransformation
     {
+        public int TransformationID { get; set; }
+
         public string TransformationName { get; set; }
 
         public string TransformationCode { get; set; }

@@ -6,4 +6,5 @@
     
     FROM CMS_PageTemplate
     
-    WHERE PageTemplateID IN @DocumentPageTemplateIDs
+    WHERE 
+        PageTemplateID IN @DocumentPageTemplateIDs

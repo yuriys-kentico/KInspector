@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Xml.Linq;
 
+using Newtonsoft.Json;
+
 namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
 {
     /// <summary>
@@ -20,15 +22,18 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
 
         public string PageTemplateDisplayName { get; set; }
 
-        public string PageTemplateWebParts { get; set; }
+        [JsonIgnore]
+        public XDocument PageTemplateWebParts { get; set; }
 
-        public IEnumerable<ViewCmsTreeJoined> TreeNodes { get; set; }
+        [JsonIgnore]
+        public IEnumerable<CmsTreeNode> TreeNodes { get; set; }
 
+        [JsonIgnore]
         public IEnumerable<WebPart> WebParts
         {
             get
             {
-                return webParts ?? (webParts = XDocument.Parse(PageTemplateWebParts)
+                return webParts ?? (webParts = PageTemplateWebParts
                    .Descendants("webpart")
                    .Select(webPartXml => new WebPart(webPartXml))
                    .ToList());

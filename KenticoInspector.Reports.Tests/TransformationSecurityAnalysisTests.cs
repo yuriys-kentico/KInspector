@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+using System.Xml.Linq;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Reports.Tests.Helpers;
@@ -22,23 +22,23 @@ namespace KenticoInspector.Reports.Tests
     {
         private readonly Report mockReport;
 
-        private IEnumerable<ViewCmsTreeJoined> TreeNodesWithoutIssues => new List<ViewCmsTreeJoined>
+        private IEnumerable<CmsTreeNode> TreeNodesWithoutIssues => new List<CmsTreeNode>
         {
-            new ViewCmsTreeJoined()
+            new CmsTreeNode()
             {
                 DocumentName = "Page Using ASCX Page Template",
                 DocumentCulture = "en-US",
                 NodeAliasPath = "/path/to/page-using-template",
                 DocumentPageTemplateID = 1
             },
-            new ViewCmsTreeJoined()
+            new CmsTreeNode()
             {
                 DocumentName = "Another Page Using ASCX Page Template",
                 DocumentCulture = "en-US",
                 NodeAliasPath = "/path/to/another/page-using-template",
                 DocumentPageTemplateID = 1
             },
-            new ViewCmsTreeJoined()
+            new CmsTreeNode()
             {
                 DocumentName = "Page Using Text Page Template",
                 DocumentCulture = "es-ES",
@@ -52,13 +52,13 @@ namespace KenticoInspector.Reports.Tests
             new CmsPageTemplate()
             {
                 PageTemplateID = 1,
-                PageTemplateWebParts = FromFile(@"TestData\CMS_PageTemplate\PageTemplateWebParts\CleanAscx.xml"),
+                PageTemplateWebParts = ParseXDocumentFromFile(@"TestData\CMS_PageTemplate\PageTemplateWebParts\CleanAscx.xml"),
                 PageTemplateCodeName = "PageTemplateASCX"
             },
             new CmsPageTemplate()
             {
                 PageTemplateID = 2,
-                PageTemplateWebParts = FromFile(@"TestData\CMS_PageTemplate\PageTemplateWebParts\CleanText.xml"),
+                PageTemplateWebParts = ParseXDocumentFromFile(@"TestData\CMS_PageTemplate\PageTemplateWebParts\CleanText.xml"),
                 PageTemplateCodeName = "PageTemplateText"
             }
         };
@@ -93,13 +93,18 @@ namespace KenticoInspector.Reports.Tests
             mockReport = new Report(_mockDatabaseService.Object, _mockReportMetadataService.Object, _mockInstanceService.Object);
         }
 
+        private static XDocument ParseXDocumentFromFile(string path)
+        {
+            return XDocument.Parse(FromFile(path));
+        }
+
         private static string FromFile(string path)
         {
             return File.ReadAllText(path);
         }
 
         [Test]
-        public void Should_ReturnGoodStatusAndGoodSummary_WhenTransformationsHaveNoIssues()
+        public void Should_ReturnGoodStatusAndGoodSummary_When_TransformationsHaveNoIssues()
         {
             // Arrange
             ArrangeDatabaseService(CmsTransformationWithoutIssues);
@@ -114,7 +119,7 @@ namespace KenticoInspector.Reports.Tests
         }
 
         [Test]
-        public void Should_ReturnWarningStatus_WhenTransformationsHaveSingleXssQueryHelperIssue() => TestSingleIssue(@"TestData\CMS_Transformation\TransformationCode\WithXssQueryHelperIssueASCX.txt", (r, d) => d.XssQueryHelper != string.Empty && r.Uses == 2);
+        public void Should_ReturnWarningStatus_When_TransformationsHaveSingleXssQueryHelperIssue() => TestSingleIssue(@"TestData\CMS_Transformation\TransformationCode\WithXssQueryHelperIssueASCX.txt", (r, d) => d.XssQueryHelper != string.Empty && r.TransformationUses == 2);
 
         public void TestSingleIssue(string transformationCodeFilePath, Func<TransformationResult, dynamic, bool> transformationResultEvaluator)
         {

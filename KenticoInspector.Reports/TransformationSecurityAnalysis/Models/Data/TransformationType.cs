@@ -4,6 +4,7 @@
     {
         ASCX,
         Text,
-        JQuery
+        JQuery,
+        Xslt
     }
 }

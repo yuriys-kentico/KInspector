@@ -14,19 +14,23 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
         private readonly IDictionary<string, string> dynamicIssueProperties = new Dictionary<string, string>();
 
         [JsonProperty]
-        public string Name { get; }
+        public int TransformationID { get; set; }
 
         [JsonProperty]
-        public string Type { get; }
+        public string TransformationFullName { get; set; }
 
         [JsonProperty]
-        public int Uses { get; }
+        public string TransformationType { get; set; }
+
+        [JsonProperty]
+        public int TransformationUses { get; }
 
         public TransformationResult(CmsTransformation transformation, int uses, IEnumerable<string> detectedIssueTypes)
         {
-            Name = transformation.FullName;
-            Type = transformation.TransformationType.ToString();
-            Uses = uses;
+            TransformationID = transformation.TransformationID;
+            TransformationFullName = transformation.FullName;
+            TransformationType = transformation.TransformationType.ToString();
+            TransformationUses = uses;
 
             foreach (var issueType in detectedIssueTypes)
             {

@@ -43,7 +43,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
 
             var transformationsWithIssues = GetTransformationsWithIssues(transformations);
 
-            var treeNodes = databaseService.ExecuteSqlFromFile<ViewCmsTreeJoined>(Scripts.GetTreeNodes);
+            var treeNodes = databaseService.ExecuteSqlFromFile<CmsTreeNode>(Scripts.GetTreeNodes);
 
             var DocumentPageTemplateIDs = treeNodes
                 .Select(treeNode => treeNode.DocumentPageTemplateID);
@@ -146,7 +146,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
 
             var issueTypesResult = new TableResult<IssueTypeResult>
             {
-                Name = Metadata.Terms.TableTitles.IssueTypes,
+                Name = Metadata.Terms.TableNames.IssueTypes,
                 Rows = issueTypes
             };
 
@@ -165,12 +165,11 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
                 .Select(g => g.First());
 
             var transformationsResultRows = allTransformations
-                .Select(transformation => new TransformationResult(transformation, CountTransformationUses(transformation, pageTemplates), usedIssueTypes))
-                .OrderBy(transformationResult => transformationResult.Uses);
+                .Select(transformation => new TransformationResult(transformation, CountTransformationUses(transformation, pageTemplates), usedIssueTypes));
 
             var transformationsResult = new TableResult<TransformationResult>
             {
-                Name = Metadata.Terms.TableTitles.TransformationsWithIssues,
+                Name = Metadata.Terms.TableNames.TransformationsWithIssues,
                 Rows = transformationsResultRows
             };
 
@@ -179,7 +178,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
 
             var transformationUsageResult = new TableResult<TransformationUsageResult>
             {
-                Name = Metadata.Terms.TableTitles.TransformationUsage,
+                Name = Metadata.Terms.TableNames.TransformationUsage,
                 Rows = transformationUsageResultRows
             };
 
@@ -193,7 +192,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
 
             var templateUsageResult = new TableResult<TemplateUsageResult>
             {
-                Name = Metadata.Terms.TableTitles.TemplateUsage,
+                Name = Metadata.Terms.TableNames.TemplateUsage,
                 Rows = templateUsageResultRows
             };
 
