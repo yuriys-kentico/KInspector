@@ -1,12 +1,14 @@
-﻿using KenticoInspector.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.ApplicationRestartAnalysis.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using KenticoInspector.Reports.ApplicationRestartAnalysis.Models.Data;
 
 namespace KenticoInspector.Reports.ApplicationRestartAnalysis
 {
@@ -19,7 +21,7 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
             this.databaseService = databaseService;
         }
 
-        public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11");
+        public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12");
 
         public override IList<string> Tags => new List<string>
         {
@@ -29,7 +31,7 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
 
         public override ReportResults GetResults()
         {
-            var eventLogs = databaseService.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetEventLog);
+            var eventLogs = databaseService.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetEventLogStartOrEndEvents);
 
             return CompileResults(eventLogs);
         }
@@ -49,22 +51,9 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
             var earliestTime = totalEvents > 0 ? eventLogs.Min(e => e.EventTime) : new DateTime();
             var latestTime = totalEvents > 0 ? eventLogs.Max(e => e.EventTime) : new DateTime();
 
-            var totalEventsText = Metadata.Terms.CountTotalEvent.With(new { totalEvents });
-
-            var totalStartEventsText = Metadata.Terms.CountStartEvent.With(new { totalStartEvents });
-
-            var totalEndEventsText = Metadata.Terms.CountEndEvent.With(new { totalEndEvents });
-
-            string timeSpanText = string.Empty;
-
-            if (earliestTime.Year > 1)
+            var data = new TableResult<CmsEventLog>()
             {
-                timeSpanText = Metadata.Terms.SpanningEarliestLatest.With(new { earliestTime, latestTime });
-            }
-
-            var data = new TableResult<dynamic>()
-            {
-                Name = Metadata.Terms.ApplicationRestartEvents,
+                Name = Metadata.Terms.TableNames.ApplicationRestartEvents,
                 Rows = eventLogs
             };
 
@@ -72,7 +61,7 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
             {
                 Type = ReportResultsType.Table,
                 Status = ReportResultsStatus.Information,
-                Summary = $"{totalEventsText} ({totalStartEventsText}, {totalEndEventsText}) {timeSpanText}",
+                Summary = Metadata.Terms.InformationSummary.With(new { totalEvents, totalStartEvents, totalEndEvents, earliestTime, latestTime }),
                 Data = data
             };
         }

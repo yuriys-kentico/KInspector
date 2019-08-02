@@ -1,9 +1,12 @@
+using System;
+using System.Collections.Generic;
+
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Reports.ApplicationRestartAnalysis;
 using KenticoInspector.Reports.ApplicationRestartAnalysis.Models;
+using KenticoInspector.Reports.ApplicationRestartAnalysis.Models.Data;
+
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 
 namespace KenticoInspector.Reports.Tests
 {
@@ -24,14 +27,16 @@ namespace KenticoInspector.Reports.Tests
         {
             // Arrange
             var applicationRestartEvents = new List<CmsEventLog>();
+
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetEventLog))
+                .Setup(p => p.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetEventLogStartOrEndEvents))
                 .Returns(applicationRestartEvents);
 
             // Act
             var results = _mockReport.GetResults();
 
             // Assert
+            Assert.That(results.Type == ReportResultsType.Table);
             Assert.That(results.Data.Rows.Count == 0);
             Assert.That(results.Status == ReportResultsStatus.Information);
         }
@@ -40,41 +45,25 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnResult_When_DatabaseHasEvents()
         {
             // Arrange
-            var applicationRestartEvents = new List<CmsEventLog>();
-
-            applicationRestartEvents.Add(new CmsEventLog
+            var applicationRestartEvents = new List<CmsEventLog>
             {
-                EventCode = "STARTAPP",
-                EventTime = DateTime.Now.AddHours(-1),
-                EventMachineName = "Server-01"
-            });
+                new CmsEventLog
+                {
+                    EventCode = "STARTAPP",
+                    EventTime = DateTime.Now.AddHours(-1),
+                    EventMachineName = "Server-01"
+                },
 
-            applicationRestartEvents.Add(new CmsEventLog
-            {
-                EventCode = "ENDAPP",
-                EventTime = DateTime.Now.AddHours(-1).AddMinutes(-1),
-                EventMachineName = "Server-01"
-            });
+                new CmsEventLog
+                {
+                    EventCode = "ENDAPP",
+                    EventTime = DateTime.Now.AddHours(-1).AddMinutes(-1),
+                    EventMachineName = "Server-01"
+                }
+            };
 
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetEventLog))
-                .Returns(applicationRestartEvents);
-
-            // Act
-            var results = _mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Data.Rows.Count == 2);
-            Assert.That(results.Status == ReportResultsStatus.Information);
-        }
-
-        [Test]
-        public void Should_ReturnTableResultType()
-        {
-            // Arrange
-            var applicationRestartEvents = new List<CmsEventLog>();
-            _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetEventLog))
+                .Setup(p => p.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetEventLogStartOrEndEvents))
                 .Returns(applicationRestartEvents);
 
             // Act
@@ -82,6 +71,8 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             Assert.That(results.Type == ReportResultsType.Table);
+            Assert.That(results.Data.Rows.Count == 2);
+            Assert.That(results.Status == ReportResultsStatus.Information);
         }
     }
 }

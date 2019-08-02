@@ -4,6 +4,6 @@
     {
         public static string BaseDirectory = $"{nameof(ApplicationRestartAnalysis)}/Scripts";
 
-        public static string GetEventLog = $"{BaseDirectory}/{nameof(GetEventLog)}.sql";
+        public static string GetEventLogStartOrEndEvents = $"{BaseDirectory}/{nameof(GetEventLogStartOrEndEvents)}.sql";
     }
 }
