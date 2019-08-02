@@ -1,15 +1,18 @@
-﻿using KenticoInspector.Core.Constants;
-using KenticoInspector.Reports.RobotsTxtConfigurationSummary;
-using KenticoInspector.Reports.RobotsTxtConfigurationSummary.Models;
-using KenticoInspector.Reports.Tests.Helpers;
-using Moq;
-using Moq.Protected;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+
+using KenticoInspector.Core.Constants;
+using KenticoInspector.Reports.RobotsTxtConfigurationSummary;
+using KenticoInspector.Reports.RobotsTxtConfigurationSummary.Models;
+using KenticoInspector.Reports.Tests.Helpers;
+
+using Moq;
+using Moq.Protected;
+
+using NUnit.Framework;
 
 namespace KenticoInspector.Reports.Tests
 {
@@ -38,7 +41,8 @@ namespace KenticoInspector.Reports.Tests
             Assert.That(results.Status == ReportResultsStatus.Good);
 
             var baseUri = new Uri(mockInstance.Url);
-            var expectedUri = new Uri(baseUri, Constants.RobotsTxtRelativePath);
+
+            var expectedUri = new Uri(baseUri, DefaultKenticoPaths.RobotsTxtRelative);
 
             AssertUrlCalled(mockHttpMessageHandler, expectedUri);
         }
@@ -73,7 +77,7 @@ namespace KenticoInspector.Reports.Tests
             // Assert
             Assert.That(results.Status == ReportResultsStatus.Good);
 
-            var expectedUri = new Uri($"{baseUrl}/{Constants.RobotsTxtRelativePath}");
+            var expectedUri = new Uri($"{baseUrl}/{DefaultKenticoPaths.RobotsTxtRelative}");
 
             AssertUrlCalled(mockHttpMessageHandler, expectedUri);
         }
@@ -107,7 +111,7 @@ namespace KenticoInspector.Reports.Tests
 
             var httpClient = new HttpClient(mockHttpMessageHandler.Object);
 
-            var report = new Report(_mockDatabaseService.Object, _mockInstanceService.Object, _mockReportMetadataService.Object, httpClient);
+            var report = new Report(_mockInstanceService.Object, _mockReportMetadataService.Object, httpClient);
 
             MockReportMetadataServiceHelper.SetupReportMetadataService<Terms>(_mockReportMetadataService, report);
 

@@ -4,7 +4,8 @@ namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary.Models
 {
     public class Terms
     {
-        public Term RobotsTxtFound { get; set; }
-        public Term RobotsTxtNotFound { get; set; }
+        public Term GoodSummary { get; set; }
+
+        public Term WarningSummary { get; set; }
     }
 }
