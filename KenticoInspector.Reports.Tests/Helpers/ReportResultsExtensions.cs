@@ -1,4 +1,6 @@
-﻿using KenticoInspector.Core.Models;
+﻿using System.Collections.Generic;
+
+using KenticoInspector.Core.Models;
 
 namespace KenticoInspector.Reports.Tests.Helpers
 {
@@ -6,6 +8,11 @@ namespace KenticoInspector.Reports.Tests.Helpers
     {
         public static TResult GetAnonymousTableResult<TResult>(this ReportResults results, string resultName)
         {
+            if (results.Data is IDictionary<string, object> dictionary)
+            {
+                return dictionary[resultName] as dynamic;
+            }
+
             return results
                 .Data
                 .GetType()
