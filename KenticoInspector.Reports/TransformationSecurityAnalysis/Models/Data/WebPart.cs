@@ -23,7 +23,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
         public void RemovePropertiesWithoutTransformations()
         {
             Properties = Properties
-                        .Where(WebPartProperty.HasIssues);
+                .Where(WebPartProperty.HasIssues);
         }
     }
 }

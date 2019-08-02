@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a culture version of a node. References a <see cref="PageTemplateDto"/> in <see cref="DocumentPageTemplateID"/>.
     /// </summary>
-    public class PageDto
+    public class ViewCmsTreeJoined
     {
         public int NodeID { get; set; }
 

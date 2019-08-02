@@ -22,7 +22,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
         [JsonProperty]
         public int Uses { get; }
 
-        public TransformationResult(Transformation transformation, int uses, IEnumerable<string> detectedIssueTypes)
+        public TransformationResult(CmsTransformation transformation, int uses, IEnumerable<string> detectedIssueTypes)
         {
             Name = transformation.FullName;
             Type = transformation.TransformationType.ToString();

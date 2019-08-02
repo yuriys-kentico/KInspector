@@ -1,29 +1,23 @@
-﻿using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using KenticoInspector.Core.Models;
+using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data;
 
 namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
 {
-    public class TemplateUsageResult
+    public class TemplateUsageResult : ViewCmsTreeJoined
     {
-        public string Site { get; }
+        public string SiteName { get; }
 
-        public string NodeAliasPath { get; }
-
-        public string Culture { get; }
-
-        public string Page { get; }
-
-        public int NodeId { get; }
-
-        public int TemplateId { get; }
-
-        public TemplateUsageResult(Page page)
+        public TemplateUsageResult(ViewCmsTreeJoined page, IEnumerable<Site> sites)
         {
-            Site = page.Site.Name;
-            Page = page.Name;
-            NodeId = page.NodeId;
-            NodeAliasPath = page.AliasPath;
-            Culture = page.Culture.Name;
-            TemplateId = page.TemplateId;
+            SiteName = sites.FirstOrDefault(site => site.Id == page.NodeSiteID).Name;
+            DocumentName = page.DocumentName;
+            NodeID = page.NodeID;
+            NodeAliasPath = page.NodeAliasPath;
+            DocumentCulture = page.DocumentCulture;
+            DocumentPageTemplateID = page.DocumentPageTemplateID;
         }
     }
 }

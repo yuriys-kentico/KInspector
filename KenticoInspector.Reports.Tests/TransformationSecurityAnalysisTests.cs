@@ -22,23 +22,23 @@ namespace KenticoInspector.Reports.Tests
     {
         private readonly Report mockReport;
 
-        private IEnumerable<PageDto> CleanPageDtoTable => new List<PageDto>
+        private IEnumerable<ViewCmsTreeJoined> TreeNodesWithoutIssues => new List<ViewCmsTreeJoined>
         {
-            new PageDto()
+            new ViewCmsTreeJoined()
             {
                 DocumentName = "Page Using ASCX Page Template",
                 DocumentCulture = "en-US",
                 NodeAliasPath = "/path/to/page-using-template",
                 DocumentPageTemplateID = 1
             },
-            new PageDto()
+            new ViewCmsTreeJoined()
             {
                 DocumentName = "Another Page Using ASCX Page Template",
                 DocumentCulture = "en-US",
                 NodeAliasPath = "/path/to/another/page-using-template",
                 DocumentPageTemplateID = 1
             },
-            new PageDto()
+            new ViewCmsTreeJoined()
             {
                 DocumentName = "Page Using Text Page Template",
                 DocumentCulture = "es-ES",
@@ -47,15 +47,15 @@ namespace KenticoInspector.Reports.Tests
             }
         };
 
-        private IEnumerable<PageTemplateDto> CleanPageTemplateDtoTable => new List<PageTemplateDto>
+        private IEnumerable<CmsPageTemplate> CmsPageTemplateWithoutIssues => new List<CmsPageTemplate>
         {
-            new PageTemplateDto()
+            new CmsPageTemplate()
             {
                 PageTemplateID = 1,
                 PageTemplateWebParts = FromFile(@"TestData\CMS_PageTemplate\PageTemplateWebParts\CleanAscx.xml"),
                 PageTemplateCodeName = "PageTemplateASCX"
             },
-            new PageTemplateDto()
+            new CmsPageTemplate()
             {
                 PageTemplateID = 2,
                 PageTemplateWebParts = FromFile(@"TestData\CMS_PageTemplate\PageTemplateWebParts\CleanText.xml"),
@@ -63,28 +63,28 @@ namespace KenticoInspector.Reports.Tests
             }
         };
 
-        private IEnumerable<TransformationDto> CleanTransformationDtoTable => new List<TransformationDto>
+        private IEnumerable<CmsTransformation> CmsTransformationWithoutIssues => new List<CmsTransformation>
         {
-            new TransformationDto()
+            new CmsTransformation()
             {
                 TransformationName = "ASCXTransformation",
                 TransformationCode = FromFile(@"TestData\CMS_Transformation\TransformationCode\CleanASCX.txt"),
                 ClassName = "PageType1",
-                Type = TransformationType.ASCX
+                TransformationType = TransformationType.ASCX
             },
-            new TransformationDto()
+            new CmsTransformation()
             {
                 TransformationName = "JQueryTransformation",
                 TransformationCode = FromFile(@"TestData\CMS_Transformation\TransformationCode\CleanText.txt"),
                 ClassName = "PageType1",
-                Type = TransformationType.JQuery
+                TransformationType = TransformationType.JQuery
             },
-            new TransformationDto()
+            new CmsTransformation()
             {
                 TransformationName = "TextTransformation",
                 TransformationCode = FromFile(@"TestData\CMS_Transformation\TransformationCode\CleanText.txt"),
                 ClassName = "PageType2",
-                Type = TransformationType.Text
+                TransformationType = TransformationType.Text
             }
         };
 
@@ -102,7 +102,7 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnGoodStatusAndGoodSummary_WhenTransformationsHaveNoIssues()
         {
             // Arrange
-            ArrangeDatabaseService(CleanTransformationDtoTable);
+            ArrangeDatabaseService(CmsTransformationWithoutIssues);
 
             // Act
             var results = mockReport.GetResults();
@@ -118,19 +118,19 @@ namespace KenticoInspector.Reports.Tests
 
         public void TestSingleIssue(string transformationCodeFilePath, Func<TransformationResult, dynamic, bool> transformationResultEvaluator)
         {
-            var transformationDtoTableWithIssue = new List<TransformationDto>
+            var cmsTransformationWithIssue = new List<CmsTransformation>
             {
-                    new TransformationDto()
+                    new CmsTransformation()
                 {
                     TransformationName = "ASCXTransformation",
                     TransformationCode = FromFile(transformationCodeFilePath),
                     ClassName = "PageType1",
-                    Type = TransformationType.ASCX
+                    TransformationType = TransformationType.ASCX
                 }
             };
 
             // Arrange
-            ArrangeDatabaseService(transformationDtoTableWithIssue);
+            ArrangeDatabaseService(cmsTransformationWithIssue);
 
             // Act
             var results = mockReport.GetResults();
@@ -138,29 +138,20 @@ namespace KenticoInspector.Reports.Tests
             // Assert
             Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
 
-            Assert.That(GetAnonymousTableResult<TableResult<IssueTypeResult>>(results, "issueTypesResult").Rows.Count(), Is.EqualTo(1));
-            Assert.That(GetAnonymousTableResult<TableResult<TransformationResult>>(results, "transformationsResult").Rows.Count(), Is.EqualTo(1));
-            Assert.That(GetAnonymousTableResult<TableResult<TransformationResult>>(results, "transformationsResult").Rows, Has.One.Matches<TransformationResult>(row => transformationResultEvaluator(row, row as dynamic)));
+            Assert.That(results.GetAnonymousTableResult<TableResult<IssueTypeResult>>("issueTypesResult").Rows.Count(), Is.EqualTo(1));
+            Assert.That(results.GetAnonymousTableResult<TableResult<TransformationResult>>("transformationsResult").Rows.Count(), Is.EqualTo(1));
+            Assert.That(results.GetAnonymousTableResult<TableResult<TransformationResult>>("transformationsResult").Rows, Has.One.Matches<TransformationResult>(row => transformationResultEvaluator(row, row as dynamic)));
 
-            Assert.That(GetAnonymousTableResult<TableResult<TransformationUsageResult>>(results, "transformationUsageResult").Rows.Count(), Is.EqualTo(1));
+            Assert.That(results.GetAnonymousTableResult<TableResult<TransformationUsageResult>>("transformationUsageResult").Rows.Count(), Is.EqualTo(1));
 
-            Assert.That(GetAnonymousTableResult<TableResult<TemplateUsageResult>>(results, "templateUsageResult").Rows.Count(), Is.EqualTo(2));
+            Assert.That(results.GetAnonymousTableResult<TableResult<TemplateUsageResult>>("templateUsageResult").Rows.Count(), Is.EqualTo(2));
         }
 
-        private void ArrangeDatabaseService(IEnumerable<TransformationDto> transformationDtoTable)
+        private void ArrangeDatabaseService(IEnumerable<CmsTransformation> cmsTransformation)
         {
-            _mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetTransformations, transformationDtoTable);
-            _mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetPages, CleanPageDtoTable);
-            _mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(Scripts.GetPageTemplates, "DocumentPageTemplateIDs", CleanPageDtoTable.Select(pageDto => pageDto.DocumentPageTemplateID), CleanPageTemplateDtoTable);
-        }
-
-        private static TResult GetAnonymousTableResult<TResult>(ReportResults results, string resultName)
-        {
-            return results
-                .Data
-                .GetType()
-                .GetProperty(resultName)
-                .GetValue(results.Data);
+            _mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetTransformations, cmsTransformation);
+            _mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetTreeNodes, TreeNodesWithoutIssues);
+            _mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(Scripts.GetPageTemplates, "DocumentPageTemplateIDs", TreeNodesWithoutIssues.Select(treeNode => treeNode.DocumentPageTemplateID), CmsPageTemplateWithoutIssues);
         }
     }
 }

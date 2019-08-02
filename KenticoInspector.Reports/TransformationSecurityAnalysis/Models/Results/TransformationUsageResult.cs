@@ -2,30 +2,24 @@
 
 namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
 {
-    public class TransformationUsageResult
+    public class TransformationUsageResult : CmsPageTemplate
     {
-        public int TemplateId { get; }
+        public string WebPartControlId { get; }
 
-        public string TemplateCodeName { get; }
+        public string WebPartPropertyName { get; }
 
-        public string TemplateDisplayName { get; }
-
-        public string WebPart { get; }
-
-        public string Property { get; }
-
-        public string Transformation { get; }
+        public string TransformationFullName { get; }
 
         public string TransformationType { get; }
 
-        public TransformationUsageResult(PageTemplate pageTemplate, WebPart webPart, WebPartProperty webPartProperty, Transformation transformation)
+        public TransformationUsageResult(CmsPageTemplate pageTemplate, WebPart webPart, WebPartProperty webPartProperty, CmsTransformation transformation)
         {
-            TemplateId = pageTemplate.Id;
-            TemplateCodeName = pageTemplate.CodeName;
-            TemplateDisplayName = pageTemplate.DisplayName;
-            WebPart = webPart.ControlId;
-            Property = webPartProperty.Name;
-            Transformation = transformation.FullName;
+            PageTemplateID = pageTemplate.PageTemplateID;
+            PageTemplateCodeName = pageTemplate.PageTemplateCodeName;
+            PageTemplateDisplayName = pageTemplate.PageTemplateDisplayName;
+            WebPartControlId = webPart.ControlId;
+            WebPartPropertyName = webPartProperty.Name;
+            TransformationFullName = transformation.FullName;
             TransformationType = transformation.TransformationType.ToString();
         }
     }
