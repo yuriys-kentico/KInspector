@@ -1,6 +1,6 @@
 ﻿namespace KenticoInspector.Reports.ClassTableValidation.Models
 {
-    public class TableWithNoClass
+    public class InformationSchemaTable
     {
         public string TableName { get; set; }
     }

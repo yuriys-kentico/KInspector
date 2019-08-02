@@ -4,7 +4,7 @@
     {
         public static string BaseDirectory = $"{nameof(ClassTableValidation)}/Scripts";
 
-        public static string ClassesWithNoTable = $"{BaseDirectory}/{nameof(ClassesWithNoTable)}.sql";
-        public static string TablesWithNoClass = $"{BaseDirectory}/{nameof(TablesWithNoClass)}.sql";
+        public static string GetCmsClass = $"{BaseDirectory}/{nameof(GetCmsClass)}.sql";
+        public static string GetInformationSchemaTables = $"{BaseDirectory}/{nameof(GetInformationSchemaTables)}.sql";
     }
 }
