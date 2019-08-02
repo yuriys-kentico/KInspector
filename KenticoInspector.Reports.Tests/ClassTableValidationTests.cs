@@ -5,6 +5,7 @@ using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Reports.ClassTableValidation;
 using KenticoInspector.Reports.ClassTableValidation.Models;
+using KenticoInspector.Reports.ClassTableValidation.Models.Data;
 using KenticoInspector.Reports.Tests.Helpers;
 
 using NUnit.Framework;
@@ -18,23 +19,26 @@ namespace KenticoInspector.Reports.Tests
     {
         private Report _mockReport;
 
+        private List<CmsClass> CleanClassResults => new List<CmsClass>();
+
         public ClassTableValidationTests(int majorVersion) : base(majorVersion)
         {
             _mockReport = new Report(_mockDatabaseService.Object, _mockInstanceService.Object, _mockReportMetadataService.Object);
         }
 
         [Test]
-        public void Should_ReturnGoodStatus_When_DatabaseIsClean()
+        public void Should_ReturnGoodStatus_When_DatabaseHasNoIssues()
         {
             // Arrange
             var tableResults = GetCleanTableResults();
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFile<InformationSchemaTable>(Scripts.GetInformationSchemaTables))
+                .Setup(p => p.ExecuteSqlFromFile<InformationSchemaTable>(Scripts.GetInformationSchemaTablesWithMissingClass))
                 .Returns(tableResults);
 
-            var classResults = GetCleanClassResults();
+            var classResults = CleanClassResults;
+
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClass))
+                .Setup(p => p.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClassesWithMissingTable))
                 .Returns(classResults);
 
             // Act
@@ -49,11 +53,13 @@ namespace KenticoInspector.Reports.Tests
         {
             // Arrange
             var tableResults = GetCleanTableResults();
+
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFile<InformationSchemaTable>(Scripts.GetInformationSchemaTables))
+                .Setup(p => p.ExecuteSqlFromFile<InformationSchemaTable>(Scripts.GetInformationSchemaTablesWithMissingClass))
                 .Returns(tableResults);
 
-            var classResults = GetCleanClassResults();
+            var classResults = CleanClassResults;
+
             classResults.Add(new CmsClass
             {
                 ClassDisplayName = "Has no table",
@@ -62,7 +68,7 @@ namespace KenticoInspector.Reports.Tests
             });
 
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClass))
+                .Setup(p => p.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClassesWithMissingTable))
                 .Returns(classResults);
 
             // Act
@@ -85,12 +91,13 @@ namespace KenticoInspector.Reports.Tests
             });
 
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFile<InformationSchemaTable>(Scripts.GetInformationSchemaTables))
+                .Setup(p => p.ExecuteSqlFromFile<InformationSchemaTable>(Scripts.GetInformationSchemaTablesWithMissingClass))
                 .Returns(tableResults);
 
-            var classResults = GetCleanClassResults();
+            var classResults = CleanClassResults;
+
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClass))
+                .Setup(p => p.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClassesWithMissingTable))
                 .Returns(classResults);
 
             // Act
@@ -102,14 +109,10 @@ namespace KenticoInspector.Reports.Tests
             Assert.That(results.Status == ReportResultsStatus.Error);
         }
 
-        private List<CmsClass> GetCleanClassResults()
-        {
-            return new List<CmsClass>();
-        }
-
         private List<InformationSchemaTable> GetCleanTableResults(bool includeWhitelistedTables = true)
         {
             var tableResults = new List<InformationSchemaTable>();
+
             if (includeWhitelistedTables && _mockInstanceDetails.DatabaseVersion.Major >= 10)
             {
                 tableResults.Add(new InformationSchemaTable() { TableName = "CI_Migration" });

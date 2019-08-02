@@ -1,8 +1,8 @@
 ﻿SELECT 
 	TABLE_NAME TableName 
 
-FROM 
-	INFORMATION_SCHEMA.TABLES
+    FROM 
+	    INFORMATION_SCHEMA.TABLES
 
 	WHERE
 		TABLE_TYPE = 'BASE TABLE' 
@@ -10,12 +10,12 @@ FROM
 			SELECT 
 				ClassTableName 
 			
-			FROM 
-				CMS_Class 
+			    FROM 
+				    CMS_Class 
 				
 				WHERE 
 					ClassTableName IS NOT NULL
 			)
 
-ORDER BY
-	TABLE_NAME
+    ORDER BY
+	    TABLE_NAME

@@ -1,4 +1,4 @@
-﻿namespace KenticoInspector.Reports.ClassTableValidation.Models
+﻿namespace KenticoInspector.Reports.ClassTableValidation.Models.Data
 {
     public class InformationSchemaTable
     {

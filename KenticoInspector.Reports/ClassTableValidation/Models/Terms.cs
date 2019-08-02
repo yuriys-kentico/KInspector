@@ -4,14 +4,14 @@ namespace KenticoInspector.Reports.ClassTableValidation.Models
 {
     public class Terms
     {
-        public Term CountIssueFound { get; set; }
+        public Term ErrorSummary { get; set; }
 
-        public TableTitlesTerms TableTitles { get; set; }
+        public TableNamesTerms TableNames { get; set; }
 
         public Term GoodSummary { get; set; }
     }
 
-    public class TableTitlesTerms
+    public class TableNamesTerms
     {
         public Term DatabaseTablesWithMissingKenticoClasses { get; set; }
 

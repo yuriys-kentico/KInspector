@@ -1,12 +1,14 @@
-﻿using KenticoInspector.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.ClassTableValidation.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using KenticoInspector.Reports.ClassTableValidation.Models.Data;
 
 namespace KenticoInspector.Reports.ClassTableValidation
 {
@@ -25,7 +27,7 @@ namespace KenticoInspector.Reports.ClassTableValidation
 
         public override IList<string> Tags => new List<string>
         {
-            ReportTags.Health,
+            ReportTags.Health
         };
 
         public override ReportResults GetResults()
@@ -34,10 +36,15 @@ namespace KenticoInspector.Reports.ClassTableValidation
 
             var instanceDetails = instanceService.GetInstanceDetails(instance);
 
-            var tablesWithMissingClass = GetResultsForTables(instanceDetails);
-            var classesWithMissingTable = GetResultsForClasses();
+            var tablesWithMissingClass = databaseService.ExecuteSqlFromFile<InformationSchemaTable>(Scripts.GetInformationSchemaTablesWithMissingClass);
 
-            return CompileResults(tablesWithMissingClass, classesWithMissingTable);
+            var tableWhitelist = GetTableWhitelist(instanceDetails.DatabaseVersion);
+
+            var tablesWithMissingClassNotInWhitelist = GetTablesNotInWhitelist(tablesWithMissingClass, tableWhitelist);
+
+            var classesWithMissingTable = databaseService.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClassesWithMissingTable);
+
+            return CompileResults(tablesWithMissingClassNotInWhitelist, classesWithMissingTable);
         }
 
         private ReportResults CompileResults(IEnumerable<InformationSchemaTable> tablesWithMissingClass, IEnumerable<CmsClass> classesWithMissingTable)
@@ -56,7 +63,7 @@ namespace KenticoInspector.Reports.ClassTableValidation
 
             var tableResults = new TableResult<InformationSchemaTable>
             {
-                Name = Metadata.Terms.TableTitles.DatabaseTablesWithMissingKenticoClasses,
+                Name = Metadata.Terms.TableNames.DatabaseTablesWithMissingKenticoClasses,
                 Rows = tablesWithMissingClass
             };
 
@@ -64,7 +71,7 @@ namespace KenticoInspector.Reports.ClassTableValidation
 
             var classResults = new TableResult<CmsClass>
             {
-                Name = Metadata.Terms.TableTitles.KenticoClassesWithMissingDatabaseTables,
+                Name = Metadata.Terms.TableNames.KenticoClassesWithMissingDatabaseTables,
                 Rows = classesWithMissingTable
             };
 
@@ -74,7 +81,7 @@ namespace KenticoInspector.Reports.ClassTableValidation
             {
                 Type = ReportResultsType.TableList,
                 Status = ReportResultsStatus.Error,
-                Summary = Metadata.Terms.CountIssueFound.With(new { totalErrors }),
+                Summary = Metadata.Terms.ErrorSummary.With(new { totalErrors }),
                 Data = new
                 {
                     tableResults,
@@ -83,22 +90,11 @@ namespace KenticoInspector.Reports.ClassTableValidation
             };
         }
 
-        private IEnumerable<CmsClass> GetResultsForClasses()
+        private IEnumerable<InformationSchemaTable> GetTablesNotInWhitelist(IEnumerable<InformationSchemaTable> tablesWithMissingClass, IEnumerable<string> tableWhitelist)
         {
-            var classesWithMissingTable = databaseService.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClass);
-
-            return classesWithMissingTable;
-        }
-
-        private IEnumerable<InformationSchemaTable> GetResultsForTables(InstanceDetails instanceDetails)
-        {
-            var tablesWithMissingClass = databaseService.ExecuteSqlFromFile<InformationSchemaTable>(Scripts.GetInformationSchemaTables);
-
-            var tableWhitelist = GetTableWhitelist(instanceDetails.DatabaseVersion);
-
-            if (tableWhitelist.Count() > 0)
+            if (tableWhitelist.Any())
             {
-                tablesWithMissingClass = tablesWithMissingClass
+                return tablesWithMissingClass
                     .Where(t => !tableWhitelist
                         .Contains(t.TableName)
                     )
