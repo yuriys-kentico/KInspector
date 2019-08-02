@@ -1,8 +1,10 @@
-﻿using KenticoInspector.Core.Constants;
+﻿using System.Data;
+
+using KenticoInspector.Core.Constants;
 using KenticoInspector.Reports.DatabaseConsistencyCheck;
 using KenticoInspector.Reports.DatabaseConsistencyCheck.Models;
+
 using NUnit.Framework;
-using System.Data;
 
 namespace KenticoInspector.Reports.Tests
 {
