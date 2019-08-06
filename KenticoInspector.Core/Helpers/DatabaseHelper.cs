@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 
 using KenticoInspector.Core.Models;
@@ -7,7 +7,19 @@ namespace KenticoInspector.Core.Helpers
 {
     public class DatabaseHelper
     {
-        public static string GetConnectionString(DatabaseSettings databaseSettings)
+        public static IDbConnection GetSqlConnection(DatabaseSettings databaseSettings)
+        {
+            var connectionString = GetConnectionString(databaseSettings);
+
+            return GetSqlConnection(connectionString);
+        }
+
+        public static IDbConnection GetSqlConnection(string connectionString)
+        {
+            return new SqlConnection(connectionString);
+        }
+
+        private static string GetConnectionString(DatabaseSettings databaseSettings)
         {
             SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder();
 
@@ -25,17 +37,6 @@ namespace KenticoInspector.Core.Helpers
             sb["Database"] = databaseSettings.Database;
 
             return sb.ConnectionString;
-        }
-
-        public static IDbConnection GetSqlConnection(DatabaseSettings databaseSettings)
-        {
-            var connectionString = GetConnectionString(databaseSettings);
-            return GetSqlConnection(connectionString);
-        }
-
-        public static IDbConnection GetSqlConnection(string connectionString)
-        {
-            return new SqlConnection(connectionString);
         }
     }
 }
