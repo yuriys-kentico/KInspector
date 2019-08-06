@@ -1,12 +1,15 @@
-﻿using KenticoInspector.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
+
+using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.DebugConfigurationAnalysis.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using KenticoInspector.Reports.DebugConfigurationAnalysis.Models.Data;
 
 namespace KenticoInspector.Reports.DebugConfigurationAnalysis
 {
@@ -30,38 +33,31 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
 
         public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12");
 
-        public override IList<string> Tags => new List<string> {
+        public override IList<string> Tags => new List<string>
+        {
            ReportTags.Health
         };
 
         public override ReportResults GetResults()
         {
             var instance = _instanceService.CurrentInstance;
-            var databaseSettingsValues = _databaseService.ExecuteSqlFromFile<SettingsKey>(Scripts.GetDebugSettingsValues);
-            ResolveSettingsDisplayNames(instance, databaseSettingsValues);
 
-            var webConfig = _cmsFileService.GetXmlDocument(instance.Path, DefaultKenticoPaths.WebConfigFile);
-            var isCompilationDebugEnabled = GetBooleanValueofSectionAttribute(webConfig, "/configuration/system.web/compilation", "debug");
-            var isTraceEnabled = GetBooleanValueofSectionAttribute(webConfig, "/configuration/system.web/trace", "enabled");
+            var databaseSettingsValues = _databaseService.ExecuteSqlFromFile<CmsSettingsKey>(Scripts.GetCMSSettingsKeysForDebug);
 
-            return CompileResults(databaseSettingsValues, isCompilationDebugEnabled, isTraceEnabled);
-        }
-
-        private static bool GetBooleanValueofSectionAttribute(System.Xml.XmlDocument webConfig, string xpath, string attributeName)
-        {
-            var valueRaw = webConfig
-                .SelectSingleNode(xpath)?
-                .Attributes[attributeName]?
-                .InnerText;
-            var value = false;
-            bool.TryParse(valueRaw, out value);
-            return value;
-        }
-
-        private void ResolveSettingsDisplayNames(Instance instance, IEnumerable<SettingsKey> databaseSettingsValues)
-        {
             var resxValues = _cmsFileService.GetResourceStringsFromResx(instance.Path);
 
+            ResolveSettingsDisplayNames(databaseSettingsValues, resxValues);
+
+            var webConfig = _cmsFileService.GetXDocument(instance.Path, DefaultKenticoPaths.WebConfigFile);
+
+            var compilationDebugIsEnabled = GetBooleanValueofSectionAttribute(webConfig, "system.web", "compilation", "debug");
+            var traceIsEnabled = GetBooleanValueofSectionAttribute(webConfig, "system.web", "trace", "enabled");
+
+            return CompileResults(databaseSettingsValues, compilationDebugIsEnabled, traceIsEnabled);
+        }
+
+        private static void ResolveSettingsDisplayNames(IEnumerable<CmsSettingsKey> databaseSettingsValues, IDictionary<string, string> resxValues)
+        {
             foreach (var databaseSettingsValue in databaseSettingsValues)
             {
                 var key = databaseSettingsValue.KeyDisplayName
@@ -69,77 +65,88 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
                     .Replace("$}", string.Empty)
                     .ToLowerInvariant();
 
-                if (resxValues.ContainsKey(key))
+                if (resxValues.TryGetValue(key, out string value))
                 {
-                    databaseSettingsValue.KeyDisplayName = resxValues[key];
+                    databaseSettingsValue.KeyDisplayName = value;
                 }
             }
         }
 
-        private ReportResults CompileResults(IEnumerable<SettingsKey> databaseSettingsKeys, bool isCompilationDebugEnabled, bool isTraceEnabled)
+        private static bool GetBooleanValueofSectionAttribute(XDocument webConfig, string subSection, string element, string attributeName)
         {
+            var valueRaw = webConfig
+                .Descendants(subSection)
+                .FirstOrDefault()
+                .Element(element)?
+                .Attribute(attributeName)?
+                .Value;
+
+            bool.TryParse(valueRaw, out bool value);
+
+            return value;
+        }
+
+        private ReportResults CompileResults(IEnumerable<CmsSettingsKey> databaseSettingsKeys, bool compilationDebugIsEnabled, bool traceIsEnabled)
+        {
+            var explicitlyEnabledSettings = databaseSettingsKeys
+                .Where(databaseSettingsKey => databaseSettingsKey.KeyValue == true && databaseSettingsKey.KeyDefaultValue == false);
+
+            var compilationDebugAndTraceAreEnabled = compilationDebugIsEnabled || traceIsEnabled;
+
+            if (!explicitlyEnabledSettings.Any() && !compilationDebugAndTraceAreEnabled)
+            {
+                return new ReportResults()
+                {
+                    Status = ReportResultsStatus.Good,
+                    Summary = Metadata.Terms.GoodSummary
+                };
+            }
+
             var results = new ReportResults()
             {
-                Status = ReportResultsStatus.Information,
-                Summary = string.Empty,
-                Type = ReportResultsType.TableList
+                Type = ReportResultsType.TableList,
+                Status = ReportResultsStatus.Warning
             };
 
-            AnalyzeDatabaseSettingsResults(results, databaseSettingsKeys);
-            AnalyzeWebConfigSettings(results, isCompilationDebugEnabled, isTraceEnabled);
-
-            return results;
-        }
-
-        private void AnalyzeWebConfigSettings(ReportResults results, bool isCompilationDebugEnabled, bool isTraceEnabled)
-        {
-            var isDebugOrTraceEnabledInWebConfig = isCompilationDebugEnabled || isTraceEnabled;
-            if (isDebugOrTraceEnabledInWebConfig)
+            if (explicitlyEnabledSettings.Any())
             {
-                results.Status = ReportResultsStatus.Error;
+                var explicitlyEnabledSettingsCount = explicitlyEnabledSettings.Count();
 
-                var enabledSettingsText = isCompilationDebugEnabled ? "`Debug`" : string.Empty;
-                enabledSettingsText += isCompilationDebugEnabled && isTraceEnabled ? " &amp; " : string.Empty;
-                enabledSettingsText += isTraceEnabled ? "`Trace`" : string.Empty;
-                results.Summary += Metadata.Terms.WebConfig.Summary.With(new { enabledSettingsText });
-            }
+                results.Summary += Metadata.Terms.WarningSummary.With(new { explicitlyEnabledSettingsCount });
 
-            var webconfigSettingsValues = new List<SettingsKey>();
-            webconfigSettingsValues.Add(new SettingsKey("Debug", Metadata.Terms.WebConfig.DebugKeyDisplayName, isCompilationDebugEnabled, false));
-            webconfigSettingsValues.Add(new SettingsKey("Trace", Metadata.Terms.WebConfig.TraceKeyDisplayName, isTraceEnabled, false));
-
-            results.Data.WebConfigSettingsResults = new TableResult<SettingsKey>()
-            {
-                Name = Metadata.Terms.WebConfig.OverviewTableHeader,
-                Rows = webconfigSettingsValues
-            };
-        }
-
-        private void AnalyzeDatabaseSettingsResults(ReportResults results, IEnumerable<SettingsKey> databaseSettingsKeys)
-        {
-            var explicitlyEnabledSettings = databaseSettingsKeys.Where(x => x.KeyValue == true && x.KeyDefaultValue == false);
-            var explicitlyEnabledSettingsCount = explicitlyEnabledSettings.Count();
-            if (explicitlyEnabledSettingsCount > 0)
-            {
-                if (results.Status != ReportResultsStatus.Error)
+                results.Data.DatabaseSettingsEnabledNotByDefaultResults = new TableResult<CmsSettingsKey>()
                 {
-                    results.Status = ReportResultsStatus.Warning;
-                }
-
-                results.Summary += Metadata.Terms.Database.Summary.With(new { explicitlyEnabledSettingsCount });
-
-                results.Data.DatabaseSettingsEnabledNotByDefaultResults = new TableResult<SettingsKey>()
-                {
-                    Name = Metadata.Terms.Database.ExplicitlyEnabledSettingsTableHeader,
+                    Name = Metadata.Terms.TableNames.ExplicitlyEnabledSettings,
                     Rows = explicitlyEnabledSettings
                 };
             }
 
-            results.Data.AllDatabaseSettings = new TableResult<SettingsKey>()
+            results.Data.AllDatabaseSettings = new TableResult<CmsSettingsKey>()
             {
-                Name = Metadata.Terms.Database.OverviewTableHeader,
+                Name = Metadata.Terms.TableNames.Overview,
                 Rows = databaseSettingsKeys
             };
+
+            if (compilationDebugAndTraceAreEnabled)
+            {
+                results.Status = ReportResultsStatus.Error;
+
+                results.Summary += Metadata.Terms.ErrorSummary.With(new { compilationDebugIsEnabled, traceIsEnabled });
+            }
+
+            var webConfigSettingsKeys = new List<CmsSettingsKey>
+            {
+                new CmsSettingsKey("Debug", Metadata.Terms.WebConfig.DebugKeyDisplayName, compilationDebugIsEnabled, false),
+                new CmsSettingsKey("Trace", Metadata.Terms.WebConfig.TraceKeyDisplayName, traceIsEnabled, false)
+            };
+
+            results.Data.WebConfigSettingsResults = new TableResult<CmsSettingsKey>()
+            {
+                Name = Metadata.Terms.TableNames.WebConfig,
+                Rows = webConfigSettingsKeys
+            };
+
+            return results;
         }
     }
 }

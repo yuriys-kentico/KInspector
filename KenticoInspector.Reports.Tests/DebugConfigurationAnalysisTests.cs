@@ -1,10 +1,13 @@
-﻿using KenticoInspector.Core.Constants;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
+
+using KenticoInspector.Core.Constants;
 using KenticoInspector.Reports.DebugConfigurationAnalysis;
 using KenticoInspector.Reports.DebugConfigurationAnalysis.Models;
+using KenticoInspector.Reports.DebugConfigurationAnalysis.Models.Data;
+
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
 
 namespace KenticoInspector.Reports.Tests
 {
@@ -13,7 +16,11 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(12)]
     public class DebugConfigurationAnalysisTests : AbstractReportTest<Report, Terms>
     {
-        private Report _mockReport;
+        private readonly Report _mockReport;
+
+        private static readonly string webConfigXml = @"<configuration><system.web><compilation debug=""false"" /></system.web></configuration>";
+        private static readonly string webConfigXmlWithCompilationDebug = @"<configuration><system.web><compilation debug=""true"" /></system.web></configuration>";
+        private static readonly string webConfigXmlWithCompilationDebugAndTrace = @"<configuration><system.web><compilation debug=""falue"" /><trace enabled=""true"" /></system.web></configuration>";
 
         public DebugConfigurationAnalysisTests(int majorVersion) : base(majorVersion)
         {
@@ -24,8 +31,7 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnErrorStatus_When_DebugEnabledInWebConfig()
         {
             // Arrange
-            var customWebConfigXml = @"<configuration><system.web><compilation debug=""true"" /></system.web></configuration>";
-            ArrangeServices(customWebconfigXml: customWebConfigXml);
+            ArrangeServices(customWebconfigXml: webConfigXmlWithCompilationDebug);
 
             // Act
             var results = _mockReport.GetResults();
@@ -38,8 +44,7 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnErrorStatus_When_TraceEnabledInWebConfig()
         {
             // Arrange
-            var customWebConfigXml = @"<configuration><system.web><compilation debug=""falue"" /><trace enabled=""true"" /></system.web></configuration>";
-            ArrangeServices(customWebconfigXml: customWebConfigXml);
+            ArrangeServices(customWebconfigXml: webConfigXmlWithCompilationDebugAndTrace);
 
             // Act
             var results = _mockReport.GetResults();
@@ -49,7 +54,7 @@ namespace KenticoInspector.Reports.Tests
         }
 
         [Test]
-        public void Should_ReturnInformationStatus_When_ResultsAreClean()
+        public void Should_ReturnInformationStatus_When_ResultsHaveNoIssues()
         {
             // Arrange
             ArrangeServices();
@@ -58,15 +63,15 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status == ReportResultsStatus.Information, "When the results are clean, the report status should be 'information'");
+            Assert.That(results.Status == ReportResultsStatus.Good, "When the results are clean, the report status should be 'good'");
         }
 
         [Test]
         public void Should_ReturnWarningStatus_When_AnyDatabaseSettingIsTrueAndNotTheDefaultValue()
         {
             // Arrange
-            var settingsKey = new SettingsKey("CMSDebugEverything", "Enable all debugs", true, false);
-            ArrangeServices(customDatabaseSettingsValues: new SettingsKey[] { settingsKey });
+            var settingsKey = new CmsSettingsKey("CMSDebugEverything", "Enable all debugs", true, false);
+            ArrangeServices(customDatabaseSettingsValues: new[] { settingsKey });
 
             // Act
             var results = _mockReport.GetResults();
@@ -75,44 +80,11 @@ namespace KenticoInspector.Reports.Tests
             Assert.That(results.Status == ReportResultsStatus.Warning, "When any database setting is set to true and that isn't the default value, the report status should be 'warning'");
         }
 
-        private void AddDefaultDatabaseSettingsKeyValues(List<SettingsKey> results)
+        private void ArrangeServices(IEnumerable<CmsSettingsKey> customDatabaseSettingsValues = null, string customWebconfigXml = null)
         {
-            var defaultDatabaseSettingsKeyValues = new List<SettingsKey>();
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugAnalytics", "Enable web analytics debug", false, false));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugCache", "Enable cache access debug", false, false));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugEverything", "Enable all debugs", false, false));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugEverythingEverywhere", "Debug everything everywhere", false, false));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugFiles", "Enable IO operation debug", false, false));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugHandlers", "Enable handlers debug", false, false));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugImportExport", "Debug Import/Export", false, false));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugMacros", "Enable macro debug", false, false));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugOutput", "Enable output debug", false, false));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugRequests", "Enable request debug", false, false));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugResources", "Debug resources", false, false));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugScheduler", "Debug scheduler", true, true));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugSecurity", "Enable security debug", false, false));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugSQLConnections", "Debug SQL connections", false, false));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugSQLQueries", "Enable SQL query debug", false, false));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugViewState", "Enable ViewState debug", false, false));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDebugWebFarm", "Enable web farm debug", false, false));
-            defaultDatabaseSettingsKeyValues.Add(new SettingsKey("CMSDisableDebug", "Disable debugging", false, false));
-
-            foreach (var settingsKey in defaultDatabaseSettingsKeyValues)
-            {
-                var keyNameMatchCount = results.Count(x => x.KeyName == settingsKey.KeyName);
-                if (keyNameMatchCount == 0)
-                {
-                    results.Add(settingsKey);
-                }
-            }
-        }
-
-        private void ArrangeDatabaseSettingsMethods(SettingsKey[] customDatabaseSettingsValues)
-        {
-            IEnumerable<SettingsKey> databaseSettingsKeyValuesResults = GetDatabaseSettingsKeyValuesResults(customDatabaseSettingsValues);
-            _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFile<SettingsKey>(Scripts.GetDebugSettingsValues))
-                .Returns(databaseSettingsKeyValuesResults);
+            ArrangeResourceStringsMethods();
+            ArrangeWebConfigMethods(customWebconfigXml);
+            ArrangeDatabaseSettingsMethods(customDatabaseSettingsValues);
         }
 
         private void ArrangeResourceStringsMethods()
@@ -122,28 +94,29 @@ namespace KenticoInspector.Reports.Tests
                 .Returns(new Dictionary<string, string>());
         }
 
-        private void ArrangeServices(SettingsKey[] customDatabaseSettingsValues = null, string customWebconfigXml = null)
-        {
-            ArrangeDatabaseSettingsMethods(customDatabaseSettingsValues);
-            ArrangeResourceStringsMethods();
-            ArrangeWebConfigMethods(customWebconfigXml);
-        }
-
         private void ArrangeWebConfigMethods(string customWebconfigXml)
         {
-            var webConfig = new XmlDocument();
-            var defaultWebConfigXml = @"<configuration><system.web><compilation debug=""false"" /></system.web></configuration>";
-            var webconfigXml = !string.IsNullOrWhiteSpace(customWebconfigXml) ? customWebconfigXml : defaultWebConfigXml;
-            webConfig.LoadXml(webconfigXml);
+            var webconfigXml = !string.IsNullOrWhiteSpace(customWebconfigXml) ? customWebconfigXml : webConfigXml;
+
+            var webConfig = XDocument.Parse(webconfigXml);
 
             _mockCmsFileService
-                .Setup(p => p.GetXmlDocument(_mockInstance.Path, DefaultKenticoPaths.WebConfigFile))
+                .Setup(p => p.GetXDocument(_mockInstance.Path, DefaultKenticoPaths.WebConfigFile))
                 .Returns(webConfig);
         }
 
-        private List<SettingsKey> GetDatabaseSettingsKeyValuesResults(SettingsKey[] customSettingsKeyValues = null)
+        private void ArrangeDatabaseSettingsMethods(IEnumerable<CmsSettingsKey> customDatabaseSettingsValues)
         {
-            var results = new List<SettingsKey>();
+            var databaseSettingsKeyValuesResults = GetDatabaseSettingsKeyValuesResults(customDatabaseSettingsValues);
+
+            _mockDatabaseService
+                .Setup(p => p.ExecuteSqlFromFile<CmsSettingsKey>(Scripts.GetCMSSettingsKeysForDebug))
+                .Returns(databaseSettingsKeyValuesResults);
+        }
+
+        private List<CmsSettingsKey> GetDatabaseSettingsKeyValuesResults(IEnumerable<CmsSettingsKey> customSettingsKeyValues = null)
+        {
+            var results = new List<CmsSettingsKey>();
 
             if (customSettingsKeyValues != null)
             {
@@ -153,6 +126,42 @@ namespace KenticoInspector.Reports.Tests
             AddDefaultDatabaseSettingsKeyValues(results);
 
             return results;
+        }
+
+        private void AddDefaultDatabaseSettingsKeyValues(List<CmsSettingsKey> results)
+        {
+            var defaultDatabaseSettingsKeyValues = new List<CmsSettingsKey>
+            {
+                new CmsSettingsKey("CMSDebugAnalytics", "Enable web analytics debug", false, false),
+                new CmsSettingsKey("CMSDebugCache", "Enable cache access debug", false, false),
+                new CmsSettingsKey("CMSDebugEverything", "Enable all debugs", false, false),
+                new CmsSettingsKey("CMSDebugEverythingEverywhere", "Debug everything everywhere", false, false),
+                new CmsSettingsKey("CMSDebugFiles", "Enable IO operation debug", false, false),
+                new CmsSettingsKey("CMSDebugHandlers", "Enable handlers debug", false, false),
+                new CmsSettingsKey("CMSDebugImportExport", "Debug Import/Export", false, false),
+                new CmsSettingsKey("CMSDebugMacros", "Enable macro debug", false, false),
+                new CmsSettingsKey("CMSDebugOutput", "Enable output debug", false, false),
+                new CmsSettingsKey("CMSDebugRequests", "Enable request debug", false, false),
+                new CmsSettingsKey("CMSDebugResources", "Debug resources", false, false),
+                new CmsSettingsKey("CMSDebugScheduler", "Debug scheduler", true, true),
+                new CmsSettingsKey("CMSDebugSecurity", "Enable security debug", false, false),
+                new CmsSettingsKey("CMSDebugSQLConnections", "Debug SQL connections", false, false),
+                new CmsSettingsKey("CMSDebugSQLQueries", "Enable SQL query debug", false, false),
+                new CmsSettingsKey("CMSDebugViewState", "Enable ViewState debug", false, false),
+                new CmsSettingsKey("CMSDebugWebFarm", "Enable web farm debug", false, false),
+                new CmsSettingsKey("CMSDisableDebug", "Disable debugging", false, false)
+            };
+
+            foreach (var settingsKey in defaultDatabaseSettingsKeyValues)
+            {
+                var keyNameMatchCount = results
+                    .Count(x => x.KeyName == settingsKey.KeyName);
+
+                if (keyNameMatchCount == 0)
+                {
+                    results.Add(settingsKey);
+                }
+            }
         }
     }
 }
