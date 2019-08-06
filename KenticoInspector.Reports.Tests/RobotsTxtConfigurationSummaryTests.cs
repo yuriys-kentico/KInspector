@@ -19,26 +19,26 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public class RobotsTxtConfigurationSummaryTest : AbstractReportTest<Report, Terms>
+    public class RobotsTxtConfigurationSummaryTests : AbstractReportTest<Report, Terms>
     {
         private Report _mockReport;
 
-        public RobotsTxtConfigurationSummaryTest(int majorVersion) : base(majorVersion)
+        public RobotsTxtConfigurationSummaryTests(int majorVersion) : base(majorVersion)
         {
         }
 
         [Test]
-        public void Should_ReturnGoodStatus_WhenRobotsTxtFound()
+        public void Should_ReturnGoodResult_When_RobotsTxtFound()
         {
             // Arrange
-            _mockReport = ConfigureReportAndHandlerWithHttpClientReturning(HttpStatusCode.OK, out Mock<HttpMessageHandler> mockHttpMessageHandler);
+            _mockReport = ArrangeReportAndHandlerWithHttpClientReturning(HttpStatusCode.OK, out Mock<HttpMessageHandler> mockHttpMessageHandler);
             var mockInstance = _mockInstanceService.Object.CurrentInstance;
 
             // Act
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status == ReportResultsStatus.Good);
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
 
             var baseUri = new Uri(mockInstance.Url);
 
@@ -47,25 +47,12 @@ namespace KenticoInspector.Reports.Tests
             AssertUrlCalled(mockHttpMessageHandler, expectedUri);
         }
 
-        private static void AssertUrlCalled(Mock<HttpMessageHandler> handlerMock, Uri expectedUri)
-        {
-            handlerMock.Protected().Verify(
-                "SendAsync",
-                Times.Exactly(1),
-                ItExpr.Is<HttpRequestMessage>(req =>
-                    req.Method == HttpMethod.Get
-                    && req.RequestUri == expectedUri
-                ),
-                ItExpr.IsAny<CancellationToken>()
-            );
-        }
-
         [Test]
-        public void Should_ReturnGoodStatus_WhenSiteIsInSubDirectoryAndRobotsTxtFound()
+        public void Should_ReturnGoodResult_When_SiteIsInSubDirectoryAndRobotsTxtFound()
         {
             // Arrange
 
-            _mockReport = ConfigureReportAndHandlerWithHttpClientReturning(HttpStatusCode.OK, out Mock<HttpMessageHandler> mockHttpMessageHandler);
+            _mockReport = ArrangeReportAndHandlerWithHttpClientReturning(HttpStatusCode.OK, out Mock<HttpMessageHandler> mockHttpMessageHandler);
             var mockInstance = _mockInstanceService.Object.CurrentInstance;
 
             var baseUrl = mockInstance.Url;
@@ -75,7 +62,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status == ReportResultsStatus.Good);
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
 
             var expectedUri = new Uri($"{baseUrl}/{DefaultKenticoPaths.RobotsTxtRelative}");
 
@@ -83,19 +70,19 @@ namespace KenticoInspector.Reports.Tests
         }
 
         [Test]
-        public void Should_ReturnWarningStatus_WhenRobotsTxtNotFound()
+        public void Should_ReturnWarningResult_When_RobotsTxtNotFound()
         {
             // Arrange
-            _mockReport = ConfigureReportAndHandlerWithHttpClientReturning(HttpStatusCode.NotFound, out Mock<HttpMessageHandler> mockHttpMessageHandler);
+            _mockReport = ArrangeReportAndHandlerWithHttpClientReturning(HttpStatusCode.NotFound, out Mock<HttpMessageHandler> mockHttpMessageHandler);
 
             // Act
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status == ReportResultsStatus.Warning);
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
         }
 
-        private Report ConfigureReportAndHandlerWithHttpClientReturning(HttpStatusCode httpStatusCode, out Mock<HttpMessageHandler> mockHttpMessageHandler)
+        private Report ArrangeReportAndHandlerWithHttpClientReturning(HttpStatusCode httpStatusCode, out Mock<HttpMessageHandler> mockHttpMessageHandler)
         {
             mockHttpMessageHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
 
@@ -116,6 +103,19 @@ namespace KenticoInspector.Reports.Tests
             MockReportMetadataServiceHelper.SetupReportMetadataService<Terms>(_mockReportMetadataService, report);
 
             return report;
+        }
+
+        private static void AssertUrlCalled(Mock<HttpMessageHandler> handlerMock, Uri expectedUri)
+        {
+            handlerMock.Protected().Verify(
+                "SendAsync",
+                Times.Exactly(1),
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Get
+                    && req.RequestUri == expectedUri
+                ),
+                ItExpr.IsAny<CancellationToken>()
+            );
         }
     }
 }
