@@ -43,6 +43,11 @@ namespace KenticoInspector.Reports.SampleReport
                 data.Add(Metadata.Terms.DetailedResult.With(new { name, problem }));
             }
 
+            return CompileResults(issueCount, data);
+        }
+
+        private ReportResults CompileResults(int issueCount, IEnumerable<string> data)
+        {
             return new ReportResults()
             {
                 Type = ReportResultsType.StringList,
