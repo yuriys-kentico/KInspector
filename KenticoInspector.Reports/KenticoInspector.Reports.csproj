@@ -103,22 +103,22 @@
     <None Update="TaskProcessingAnalysis\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="DebugConfigurationAnalysis\Scripts\GetDebugSettingsValues.sql">
+    <None Update="DebugConfigurationAnalysis\Scripts\GetCMSSettingsKeysForDebug.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TaskProcessingAnalysis\Scripts\GetCountOfUnprocessedIntegrationBusTasks.sql">
+    <None Update="TaskProcessingAnalysis\Scripts\GetIntegrationTasksCountInPast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TaskProcessingAnalysis\Scripts\GetCountOfUnprocessedScheduledTasks.sql">
+    <None Update="TaskProcessingAnalysis\Scripts\GetCmsScheduledTasksCountInPast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TaskProcessingAnalysis\Scripts\GetCountOfUnprocessedSearchTasks.sql">
+    <None Update="TaskProcessingAnalysis\Scripts\GetCmsSearchTasksCountInPast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TaskProcessingAnalysis\Scripts\GetCountOfUnprocessedStagingTasks.sql">
+    <None Update="TaskProcessingAnalysis\Scripts\GetStagingTasksCountInpast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TaskProcessingAnalysis\Scripts\GetCountOfUnprocessedWebFarmTasks.sql">
+    <None Update="TaskProcessingAnalysis\Scripts\GetCmsWebFarmTaskCountInPast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TemplateLayoutAnalysis\Scripts\GetIdenticalLayouts.sql">
