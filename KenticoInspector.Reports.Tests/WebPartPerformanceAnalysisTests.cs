@@ -1,11 +1,13 @@
-﻿using KenticoInspector.Core.Constants;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
+
+using KenticoInspector.Core.Constants;
 using KenticoInspector.Reports.Tests.Helpers;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models;
+
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Linq;
 
 namespace KenticoInspector.Reports.Tests
 {
