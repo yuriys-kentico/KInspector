@@ -1,8 +1,10 @@
-﻿using KenticoInspector.Core.Constants;
+﻿using System.Collections.Generic;
+
+using KenticoInspector.Core.Constants;
 using KenticoInspector.Reports.TemplateLayoutAnalysis;
 using KenticoInspector.Reports.TemplateLayoutAnalysis.Models;
+
 using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace KenticoInspector.Reports.Tests
 {
