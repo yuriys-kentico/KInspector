@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using KenticoInspector.Core;
@@ -22,7 +22,7 @@ namespace KenticoInspector.Infrastructure.Repositories
             return allReports.FirstOrDefault(x => x.Codename.ToLower() == codename.ToLower());
         }
 
-        public IEnumerable<IReport> GetReports(ReportFilter filterSettings = null)
+        public IEnumerable<IReport> GetReports()
         {
             return LoadReports();
         }
