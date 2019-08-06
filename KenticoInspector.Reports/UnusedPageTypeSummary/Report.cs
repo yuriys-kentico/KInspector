@@ -7,7 +7,9 @@ using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Services.Interfaces;
+
 using KenticoInspector.Reports.UnusedPageTypeSummary.Models;
+using KenticoInspector.Reports.UnusedPageTypeSummary.Models.Data;
 
 namespace KenticoInspector.Reports.UnusedPageTypeSummary
 {
@@ -29,20 +31,36 @@ namespace KenticoInspector.Reports.UnusedPageTypeSummary
 
         public override ReportResults GetResults()
         {
-            var unusedPageTypes = databaseService.ExecuteSqlFromFile<PageType>(Scripts.GetUnusedPageTypes);
+            var classesNotInViewCmsTreeJoined = databaseService.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClassNotInViewCmsTreeJoined);
 
-            var countOfUnusedPageTypes = unusedPageTypes.Count();
+            return CompileResults(classesNotInViewCmsTreeJoined);
+        }
+
+        private ReportResults CompileResults(IEnumerable<CmsClass> classesNotInViewCmsTreeJoined)
+        {
+            if (!classesNotInViewCmsTreeJoined.Any())
+            {
+                return new ReportResults
+                {
+                    Status = ReportResultsStatus.Good,
+                    Summary = Metadata.Terms.GoodSummary
+                };
+            }
+
+            var count = classesNotInViewCmsTreeJoined.Count();
+
+            var data = new TableResult<CmsClass>()
+            {
+                Name = Metadata.Terms.TableNames.UnusedPageTypes,
+                Rows = classesNotInViewCmsTreeJoined
+            };
 
             return new ReportResults
             {
                 Type = ReportResultsType.Table,
                 Status = ReportResultsStatus.Information,
-                Summary = Metadata.Terms.CountUnusedPageType.With(new { count = countOfUnusedPageTypes }),
-                Data = new TableResult<PageType>()
-                {
-                    Name = Metadata.Terms.UnusedPageTypes,
-                    Rows = unusedPageTypes
-                }
+                Summary = Metadata.Terms.InformationSummary.With(new { count }),
+                Data = data
             };
         }
     }

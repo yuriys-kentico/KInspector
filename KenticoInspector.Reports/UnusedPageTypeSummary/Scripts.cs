@@ -4,6 +4,6 @@
     {
         public static string BaseDirectory = $"{nameof(UnusedPageTypeSummary)}/Scripts";
 
-        public static string GetUnusedPageTypes = $"{BaseDirectory}/{nameof(GetUnusedPageTypes)}.sql";
+        public static string GetCmsClassNotInViewCmsTreeJoined = $"{BaseDirectory}/{nameof(GetCmsClassNotInViewCmsTreeJoined)}.sql";
     }
 }
