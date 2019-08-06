@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
+using System.Xml.Linq;
 
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models;
@@ -318,30 +318,26 @@ namespace KenticoInspector.Reports.Tests
 
             public VersionHistoryDataSet(bool clean = true)
             {
-                var classFormDefinitionXml5512 = new XmlDocument();
-                classFormDefinitionXml5512.Load("TestData/classFormDefinitionXml_Clean_5512.xml");
+                var classFormDefinitionXml5512 = XDocument.Load("TestData/classFormDefinitionXml_Clean_5512.xml");
 
                 CmsClassItems = new List<CmsClass>
                 {
                     new CmsClass
                     {
                         ClassDisplayName = "",
-                        ClassFormDefinitionXml = new XmlDocument(),
+                        ClassFormDefinitionXml = classFormDefinitionXml5512,
                         ClassID = 5512,
                         ClassName = "KIN.VersioningDataTest",
                         ClassTableName = "KIN_VersioningDataTest"
                     }
                 };
 
-                CmsClassItems[0].ClassFormDefinitionXml = classFormDefinitionXml5512;
-
                 CmsVersionHistoryItems = new List<CmsVersionHistoryItem>();
                 VersionHistoryCoupledData = new List<IDictionary<string, object>>();
 
                 if (clean)
                 {
-                    var versionHistoryXml = new XmlDocument();
-                    versionHistoryXml.Load("TestData/VersionHistoryItem_Clean_518.xml");
+                    var versionHistoryXml = XDocument.Load("TestData/VersionHistoryItem_Clean_518.xml");
 
                     CmsVersionHistoryItems.Add(new CmsVersionHistoryItem
                     {
@@ -371,8 +367,7 @@ namespace KenticoInspector.Reports.Tests
                 }
                 else
                 {
-                    var versionHistoryXml = new XmlDocument();
-                    versionHistoryXml.Load("TestData/VersionHistoryItem_Corrupt_519.xml");
+                    var versionHistoryXml = XDocument.Load("TestData/VersionHistoryItem_Corrupt_519.xml");
 
                     CmsVersionHistoryItems.Add(new CmsVersionHistoryItem
                     {

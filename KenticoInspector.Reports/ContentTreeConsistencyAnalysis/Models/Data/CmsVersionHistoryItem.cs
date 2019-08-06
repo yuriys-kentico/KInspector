@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Xml;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data
 {
@@ -11,7 +12,7 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data
 
         public int DocumentID { get; set; }
 
-        public XmlDocument NodeXml { get; set; }
+        public XDocument NodeXml { get; set; }
 
         public int VersionClassID { get; set; }
 
@@ -32,7 +33,10 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data
 
         private int GetCoupledDataId()
         {
-            var foreignKeyRaw = NodeXml.SelectSingleNode("//DocumentForeignKeyValue")?.InnerText;
+            var foreignKeyRaw = NodeXml
+                .Descendants("DocumentForeignKeyValue")
+                .FirstOrDefault()?
+                .Value;
 
             return int.TryParse(foreignKeyRaw, out int foreignKey) ? foreignKey : -1;
         }

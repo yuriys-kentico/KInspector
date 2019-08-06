@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
+using System.Xml.Linq;
 
 namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data
 {
     public class CmsClass
     {
-        private List<CmsClassField> _classFields = null;
+        private IEnumerable<CmsClassField> _classFields = null;
         private string _classIdColumn = null;
 
         public string ClassDisplayName { get; set; }
 
-        public XmlDocument ClassFormDefinitionXml { get; set; }
+        public XDocument ClassFormDefinitionXml { get; set; }
 
         public int ClassID { get; set; }
 
@@ -19,7 +19,7 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data
 
         public string ClassTableName { get; set; }
 
-        public List<CmsClassField> ClassFields
+        public IEnumerable<CmsClassField> ClassFields
         {
             get
             {
@@ -48,26 +48,38 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data
             }
         }
 
-        private List<CmsClassField> GetFieldsFromXml()
+        private IEnumerable<CmsClassField> GetFieldsFromXml()
         {
-            var fields = new List<CmsClassField>();
-
-            var fieldsXml = ClassFormDefinitionXml.SelectNodes("/form/field");
-
-            foreach (XmlNode field in fieldsXml)
-            {
-                var isIdColumnRaw = field.Attributes["isPK"]?.Value;
-                var isIdColumn = !string.IsNullOrWhiteSpace(isIdColumnRaw) ? bool.Parse(isIdColumnRaw) : false;
-
-                fields.Add(new CmsClassField
+            var fields = ClassFormDefinitionXml
+                .Descendants("field")
+                .Select(field =>
                 {
-                    Caption = field.SelectSingleNode("properties/fieldcaption")?.InnerText,
-                    Column = field.Attributes["column"].Value,
-                    ColumnType = field.Attributes["columntype"].Value,
-                    DefaultValue = field.SelectSingleNode("properties/defaultvalue")?.InnerText,
-                    IsIdColumn = isIdColumn
-                });
-            }
+                    var isIdColumnRaw = field
+                        .Attribute("isPK")?
+                        .Value;
+
+                    var isIdColumn = !string.IsNullOrWhiteSpace(isIdColumnRaw) ? bool.Parse(isIdColumnRaw) : false;
+
+                    return new CmsClassField
+                    {
+                        Caption = field
+                            .Descendants("fieldcaption")
+                            .FirstOrDefault()?
+                            .Value,
+                        Column = field
+                            .Attribute("column")
+                            .Value,
+                        ColumnType = field
+                            .Attribute("columntype")
+                            .Value,
+                        DefaultValue = field
+                            .Descendants("defaultvalue")
+                            .FirstOrDefault()?
+                            .Value,
+                        IsIdColumn = isIdColumn
+                    };
+                })
+                .ToList();
 
             return fields;
         }

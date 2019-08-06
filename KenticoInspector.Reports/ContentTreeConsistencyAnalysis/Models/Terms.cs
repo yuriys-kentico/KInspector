@@ -8,10 +8,10 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models
 
         public Term GoodSummary { get; set; }
 
-        public TableNames TableNames { get; set; }
+        public TableNamesTerms TableNames { get; set; }
     }
 
-    public class TableNames
+    public class TableNamesTerms
     {
         public Term DocumentNodesWithNoTreeNode { get; set; }
 

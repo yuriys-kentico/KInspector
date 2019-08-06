@@ -1,5 +1,4 @@
 ﻿using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Models;
 
 namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Results
 {

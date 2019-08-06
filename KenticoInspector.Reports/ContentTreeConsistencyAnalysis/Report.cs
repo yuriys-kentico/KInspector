@@ -175,7 +175,9 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
                     {
                         var historyVersionValueRaw = versionHistoryItem
                             .NodeXml
-                            .SelectSingleNode($"//{cmsClassField.Column}")?.InnerText ?? cmsClassField.DefaultValue;
+                            .Descendants(cmsClassField.Column)
+                            .FirstOrDefault()?
+                            .Value ?? cmsClassField.DefaultValue;
 
                         var coupledDataItemValue = coupledDataItem[cmsClassField.Column];
 
