@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,16 +20,16 @@ namespace KenticoInspector.WebApplication.Controllers
             _instanceService = instanceService;
         }
 
-        [HttpGet("details/{guid}")]
-        public ActionResult<InstanceDetails> Details(Guid guid)
+        [HttpGet("details/{instanceGuid}")]
+        public ActionResult<InstanceDetails> Details(Guid instanceGuid)
         {
-            return _instanceService.GetInstanceDetails(guid);
+            return _instanceService.GetInstanceDetails(instanceGuid);
         }
 
-        [HttpDelete("{guid}")]
-        public void Delete(Guid guid)
+        [HttpDelete("{instanceGuid}")]
+        public void Delete(Guid instanceGuid)
         {
-            _instanceService.DeleteInstance(guid);
+            _instanceService.DeleteInstance(instanceGuid);
         }
 
         [HttpGet]
@@ -39,10 +39,10 @@ namespace KenticoInspector.WebApplication.Controllers
             return instances.ToList();
         }
 
-        [HttpGet("{guid}")]
-        public ActionResult<Instance> Get(Guid guid)
+        [HttpGet("{instanceGuid}")]
+        public ActionResult<Instance> Get(Guid instanceGuid)
         {
-            return _instanceService.GetInstance(guid);
+            return _instanceService.GetInstance(instanceGuid);
         }
 
         [HttpPost]

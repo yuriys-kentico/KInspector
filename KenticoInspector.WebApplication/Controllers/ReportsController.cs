@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,7 +24,8 @@ namespace KenticoInspector.WebApplication.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<IReport>> Get()
         {
-            return _reportService.GetReports().ToList();
+            return Ok(_reportService
+                .GetReports());
         }
 
         // GET api/reports/5
