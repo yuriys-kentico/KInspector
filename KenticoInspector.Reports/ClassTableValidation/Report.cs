@@ -47,6 +47,32 @@ namespace KenticoInspector.Reports.ClassTableValidation
             return CompileResults(tablesWithMissingClassNotInWhitelist, classesWithMissingTable);
         }
 
+        private static IEnumerable<string> GetTableWhitelist(Version version)
+        {
+            var whitelist = new List<string>();
+
+            if (version.Major >= 10)
+            {
+                whitelist.Add("CI_Migration");
+            }
+
+            return whitelist;
+        }
+
+        private static IEnumerable<InformationSchemaTable> GetTablesNotInWhitelist(IEnumerable<InformationSchemaTable> tablesWithMissingClass, IEnumerable<string> tableWhitelist)
+        {
+            if (tableWhitelist.Any())
+            {
+                return tablesWithMissingClass
+                    .Where(t => !tableWhitelist
+                        .Contains(t.TableName)
+                    )
+                    .ToList();
+            }
+
+            return tablesWithMissingClass;
+        }
+
         private ReportResults CompileResults(IEnumerable<InformationSchemaTable> tablesWithMissingClass, IEnumerable<CmsClass> classesWithMissingTable)
         {
             if (!tablesWithMissingClass.Any() && !classesWithMissingTable.Any())
@@ -88,32 +114,6 @@ namespace KenticoInspector.Reports.ClassTableValidation
                     classResults
                 }
             };
-        }
-
-        private IEnumerable<InformationSchemaTable> GetTablesNotInWhitelist(IEnumerable<InformationSchemaTable> tablesWithMissingClass, IEnumerable<string> tableWhitelist)
-        {
-            if (tableWhitelist.Any())
-            {
-                return tablesWithMissingClass
-                    .Where(t => !tableWhitelist
-                        .Contains(t.TableName)
-                    )
-                    .ToList();
-            }
-
-            return tablesWithMissingClass;
-        }
-
-        private IEnumerable<string> GetTableWhitelist(Version version)
-        {
-            var whitelist = new List<string>();
-
-            if (version.Major >= 10)
-            {
-                whitelist.Add("CI_Migration");
-            }
-
-            return whitelist;
         }
     }
 }

@@ -30,7 +30,7 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnGoodStatus_When_DatabaseHasNoIssues()
         {
             // Arrange
-            var tableResults = GetCleanTableResults();
+            var tableResults = GetTableResultsWithoutIssues();
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<InformationSchemaTable>(Scripts.GetInformationSchemaTablesWithMissingClass))
                 .Returns(tableResults);
@@ -52,7 +52,7 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnErrorStatus_When_DatabaseHasClassWithNoTable()
         {
             // Arrange
-            var tableResults = GetCleanTableResults();
+            var tableResults = GetTableResultsWithoutIssues();
 
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<InformationSchemaTable>(Scripts.GetInformationSchemaTablesWithMissingClass))
@@ -84,7 +84,7 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnErrorResult_When_DatabaseHasTableWithNoClass()
         {
             // Arrange
-            var tableResults = GetCleanTableResults(false);
+            var tableResults = GetTableResultsWithoutIssues(false);
             tableResults.Add(new InformationSchemaTable
             {
                 TableName = "HasNoClass"
@@ -109,7 +109,7 @@ namespace KenticoInspector.Reports.Tests
             Assert.That(results.Status == ReportResultsStatus.Error);
         }
 
-        private List<InformationSchemaTable> GetCleanTableResults(bool includeWhitelistedTables = true)
+        private List<InformationSchemaTable> GetTableResultsWithoutIssues(bool includeWhitelistedTables = true)
         {
             var tableResults = new List<InformationSchemaTable>();
 
