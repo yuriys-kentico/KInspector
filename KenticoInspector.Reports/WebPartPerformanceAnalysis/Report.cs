@@ -15,17 +15,16 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
     public class Report : AbstractReport<Terms>
     {
         private readonly IDatabaseService _databaseService;
-        private readonly IInstanceService _instanceService;
 
-        public Report(IDatabaseService databaseService, IInstanceService instanceService, IReportMetadataService reportMetadataService) : base(reportMetadataService)
+        public Report(IDatabaseService databaseService, IReportMetadataService reportMetadataService) : base(reportMetadataService)
         {
             _databaseService = databaseService;
-            _instanceService = instanceService;
         }
 
         public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11");
 
-        public override IList<string> Tags => new List<string> {
+        public override IList<string> Tags => new List<string>
+        {
             ReportTags.PortalEngine,
             ReportTags.Performance,
             ReportTags.WebParts,
@@ -33,25 +32,28 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
 
         public override ReportResults GetResults()
         {
-            var affectedTemplates = _databaseService.ExecuteSqlFromFile<PageTemplate>(Scripts.GetAffectedTemplates);
-            var affectedTemplateIds = affectedTemplates.Select(x => x.PageTemplateID).ToArray();
-            var affectedDocuments = _databaseService.ExecuteSqlFromFile<Document>(Scripts.GetDocumentsByPageTemplateIds, new { IDs = affectedTemplateIds });
+            var affectedTemplates = _databaseService.ExecuteSqlFromFile<CmsPageTemplate>(Scripts.GetAffectedTemplates);
+
+            var affectedTemplateIds = affectedTemplates
+                .Select(x => x.PageTemplateID);
+
+            var affectedDocuments = _databaseService.ExecuteSqlFromFile<Document>(Scripts.GetDocumentsByPageTemplateIds, new { affectedTemplateIds });
 
             var templateAnalysisResults = GetTemplateAnalysisResults(affectedTemplates, affectedDocuments);
 
             return CompileResults(templateAnalysisResults);
         }
 
-        private IEnumerable<TemplateSummary> GetTemplateAnalysisResults(IEnumerable<PageTemplate> affectedTemplates, IEnumerable<Document> affectedDocuments)
+        private IEnumerable<TemplateAnalysisResult> GetTemplateAnalysisResults(IEnumerable<CmsPageTemplate> affectedTemplates, IEnumerable<Document> affectedDocuments)
         {
-            var results = new List<TemplateSummary>();
+            var results = new List<TemplateAnalysisResult>();
 
             foreach (var template in affectedTemplates)
             {
                 var documents = affectedDocuments.Where(x => x.DocumentPageTemplateID == template.PageTemplateID);
                 var affectedWebParts = ExtractWebPartsWithEmptyColumnsProperty(template, documents);
 
-                results.Add(new TemplateSummary()
+                results.Add(new TemplateAnalysisResult()
                 {
                     TemplateID = template.PageTemplateID,
                     TemplateName = template.PageTemplateDisplayName,
@@ -64,7 +66,7 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
             return results;
         }
 
-        private IEnumerable<WebPartSummary> ExtractWebPartsWithEmptyColumnsProperty(PageTemplate template, IEnumerable<Document> documents)
+        private IEnumerable<WebPartAnalysisResult> ExtractWebPartsWithEmptyColumnsProperty(CmsPageTemplate template, IEnumerable<Document> documents)
         {
             var emptyColumnsWebPartProperties = template.PageTemplateWebParts
                 .Descendants("property")
@@ -73,7 +75,7 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
 
             var affectedWebPartsXml = emptyColumnsWebPartProperties.Ancestors("webpart");
 
-            return affectedWebPartsXml.Select(x => new WebPartSummary
+            return affectedWebPartsXml.Select(x => new WebPartAnalysisResult
             {
                 ID = x.Attribute("controlid").Value,
                 Name = x.Elements("property").FirstOrDefault(p => p.Name == "webparttitle")?.Value,
@@ -83,16 +85,16 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
             });
         }
 
-        private ReportResults CompileResults(IEnumerable<TemplateSummary> templateSummaries)
+        private ReportResults CompileResults(IEnumerable<TemplateAnalysisResult> templateSummaries)
         {
-            var templateSummaryTable = new TableResult<TemplateSummary>()
+            var templateSummaryTable = new TableResult<TemplateAnalysisResult>()
             {
                 Name = "Template Summary",
                 Rows = templateSummaries
             };
 
             var webPartSummaries = templateSummaries.SelectMany(x => x.AffectedWebParts);
-            var webPartSummaryTable = new TableResult<WebPartSummary>()
+            var webPartSummaryTable = new TableResult<WebPartAnalysisResult>()
             {
                 Name = "Web Part Summary",
                 Rows = webPartSummaries

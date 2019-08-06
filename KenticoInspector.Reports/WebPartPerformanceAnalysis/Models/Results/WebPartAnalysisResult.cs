@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace KenticoInspector.Reports.WebPartPerformanceAnalysis.Models
 {
-    public class WebPartSummary
+    public class WebPartAnalysisResult
     {
         public string ID { get; set; }
 

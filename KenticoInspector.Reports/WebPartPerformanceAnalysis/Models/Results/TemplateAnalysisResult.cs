@@ -5,13 +5,13 @@ using Newtonsoft.Json;
 
 namespace KenticoInspector.Reports.WebPartPerformanceAnalysis.Models
 {
-    public class TemplateSummary
+    public class TemplateAnalysisResult
     {
         [JsonIgnore]
         public IEnumerable<Document> AffectedDocuments { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<WebPartSummary> AffectedWebParts { get; set; }
+        public IEnumerable<WebPartAnalysisResult> AffectedWebParts { get; set; }
 
         public string TemplateCodename { get; set; }
 

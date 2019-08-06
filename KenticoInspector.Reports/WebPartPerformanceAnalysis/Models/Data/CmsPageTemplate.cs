@@ -2,7 +2,7 @@
 
 namespace KenticoInspector.Reports.WebPartPerformanceAnalysis.Models
 {
-    public class PageTemplate
+    public class CmsPageTemplate
     {
         public string PageTemplateCodeName { get; set; }
 
