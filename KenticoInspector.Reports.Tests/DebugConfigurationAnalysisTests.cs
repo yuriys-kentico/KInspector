@@ -28,33 +28,7 @@ namespace KenticoInspector.Reports.Tests
         }
 
         [Test]
-        public void Should_ReturnErrorStatus_When_DebugEnabledInWebConfig()
-        {
-            // Arrange
-            ArrangeServices(customWebconfigXml: webConfigXmlWithCompilationDebug);
-
-            // Act
-            var results = _mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status == ReportResultsStatus.Error, "When debug is enabled in the web.config, the report status should be 'error'");
-        }
-
-        [Test]
-        public void Should_ReturnErrorStatus_When_TraceEnabledInWebConfig()
-        {
-            // Arrange
-            ArrangeServices(customWebconfigXml: webConfigXmlWithCompilationDebugAndTrace);
-
-            // Act
-            var results = _mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status == ReportResultsStatus.Error, "When trace is enabled in the web.config, the report status should be 'error'");
-        }
-
-        [Test]
-        public void Should_ReturnInformationStatus_When_ResultsHaveNoIssues()
+        public void Should_ReturnInformationResult_When_DebugConfigurationWithoutIssues()
         {
             // Arrange
             ArrangeServices();
@@ -63,11 +37,37 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status == ReportResultsStatus.Good, "When the results are clean, the report status should be 'good'");
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
         }
 
         [Test]
-        public void Should_ReturnWarningStatus_When_AnyDatabaseSettingIsTrueAndNotTheDefaultValue()
+        public void Should_ReturnErrorResult_When_DebugEnabledInWebConfig()
+        {
+            // Arrange
+            ArrangeServices(customWebconfigXml: webConfigXmlWithCompilationDebug);
+
+            // Act
+            var results = _mockReport.GetResults();
+
+            // Assert
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+        }
+
+        [Test]
+        public void Should_ReturnErrorResult_When_TraceEnabledInWebConfig()
+        {
+            // Arrange
+            ArrangeServices(customWebconfigXml: webConfigXmlWithCompilationDebugAndTrace);
+
+            // Act
+            var results = _mockReport.GetResults();
+
+            // Assert
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+        }
+
+        [Test]
+        public void Should_ReturnWarningResult_When_AnyDebugConfigurationIsTrueAndNotTheDefaultValue()
         {
             // Arrange
             var settingsKey = new CmsSettingsKey("CMSDebugEverything", "Enable all debugs", true, false);
@@ -77,7 +77,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status == ReportResultsStatus.Warning, "When any database setting is set to true and that isn't the default value, the report status should be 'warning'");
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
         }
 
         private void ArrangeServices(IEnumerable<CmsSettingsKey> customDatabaseSettingsValues = null, string customWebconfigXml = null)
