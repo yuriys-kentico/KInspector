@@ -21,7 +21,7 @@ namespace KenticoInspector.Reports.Tests
         }
 
         [Test]
-        public void Should_ReturnGoodStatus_When_ResultsEmpty()
+        public void Should_ReturnGoodResult_When_ResultsWithoutIssues()
         {
             // Arrange
             var emptyResult = new DataTable();
@@ -34,11 +34,11 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             //Assert
-            Assert.That(results.Status == ReportResultsStatus.Good);
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
         }
 
         [Test]
-        public void Should_ReturnErrorStatus_When_ResultsNotEmpty()
+        public void Should_ReturnErrorResult_When_ResultsWithIssues()
         {
             // Arrange
             var result = new DataTable();
@@ -55,7 +55,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             //Assert
-            Assert.That(results.Status == ReportResultsStatus.Error);
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
         }
     }
 }
