@@ -4,6 +4,6 @@
     {
         public static string BaseDirectory = $"{nameof(TemplateLayoutAnalysis)}/Scripts";
 
-        public static string GetIdenticalLayouts = $"{BaseDirectory}/{nameof(GetIdenticalLayouts)}.sql";
+        public static string GetCmsPageTemplates = $"{BaseDirectory}/{nameof(GetCmsPageTemplates)}.sql";
     }
 }
