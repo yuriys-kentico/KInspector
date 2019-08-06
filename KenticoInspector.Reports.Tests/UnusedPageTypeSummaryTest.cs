@@ -1,8 +1,10 @@
-﻿using KenticoInspector.Core.Constants;
+﻿using System.Collections.Generic;
+
+using KenticoInspector.Core.Constants;
 using KenticoInspector.Reports.UnusedPageTypeSummary;
 using KenticoInspector.Reports.UnusedPageTypeSummary.Models;
+
 using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace KenticoInspector.Reports.Tests
 {
