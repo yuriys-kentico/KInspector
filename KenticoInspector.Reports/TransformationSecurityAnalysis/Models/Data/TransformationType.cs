@@ -5,6 +5,7 @@
         ASCX,
         Text,
         JQuery,
-        Xslt
+        Xslt,
+        Html
     }
 }

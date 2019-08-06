@@ -48,7 +48,7 @@ namespace KenticoInspector.Reports.Tests
             }
         };
 
-        private IEnumerable<CmsPageTemplate> CmsPageTemplateWithoutIssues => new List<CmsPageTemplate>
+        private IEnumerable<CmsPageTemplate> PageTemplateWithoutIssues => new List<CmsPageTemplate>
         {
             new CmsPageTemplate()
             {
@@ -64,7 +64,7 @@ namespace KenticoInspector.Reports.Tests
             }
         };
 
-        private IEnumerable<CmsTransformation> CmsTransformationWithoutIssues => new List<CmsTransformation>
+        private IEnumerable<CmsTransformation> TransformationWithoutIssues => new List<CmsTransformation>
         {
             new CmsTransformation()
             {
@@ -105,10 +105,10 @@ namespace KenticoInspector.Reports.Tests
         }
 
         [Test]
-        public void Should_ReturnGoodStatusAndGoodSummary_When_TransformationsHaveNoIssues()
+        public void Should_ReturnGoodStatusAndGoodSummary_When_TransformationsWithoutIssues()
         {
             // Arrange
-            ArrangeDatabaseService(CmsTransformationWithoutIssues);
+            ArrangeDatabaseService(TransformationWithoutIssues);
 
             // Act
             var results = mockReport.GetResults();
@@ -120,11 +120,11 @@ namespace KenticoInspector.Reports.Tests
         }
 
         [Test]
-        public void Should_ReturnWarningStatus_When_TransformationsHaveSingleXssQueryHelperIssue() => TestSingleIssue(@"TestData\CMS_Transformation\TransformationCode\WithXssQueryHelperIssueASCX.txt", (r, d) => d.XssQueryHelper != string.Empty && r.TransformationUses == 2);
+        public void Should_ReturnWarningResult_When_TransformationsWithSingleXssQueryHelperIssue() => TestSingleIssue(@"TestData\CMS_Transformation\TransformationCode\WithXssQueryHelperIssueASCX.txt", (r, d) => d.XssQueryHelper != string.Empty && r.TransformationUses == 2);
 
         public void TestSingleIssue(string transformationCodeFilePath, Func<TransformationResult, dynamic, bool> transformationResultEvaluator)
         {
-            var cmsTransformationWithIssue = new List<CmsTransformation>
+            var transformationWithIssue = new List<CmsTransformation>
             {
                     new CmsTransformation()
                 {
@@ -136,7 +136,7 @@ namespace KenticoInspector.Reports.Tests
             };
 
             // Arrange
-            ArrangeDatabaseService(cmsTransformationWithIssue);
+            ArrangeDatabaseService(transformationWithIssue);
 
             // Act
             var results = mockReport.GetResults();
@@ -153,11 +153,11 @@ namespace KenticoInspector.Reports.Tests
             Assert.That(results.GetAnonymousTableResult<TableResult<TemplateUsageResult>>("templateUsageResult").Rows.Count(), Is.EqualTo(2));
         }
 
-        private void ArrangeDatabaseService(IEnumerable<CmsTransformation> cmsTransformation)
+        private void ArrangeDatabaseService(IEnumerable<CmsTransformation> transformation)
         {
-            _mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetTransformations, cmsTransformation);
+            _mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetTransformations, transformation);
             _mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetTreeNodes, TreeNodesWithoutIssues);
-            _mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(Scripts.GetPageTemplates, "DocumentPageTemplateIDs", TreeNodesWithoutIssues.Select(treeNode => treeNode.DocumentPageTemplateID), CmsPageTemplateWithoutIssues);
+            _mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(Scripts.GetPageTemplates, "DocumentPageTemplateIDs", TreeNodesWithoutIssues.Select(treeNode => treeNode.DocumentPageTemplateID), PageTemplateWithoutIssues);
         }
     }
 }
