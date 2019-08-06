@@ -13,5 +13,6 @@ terms:
   countScheduledTask: <count> Scheduled <count:task|tasks>.
   countSearchTask: <count> Search <count:task|tasks>.
   countStagingTask: <count> Staging <count:task|tasks>.
-  countUnprocessedTask: <count> unprocessed <count:task|tasks>.
   countWebFarmTask: <count> Web farm <count:task|tasks>.
+  goodSummary: No stuck tasks found.
+  warningSummary: <count> unprocessed <count:task|tasks>.
