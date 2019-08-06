@@ -12,39 +12,46 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public class DatabaseTableSizeAnalysisTest : AbstractReportTest<Report, Terms>
+    public class DatabaseTableSizeAnalysisTests : AbstractReportTest<Report, Terms>
     {
         private Report _mockReport;
 
-        public DatabaseTableSizeAnalysisTest(int majorVersion) : base(majorVersion)
+        public DatabaseTableSizeAnalysisTests(int majorVersion) : base(majorVersion)
         {
             _mockReport = new Report(_mockDatabaseService.Object, _mockReportMetadataService.Object);
         }
 
         [Test]
-        public void Should_ReturnInformationStatus()
+        public void Should_ReturnInformationResult()
         {
             // Arrange
-            IEnumerable<DatabaseTableSize> dbResults = GetCleanResults();
+            IEnumerable<DatabaseTableSize> databaseTableSites = GetCleanResults(25);
+
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<DatabaseTableSize>(Scripts.GetTop25LargestTables))
-                .Returns(dbResults);
+                .Returns(databaseTableSites);
 
             // Act
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Data.Rows.Count == 25);
-            Assert.That(results.Status == ReportResultsStatus.Information);
+            Assert.That(results.Data.Rows.Count, Is.EqualTo(25));
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Information));
         }
 
-        private List<DatabaseTableSize> GetCleanResults()
+        private List<DatabaseTableSize> GetCleanResults(int count)
         {
             var results = new List<DatabaseTableSize>();
 
-            for (var i = 0; i < 25; i++)
+            for (var i = 0; i < count; i++)
             {
-                results.Add(new DatabaseTableSize() { TableName = $"table {i}", Rows = i, BytesPerRow = i, SizeInMB = i });
+                results.Add(new DatabaseTableSize()
+                {
+                    TableName = $"table {i}",
+                    Rows = i,
+                    BytesPerRow = i,
+                    SizeInMB = i
+                });
             }
 
             return results;
