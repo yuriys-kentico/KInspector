@@ -121,7 +121,7 @@
     <None Update="TaskProcessingAnalysis\Scripts\GetCmsWebFarmTaskCountInPast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TemplateLayoutAnalysis\Scripts\GetIdenticalLayouts.sql">
+    <None Update="TemplateLayoutAnalysis\Scripts\GetCmsPageTemplates.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TemplateLayoutAnalysis\Metadata\en-US.yaml">
@@ -139,7 +139,7 @@
     <None Update="TransformationSecurityAnalysis\Scripts\GetTransformations.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnusedPageTypeSummary\Scripts\GetUnusedPageTypes.sql">
+    <None Update="UnusedPageTypeSummary\Scripts\GetCmsClassNotInViewCmsTreeJoined.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="UnusedPageTypeSummary\Metadata\en-US.yaml">
@@ -155,5 +155,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>
