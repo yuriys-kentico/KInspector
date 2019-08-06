@@ -27,7 +27,7 @@ namespace KenticoInspector.Reports.Tests
         }
 
         [Test]
-        public void Should_ReturnGoodStatus_When_DatabaseHasNoIssues()
+        public void Should_ReturnGoodResult_When_DatabaseWithoutIssues()
         {
             // Arrange
             var tableResults = GetTableResultsWithoutIssues();
@@ -45,11 +45,11 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status == ReportResultsStatus.Good);
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
         }
 
         [Test]
-        public void Should_ReturnErrorStatus_When_DatabaseHasClassWithNoTable()
+        public void Should_ReturnErrorResult_When_DatabaseWithClassWithNoTable()
         {
             // Arrange
             var tableResults = GetTableResultsWithoutIssues();
@@ -75,13 +75,13 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.GetAnonymousTableResult<TableResult<InformationSchemaTable>>("tableResults").Rows.Count() == 0);
-            Assert.That(results.GetAnonymousTableResult<TableResult<CmsClass>>("classResults").Rows.Count() == 1);
-            Assert.That(results.Status == ReportResultsStatus.Error);
+            Assert.That(results.GetAnonymousTableResult<TableResult<InformationSchemaTable>>("tableResults").Rows.Count(), Is.EqualTo(0));
+            Assert.That(results.GetAnonymousTableResult<TableResult<CmsClass>>("classResults").Rows.Count(), Is.EqualTo(1));
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
         }
 
         [Test]
-        public void Should_ReturnErrorResult_When_DatabaseHasTableWithNoClass()
+        public void Should_ReturnErrorResult_When_DatabaseWithTableWithNoClass()
         {
             // Arrange
             var tableResults = GetTableResultsWithoutIssues(false);
@@ -104,9 +104,9 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.GetAnonymousTableResult<TableResult<InformationSchemaTable>>("tableResults").Rows.Count() == 1);
-            Assert.That(results.GetAnonymousTableResult<TableResult<CmsClass>>("classResults").Rows.Count() == 0);
-            Assert.That(results.Status == ReportResultsStatus.Error);
+            Assert.That(results.GetAnonymousTableResult<TableResult<InformationSchemaTable>>("tableResults").Rows.Count(), Is.EqualTo(1));
+            Assert.That(results.GetAnonymousTableResult<TableResult<CmsClass>>("classResults").Rows.Count(), Is.EqualTo(0));
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
         }
 
         private List<InformationSchemaTable> GetTableResultsWithoutIssues(bool includeWhitelistedTables = true)
