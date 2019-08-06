@@ -64,10 +64,12 @@ namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
                 };
             }
 
+            int uriStatusInteger = (int)uriStatusCode;
+
             return new ReportResults
             {
                 Status = ReportResultsStatus.Warning,
-                Summary = Metadata.Terms.WarningSummary.With(new { testUri, uriStatusCode }),
+                Summary = Metadata.Terms.WarningSummary.With(new { testUri, uriStatusInteger }),
                 Type = ReportResultsType.String
             };
         }
