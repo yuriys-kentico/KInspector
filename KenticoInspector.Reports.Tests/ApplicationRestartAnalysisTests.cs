@@ -17,13 +17,30 @@ namespace KenticoInspector.Reports.Tests
     {
         private Report _mockReport;
 
+        private IEnumerable<CmsEventLog> RestartEvents => new List<CmsEventLog>
+        {
+            new CmsEventLog
+            {
+                EventCode = "STARTAPP",
+                EventTime = DateTime.Now.AddHours(-1),
+                EventMachineName = "Server-01"
+            },
+
+            new CmsEventLog
+            {
+                EventCode = "ENDAPP",
+                EventTime = DateTime.Now.AddHours(-1).AddMinutes(-1),
+                EventMachineName = "Server-01"
+            }
+        };
+
         public ApplicationRestartAnalysisTests(int majorVersion) : base(majorVersion)
         {
             _mockReport = new Report(_mockDatabaseService.Object, _mockReportMetadataService.Object);
         }
 
         [Test]
-        public void Should_ReturnEmptyResult_When_DatabaseHasNoEvents()
+        public void Should_ReturnGoodResult_When_DatabaseWithoutEvents()
         {
             // Arrange
             var applicationRestartEvents = new List<CmsEventLog>();
@@ -36,43 +53,24 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Type == ReportResultsType.Table);
-            Assert.That(results.Data.Rows.Count == 0);
-            Assert.That(results.Status == ReportResultsStatus.Information);
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
         }
 
         [Test]
-        public void Should_ReturnResult_When_DatabaseHasEvents()
+        public void Should_ReturnResult_When_DatabaseWithEvents()
         {
             // Arrange
-            var applicationRestartEvents = new List<CmsEventLog>
-            {
-                new CmsEventLog
-                {
-                    EventCode = "STARTAPP",
-                    EventTime = DateTime.Now.AddHours(-1),
-                    EventMachineName = "Server-01"
-                },
-
-                new CmsEventLog
-                {
-                    EventCode = "ENDAPP",
-                    EventTime = DateTime.Now.AddHours(-1).AddMinutes(-1),
-                    EventMachineName = "Server-01"
-                }
-            };
-
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetEventLogStartOrEndEvents))
-                .Returns(applicationRestartEvents);
+                .Returns(RestartEvents);
 
             // Act
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Type == ReportResultsType.Table);
-            Assert.That(results.Data.Rows.Count == 2);
-            Assert.That(results.Status == ReportResultsStatus.Information);
+            Assert.That(results.Type, Is.EqualTo(ReportResultsType.Table));
+            Assert.That(results.Data.Rows.Count, Is.EqualTo(2));
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Information));
         }
     }
 }

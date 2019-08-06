@@ -38,6 +38,15 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
 
         private ReportResults CompileResults(IEnumerable<CmsEventLog> eventLogs)
         {
+            if (!eventLogs.Any())
+            {
+                return new ReportResults
+                {
+                    Status = ReportResultsStatus.Good,
+                    Summary = Metadata.Terms.GoodSummary,
+                };
+            }
+
             var totalEvents = eventLogs.Count();
 
             var totalStartEvents = eventLogs

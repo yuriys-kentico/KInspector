@@ -4,6 +4,7 @@
   longDescription: |
     Frequent restarts may mean that there are issues to resolve.
 terms:
+  goodSummary: No restart events found.
   informationSummary: '<totalEvents> total <totalEvents:event|events> (<totalStartEvents> <totalStartEvents:start|starts>, <totalEndEvents> <totalEndEvents:end|ends>) spanning <earliestTime> - <latestTime>.'
   tableNames:
     applicationRestartEvents: Application restart events

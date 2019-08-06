@@ -4,6 +4,8 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis.Models
 {
     public class Terms
     {
+        public Term GoodSummary { get; set; }
+
         public Term InformationSummary { get; set; }
 
         public TableNamesTerms TableNames { get; set; }
