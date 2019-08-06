@@ -6,10 +6,10 @@ namespace KenticoInspector.Reports.DatabaseTableSizeAnalysis.Models
     {
         public Term InformationSummary { get; set; }
 
-        public TableNames TableNames { get; set; }
+        public TableNamesTerms TableNames { get; set; }
     }
 
-    public class TableNames
+    public class TableNamesTerms
     {
         public Term Top25Results { get; set; }
     }
