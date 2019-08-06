@@ -22,7 +22,7 @@ namespace KenticoInspector.Reports.Tests
     {
         private Report _mockReport;
 
-        private List<CmsDocument> CmsDocumentNodesWithIssues => new List<CmsDocument>
+        private IEnumerable<CmsDocument> DocumentNodesWithIssues => new List<CmsDocument>
         {
                 new CmsDocument {
                     DocumentID = 100,
@@ -38,7 +38,7 @@ namespace KenticoInspector.Reports.Tests
                 }
         };
 
-        private List<CmsTreeNode> CmsTreeNodesWithissues => new List<CmsTreeNode>
+        private IEnumerable<CmsTreeNode> TreeNodesWithissues => new List<CmsTreeNode>
         {
             new CmsTreeNode {
                 ClassDisplayName = "Bad Class",
@@ -59,128 +59,7 @@ namespace KenticoInspector.Reports.Tests
         }
 
         [Test]
-        public void Should_ReturnErrorResult_When_ThereAreDocumentsWithMissingTreeNode()
-        {
-            // Arrange
-            SetupAllDatabaseQueries(documentsWithMissingTreeNode: CmsDocumentNodesWithIssues);
-
-            // Act
-            var results = _mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status == ReportResultsStatus.Error);
-        }
-
-        [Test]
-        public void Should_ReturnErrorResult_When_ThereAreTreeNodesWithBadParentNode()
-        {
-            // Arrange
-            SetupAllDatabaseQueries(treeNodesWithBadParentNodeId: CmsTreeNodesWithissues);
-
-            // Act
-            var results = _mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status == ReportResultsStatus.Error);
-        }
-
-        [Test]
-        public void Should_ReturnErrorResult_When_ThereAreTreeNodesWithBadParentSite()
-        {
-            // Arrange
-            SetupAllDatabaseQueries(treeNodesWithBadParentSiteId: CmsTreeNodesWithissues);
-
-            // Act
-            var results = _mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status == ReportResultsStatus.Error);
-        }
-
-        [Test]
-        public void Should_ReturnErrorResult_When_ThereAreTreeNodesWithDuplicatedAliasPath()
-        {
-            // Arrange
-            SetupAllDatabaseQueries(treeNodesWithDuplicatedAliasPath: CmsTreeNodesWithissues);
-
-            // Act
-            var results = _mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status == ReportResultsStatus.Error);
-        }
-
-        [Test]
-        public void Should_ReturnErrorResult_When_ThereAreTreeNodesWithLevelMismatchByAliasPathTest()
-        {
-            // Arrange
-            SetupAllDatabaseQueries(treeNodesWithLevelMismatchByAliasPathTest: CmsTreeNodesWithissues);
-
-            // Act
-            var results = _mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status == ReportResultsStatus.Error);
-        }
-
-        [Test]
-        public void Should_ReturnErrorResult_When_ThereAreTreeNodesWithLevelMismatchByNodeLevelTest()
-        {
-            // Arrange
-            SetupAllDatabaseQueries(treeNodesWithLevelMismatchByNodeLevelTest: CmsTreeNodesWithissues);
-
-            // Act
-            var results = _mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status == ReportResultsStatus.Error);
-        }
-
-        [Test]
-        public void Should_ReturnErrorResult_When_ThereAreTreeNodesWithMissingDocument()
-        {
-            // Arrange
-            SetupAllDatabaseQueries(treeNodesWithMissingDocument: CmsTreeNodesWithissues);
-
-            // Act
-            var results = _mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status == ReportResultsStatus.Error);
-        }
-
-        [Test]
-        public void Should_ReturnErrorResult_When_ThereAreTreeNodesWithPageTypeNotAssignedToSite()
-        {
-            // Arrange
-            SetupAllDatabaseQueries(treeNodesWithPageTypeNotAssignedToSite: CmsTreeNodesWithissues);
-
-            // Act
-            var results = _mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status == ReportResultsStatus.Error);
-        }
-
-        [Test]
-        public void Should_ReturnErrorResult_When_ThereAreVersionHistoryIssues()
-        {
-            // Arrange
-            SetupAllDatabaseQueries(isVersionHistoryDataSetClean: false);
-
-            // Act
-            var results = _mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status == ReportResultsStatus.Error, $"Status was '{results.Status}' instead of 'Error'");
-
-            var rowCount = results.GetAnonymousTableResult<TableResult<VersionHistoryMismatchResult>>(_mockReport.Metadata.Terms.TableNames.WorkflowInconsistencies).Rows.Count();
-
-            Assert.That(rowCount == 4, $"There were {rowCount} rows instead 4 as expected");
-        }
-
-        [Test]
-        public void Should_ReturnGoodResult_When_DatabaseHasNoIssues()
+        public void Should_ReturnGoodResult_When_DatabaseWithoutIssues()
         {
             // Arrange
             SetupAllDatabaseQueries();
@@ -189,18 +68,139 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status == ReportResultsStatus.Good);
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
+        }
+
+        [Test]
+        public void Should_ReturnErrorResult_When_DocumentsWithMissingTreeNode()
+        {
+            // Arrange
+            SetupAllDatabaseQueries(documentsWithMissingTreeNode: DocumentNodesWithIssues);
+
+            // Act
+            var results = _mockReport.GetResults();
+
+            // Assert
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+        }
+
+        [Test]
+        public void Should_ReturnErrorResult_When_TreeNodesWithBadParentNode()
+        {
+            // Arrange
+            SetupAllDatabaseQueries(treeNodesWithBadParentNodeId: TreeNodesWithissues);
+
+            // Act
+            var results = _mockReport.GetResults();
+
+            // Assert
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+        }
+
+        [Test]
+        public void Should_ReturnErrorResult_When_TreeNodesWithBadParentSite()
+        {
+            // Arrange
+            SetupAllDatabaseQueries(treeNodesWithBadParentSiteId: TreeNodesWithissues);
+
+            // Act
+            var results = _mockReport.GetResults();
+
+            // Assert
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+        }
+
+        [Test]
+        public void Should_ReturnErrorResult_When_TreeNodesWithDuplicatedAliasPath()
+        {
+            // Arrange
+            SetupAllDatabaseQueries(treeNodesWithDuplicatedAliasPath: TreeNodesWithissues);
+
+            // Act
+            var results = _mockReport.GetResults();
+
+            // Assert
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+        }
+
+        [Test]
+        public void Should_ReturnErrorResult_When_TreeNodesWithLevelMismatchByAliasPathTest()
+        {
+            // Arrange
+            SetupAllDatabaseQueries(treeNodesWithLevelMismatchByAliasPathTest: TreeNodesWithissues);
+
+            // Act
+            var results = _mockReport.GetResults();
+
+            // Assert
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+        }
+
+        [Test]
+        public void Should_ReturnErrorResult_When_TreeNodesWithLevelMismatchByNodeLevelTest()
+        {
+            // Arrange
+            SetupAllDatabaseQueries(treeNodesWithLevelMismatchByNodeLevelTest: TreeNodesWithissues);
+
+            // Act
+            var results = _mockReport.GetResults();
+
+            // Assert
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+        }
+
+        [Test]
+        public void Should_ReturnErrorResult_When_TreeNodesWithMissingDocument()
+        {
+            // Arrange
+            SetupAllDatabaseQueries(treeNodesWithMissingDocument: TreeNodesWithissues);
+
+            // Act
+            var results = _mockReport.GetResults();
+
+            // Assert
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+        }
+
+        [Test]
+        public void Should_ReturnErrorResult_When_TreeNodesWithPageTypeNotAssignedToSite()
+        {
+            // Arrange
+            SetupAllDatabaseQueries(treeNodesWithPageTypeNotAssignedToSite: TreeNodesWithissues);
+
+            // Act
+            var results = _mockReport.GetResults();
+
+            // Assert
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+        }
+
+        [Test]
+        public void Should_ReturnErrorResult_When_VersionHistoryWithIssues()
+        {
+            // Arrange
+            SetupAllDatabaseQueries(isVersionHistoryDataSetClean: false);
+
+            // Act
+            var results = _mockReport.GetResults();
+
+            // Assert
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+
+            var rowCount = results.GetAnonymousTableResult<TableResult<VersionHistoryMismatchResult>>(_mockReport.Metadata.Terms.TableNames.WorkflowInconsistencies).Rows.Count();
+
+            Assert.That(rowCount, Is.EqualTo(4));
         }
 
         private void SetupAllDatabaseQueries(
-            List<CmsDocument> documentsWithMissingTreeNode = null,
-            List<CmsTreeNode> treeNodesWithBadParentNodeId = null,
-            List<CmsTreeNode> treeNodesWithBadParentSiteId = null,
-            List<CmsTreeNode> treeNodesWithDuplicatedAliasPath = null,
-            List<CmsTreeNode> treeNodesWithLevelMismatchByAliasPathTest = null,
-            List<CmsTreeNode> treeNodesWithLevelMismatchByNodeLevelTest = null,
-            List<CmsTreeNode> treeNodesWithMissingDocument = null,
-            List<CmsTreeNode> treeNodesWithPageTypeNotAssignedToSite = null,
+            IEnumerable<CmsDocument> documentsWithMissingTreeNode = null,
+            IEnumerable<CmsTreeNode> treeNodesWithBadParentNodeId = null,
+            IEnumerable<CmsTreeNode> treeNodesWithBadParentSiteId = null,
+            IEnumerable<CmsTreeNode> treeNodesWithDuplicatedAliasPath = null,
+            IEnumerable<CmsTreeNode> treeNodesWithLevelMismatchByAliasPathTest = null,
+            IEnumerable<CmsTreeNode> treeNodesWithLevelMismatchByNodeLevelTest = null,
+            IEnumerable<CmsTreeNode> treeNodesWithMissingDocument = null,
+            IEnumerable<CmsTreeNode> treeNodesWithPageTypeNotAssignedToSite = null,
             bool isVersionHistoryDataSetClean = true
             )
         {
@@ -237,23 +237,23 @@ namespace KenticoInspector.Reports.Tests
             SetupVersionHistoryCoupledDataQueries(versionHistoryDataSet.CmsVersionHistoryItems, versionHistoryDataSet.CmsClassItems, versionHistoryDataSet.VersionHistoryCoupledData);
         }
 
-        private void SetupVersionHistoryCoupledDataQueries(List<CmsVersionHistoryItem> versionHistoryItems, List<CmsClass> versionHistoryCmsClassItems, List<IDictionary<string, object>> versionHistoryCoupledData)
+        private void SetupVersionHistoryCoupledDataQueries(List<CmsVersionHistoryItem> versionHistoryItems, List<CmsClass> versionHistoryClasses, List<IDictionary<string, object>> versionHistoryCoupledData)
         {
-            foreach (var cmsClassItem in versionHistoryCmsClassItems)
+            foreach (var cmsClass in versionHistoryClasses)
             {
                 var coupledDataIds = versionHistoryItems
-                    .Where(versionHistoryItem => versionHistoryItem.VersionClassID == cmsClassItem.ClassID)
+                    .Where(versionHistoryItem => versionHistoryItem.VersionClassID == cmsClass.ClassID)
                     .Select(versionHistoryItem => versionHistoryItem.CoupledDataID);
 
                 var returnedItems = versionHistoryCoupledData
                     .Where(versionHistoryCoupledDataItem => coupledDataIds
-                        .Contains((int)versionHistoryCoupledDataItem[cmsClassItem.ClassIDColumn])
+                        .Contains((int)versionHistoryCoupledDataItem[cmsClass.ClassIDColumn])
                     );
 
                 var replacements = new Dictionary<string, string>
                 {
-                    { "TableName", cmsClassItem.ClassTableName },
-                    { "IdColumnName", cmsClassItem.ClassIDColumn }
+                    { "TableName", cmsClass.ClassTableName },
+                    { "IdColumnName", cmsClass.ClassIDColumn }
                 };
 
                 _mockDatabaseService.SetupExecuteSqlFromFileGenericWithListParameter(
@@ -269,7 +269,7 @@ namespace KenticoInspector.Reports.Tests
         private void SetupCmsClassItemsQueries(IEnumerable<CmsClass> returnedItems, string idScript = null)
         {
             var idValues = returnedItems.Select(x => x.ClassID);
-            SetupDetailsAndIdQueries(idValues, returnedItems, idScript, Scripts.GetCmsClass, "cmsClassIds");
+            SetupDetailsAndIdQueries(idValues, returnedItems, idScript, Scripts.GetCmsClass, "classIds");
         }
 
         private void SetupCmsDocumentNodeQueries(IEnumerable<CmsDocument> returnedItems, string idScript = null)

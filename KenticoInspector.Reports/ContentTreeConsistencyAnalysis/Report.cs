@@ -90,7 +90,7 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
         {
             var versionHistoryItems = GetVersionHistoryItems();
 
-            var cmsClassItems = GetCmsClassItems(versionHistoryItems);
+            var classItems = GetClasses(versionHistoryItems);
 
             // TODO: Find a use for this information
             // var allDocumentNodeIds = versionHistoryItems.Select(x => x.DocumentID);
@@ -98,7 +98,7 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
 
             var comparisonResults = new List<VersionHistoryMismatchResult>();
 
-            foreach (var cmsClass in cmsClassItems)
+            foreach (var cmsClass in classItems)
             {
                 var classVersionHistoryItems = versionHistoryItems
                     .Where(versionHistoryItem => versionHistoryItem.VersionClassID == cmsClass.ClassID);
@@ -137,31 +137,31 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
             return databaseService.ExecuteSqlFromFile<CmsVersionHistoryItem>(Scripts.GetVersionHistoryDetails, new { latestVersionHistoryIds });
         }
 
-        private IEnumerable<CmsClass> GetCmsClassItems(IEnumerable<CmsVersionHistoryItem> versionHistoryItems)
+        private IEnumerable<CmsClass> GetClasses(IEnumerable<CmsVersionHistoryItem> versionHistoryItems)
         {
-            var cmsClassIds = versionHistoryItems
+            var classIds = versionHistoryItems
                 .Select(versionHistoryItem => versionHistoryItem.VersionClassID);
 
-            return databaseService.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClass, new { cmsClassIds });
+            return databaseService.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClass, new { classIds });
         }
 
-        private IEnumerable<IDictionary<string, object>> GetCoupledData(CmsClass cmsClassItem, IEnumerable<int> coupledDataIds)
+        private IEnumerable<IDictionary<string, object>> GetCoupledData(CmsClass cmsClass, IEnumerable<int> coupledDataIds)
         {
             var replacements = new Dictionary<string, string>
             {
-                { "TableName", cmsClassItem.ClassTableName },
-                { "IdColumnName", cmsClassItem.ClassIDColumn }
+                { "TableName", cmsClass.ClassTableName },
+                { "IdColumnName", cmsClass.ClassIDColumn }
             };
 
             return databaseService.ExecuteSqlFromFileGeneric(Scripts.GetCmsDocumentCoupledDataItems, replacements, new { coupledDataIds });
         }
 
-        private IEnumerable<VersionHistoryMismatchResult> CompareVersionHistoryItemsWithPublishedItems(IEnumerable<CmsVersionHistoryItem> versionHistoryItems, IEnumerable<IDictionary<string, object>> coupledData, IEnumerable<CmsClassField> cmsClassFields)
+        private IEnumerable<VersionHistoryMismatchResult> CompareVersionHistoryItemsWithPublishedItems(IEnumerable<CmsVersionHistoryItem> versionHistoryItems, IEnumerable<IDictionary<string, object>> coupledData, IEnumerable<CmsClassField> classFields)
         {
             var issues = new List<VersionHistoryMismatchResult>();
 
-            var idColumnName = cmsClassFields
-                .FirstOrDefault(cmsClassField => cmsClassField.IsIdColumn)
+            var idColumnName = classFields
+                .FirstOrDefault(classField => classField.IsIdColumn)
                 .Column;
 
             foreach (var versionHistoryItem in versionHistoryItems)
@@ -171,22 +171,22 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
 
                 if (coupledDataItem != null)
                 {
-                    foreach (var cmsClassField in cmsClassFields)
+                    foreach (var classField in classFields)
                     {
                         var historyVersionValueRaw = versionHistoryItem
                             .NodeXml
-                            .Descendants(cmsClassField.Column)
+                            .Descendants(classField.Column)
                             .FirstOrDefault()?
-                            .Value ?? cmsClassField.DefaultValue;
+                            .Value ?? classField.DefaultValue;
 
-                        var coupledDataItemValue = coupledDataItem[cmsClassField.Column];
+                        var coupledDataItemValue = coupledDataItem[classField.Column];
 
-                        var columnName = cmsClassField.Caption ?? cmsClassField.Column;
+                        var columnName = classField.Caption ?? classField.Column;
 
                         var versionHistoryMismatchResult = new VersionHistoryMismatchResult(
                             versionHistoryItem.DocumentID,
                             columnName,
-                            cmsClassField.ColumnType,
+                            classField.ColumnType,
                             historyVersionValueRaw,
                             coupledDataItemValue
                         );

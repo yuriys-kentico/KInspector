@@ -9,4 +9,4 @@
         CMS_Class
 
     WHERE 
-        ClassID IN @cmsClassIds
+        ClassID IN @classIds
