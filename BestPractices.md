@@ -11,7 +11,7 @@ Data
        View_CMS_Tree_Joined: CmsTreeNode
   Sql script should be named Get{DataClassName}{SummaryOfQuery} 
   Data class property names match table columns exactly
-  Object names drop Cms for readability, but not properties
+  Object names and properties drop Cms for readability
 Results
   Results classes should be under Models\Results
   Results class named {DataObjectName}Results
@@ -42,3 +42,4 @@ Tests
   Method names follow Should_{Behavior}_When_{Case}
   Test data follows {ObjectName[With|Without]Issue[s]}
   Use Is.EqualTo() or Has.One.Member() constraints
+  Test without issues should be first
