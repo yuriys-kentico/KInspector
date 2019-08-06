@@ -28,6 +28,7 @@ Metadata
   Table titles class should be called TableNameTerms
 Code formatting
   Usings sorted with System* first, and with spaces between top-level namespaces
+  Use static, readonly, and remove setter where possible
   List initializer starts on new line, and () omitted if not used
   GetResults should generally follow "get SQL data, filter data, call CompileResults, which uses results classes" 
   Each level of LINQ indented one tab from previous line
@@ -35,6 +36,9 @@ Code formatting
   ReportResults object initializers should order properties as Type, Status, Summary, Data
   Object initializers in database service or terms should use implicit naming
   Constructors with more than one parameter should be indented
+  Static, functional data flow between `GetResults` and `CompileResults`
+  Use declarative instead of interrogative naming of variables
 Tests
   Method names follow Should_{Behavior}_When_{Case}
   Test data follows {ObjectName[With|Without]Issue[s]}
+  Use Is.EqualTo() or Has.One.Member() constraints
