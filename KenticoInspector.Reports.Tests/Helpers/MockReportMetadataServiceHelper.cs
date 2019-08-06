@@ -1,9 +1,11 @@
-﻿using KenticoInspector.Core;
+﻿using System;
+using System.Reflection;
+
+using KenticoInspector.Core;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Services.Interfaces;
+
 using Moq;
-using System;
-using System.Reflection;
 
 namespace KenticoInspector.Reports.Tests.Helpers
 {

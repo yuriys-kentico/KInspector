@@ -1,6 +1,7 @@
-﻿using KenticoInspector.Core.Models;
 using System.Data;
 using System.Data.SqlClient;
+
+using KenticoInspector.Core.Models;
 
 namespace KenticoInspector.Core.Helpers
 {

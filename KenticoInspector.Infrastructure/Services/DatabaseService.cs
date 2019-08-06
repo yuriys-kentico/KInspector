@@ -1,11 +1,13 @@
-﻿using Dapper;
-using KenticoInspector.Core.Helpers;
-using KenticoInspector.Core.Models;
-using KenticoInspector.Core.Services.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+
+using Dapper;
+
+using KenticoInspector.Core.Helpers;
+using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Services.Interfaces;
 
 namespace KenticoInspector.Infrastructure.Services
 {

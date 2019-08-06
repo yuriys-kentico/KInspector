@@ -1,4 +1,5 @@
 ﻿using KenticoInspector.Core.Services.Interfaces;
+
 using Moq;
 
 namespace KenticoInspector.Reports.Tests.Helpers

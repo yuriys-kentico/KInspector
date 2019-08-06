@@ -1,7 +1,9 @@
-﻿using KenticoInspector.Core.Models;
+﻿using System.Collections.Generic;
+
+using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Services.Interfaces;
+
 using Moq;
-using System.Collections.Generic;
 
 namespace KenticoInspector.Reports.Tests.Helpers
 {
