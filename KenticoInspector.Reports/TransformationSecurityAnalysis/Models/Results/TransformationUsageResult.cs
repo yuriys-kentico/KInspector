@@ -1,4 +1,5 @@
 ﻿using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data;
+
 using Newtonsoft.Json;
 
 namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results

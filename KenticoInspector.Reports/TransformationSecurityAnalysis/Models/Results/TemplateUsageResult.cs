@@ -10,9 +10,12 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
     {
         public string SiteName { get; }
 
-        public TemplateUsageResult(CmsTreeNode page, IEnumerable<Site> sites)
+        public TemplateUsageResult(CmsTreeNode page, IEnumerable<CmsSite> sites)
         {
-            SiteName = sites.FirstOrDefault(site => site.Id == page.NodeSiteID).Name;
+            SiteName = sites
+                .FirstOrDefault(site => site.SiteId == page.NodeSiteID)
+                .SiteName;
+
             DocumentName = page.DocumentName;
             NodeID = page.NodeID;
             NodeAliasPath = page.NodeAliasPath;
