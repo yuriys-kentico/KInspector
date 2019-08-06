@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using KenticoInspector.Core.Models;
 
@@ -6,8 +6,8 @@ namespace KenticoInspector.Core.Repositories.Interfaces
 {
     public interface ISiteRepository : IRepository
     {
-        Site GetSite(Instance instance, int siteId);
+        CmsSite GetSite(Instance instance, int siteId);
 
-        IList<Site> GetSites(Instance instance);
+        IEnumerable<CmsSite> GetSites(Instance instance);
     }
 }

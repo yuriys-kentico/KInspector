@@ -1,41 +1,34 @@
-﻿using Dapper;
-using KenticoInspector.Core.Helpers;
+﻿using System.Collections.Generic;
+using System.Linq;
+
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using KenticoInspector.Core.Services.Interfaces;
 
 namespace KenticoInspector.Infrastructure.Repositories
 {
     public class SiteRepository : ISiteRepository
     {
-        public Site GetSite(Instance instance, int siteID)
+        private readonly IDatabaseService databaseService;
+
+        private static readonly string getCmsSitesPath = @"Scripts/GetCmsSites.sql";
+
+        public SiteRepository(IDatabaseService databaseService)
         {
-            throw new NotImplementedException();
+            this.databaseService = databaseService;
         }
 
-        public IList<Site> GetSites(Instance instance)
+        public CmsSite GetSite(Instance instance, int siteID)
         {
-            try
-            {
-                var query = @"
-                    SELECT
-                        SiteId as Id,
-                        SiteName as Name,
-                        SiteGUID as Guid,
-                        SiteDomainName as DomainName,
-                        SitePresentationURL as PresentationUrl,
-                        SiteIsContentOnly as ContentOnly
-                    FROM CMS_Site";
-                var connection = DatabaseHelper.GetSqlConnection(instance.DatabaseSettings);
-                var sites = connection.Query<Site>(query).ToList();
-                return sites;
-            }
-            catch
-            {
-                return null;
-            }
+            return GetSites(instance)
+                .FirstOrDefault(site => site.SiteId == siteID);
+        }
+
+        public IEnumerable<CmsSite> GetSites(Instance instance)
+        {
+            var sites = databaseService.ExecuteSqlFromFile<CmsSite>(getCmsSitesPath);
+
+            return sites;
         }
     }
 }
