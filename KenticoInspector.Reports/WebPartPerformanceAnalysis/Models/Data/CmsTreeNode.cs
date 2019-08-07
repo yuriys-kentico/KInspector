@@ -2,7 +2,7 @@
 
 namespace KenticoInspector.Reports.WebPartPerformanceAnalysis.Models.Data
 {
-    public class TreeNode
+    public class CmsTreeNode
     {
         public string DocumentName { get; set; }
 

@@ -18,7 +18,7 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis.Models
         public int PageTemplateId { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<TreeNode> TreeNodes { get; set; }
+        public IEnumerable<CmsTreeNode> TreeNodes { get; set; }
 
         public int TreeNodeCount => TreeNodes.Count();
     }

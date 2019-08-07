@@ -38,14 +38,14 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
             var pageTemplatesWithWebPartsWithColumnsPropertyIds = pageTemplatesWithWebPartsWithColumnsProperty
                 .Select(pageTemplate => pageTemplate.PageTemplateID);
 
-            var treeNodesUsingPageTemplates = _databaseService.ExecuteSqlFromFile<TreeNode>(Scripts.GetTreeNodesUsingPageTemplates, new { pageTemplatesWithWebPartsWithColumnsPropertyIds });
+            var treeNodesUsingPageTemplates = _databaseService.ExecuteSqlFromFile<CmsTreeNode>(Scripts.GetTreeNodesUsingPageTemplates, new { pageTemplatesWithWebPartsWithColumnsPropertyIds });
 
             var templateAnalysisResults = GetTemplateAnalysisResults(pageTemplatesWithWebPartsWithColumnsProperty, treeNodesUsingPageTemplates);
 
             return CompileResults(templateAnalysisResults);
         }
 
-        private IEnumerable<TemplateAnalysisResult> GetTemplateAnalysisResults(IEnumerable<CmsPageTemplate> pageTemplates, IEnumerable<TreeNode> treeNodesUsingPageTemplates)
+        private IEnumerable<TemplateAnalysisResult> GetTemplateAnalysisResults(IEnumerable<CmsPageTemplate> pageTemplates, IEnumerable<CmsTreeNode> treeNodesUsingPageTemplates)
         {
             var results = new List<TemplateAnalysisResult>();
 
@@ -74,7 +74,7 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
             return results;
         }
 
-        private IEnumerable<WebPartAnalysisResult> ExtractWebPartsWithEmptyColumnsProperty(CmsPageTemplate template, IEnumerable<TreeNode> treeNodes)
+        private IEnumerable<WebPartAnalysisResult> ExtractWebPartsWithEmptyColumnsProperty(CmsPageTemplate template, IEnumerable<CmsTreeNode> treeNodes)
         {
             var emptyColumnsWebPartProperties = template
                 .PageTemplateWebParts
@@ -136,7 +136,7 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
             var treeNodesWithIssues = templateAnalysisResults
                 .SelectMany(x => x.TreeNodesWithIssues);
 
-            var TreeNodesWithIssuesResult = new TableResult<TreeNode>()
+            var TreeNodesWithIssuesResult = new TableResult<CmsTreeNode>()
             {
                 Name = Metadata.Terms.TableNames.TreeNodesWithIssues,
                 Rows = treeNodesWithIssues
