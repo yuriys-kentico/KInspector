@@ -104,8 +104,8 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
 
             var results = new ReportResults()
             {
-                Type = ReportResultsType.TableList,
-                Status = ReportResultsStatus.Warning
+                Status = ReportResultsStatus.Warning,
+                Type = ReportResultsType.TableList
             };
 
             if (explicitlyEnabledSettings.Any())
