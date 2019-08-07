@@ -8,7 +8,7 @@
       * Missing class tables
     Excludes those classes which are not meant to have a table.
 terms:
-  errorSummary: <totalErrors> <count:issue|issues> found.
+  errorSummary: <totalErrors> <totalErrors:issue|issues> found.
   goodSummary: No issues found.
   tableNames:
     databaseTablesWithMissingKenticoClasses: Database tables with missing Kentico classes

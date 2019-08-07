@@ -79,7 +79,6 @@ namespace KenticoInspector.Reports.ClassTableValidation
             {
                 return new ReportResults()
                 {
-                    Type = ReportResultsType.String,
                     Status = ReportResultsStatus.Good,
                     Summary = Metadata.Terms.GoodSummary
                 };
@@ -105,9 +104,9 @@ namespace KenticoInspector.Reports.ClassTableValidation
 
             return new ReportResults
             {
-                Type = ReportResultsType.TableList,
                 Status = ReportResultsStatus.Error,
                 Summary = Metadata.Terms.ErrorSummary.With(new { totalErrors }),
+                Type = ReportResultsType.TableList,
                 Data = new
                 {
                     tableResults,
