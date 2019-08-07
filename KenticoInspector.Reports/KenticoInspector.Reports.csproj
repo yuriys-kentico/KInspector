@@ -121,6 +121,12 @@
     <None Update="TaskProcessingAnalysis\Scripts\GetCmsWebFarmTaskCountInPast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="PageTypeAssignmentAnalysis\Metadata\en-US.yaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="PageTypeAssignmentAnalysis\Scripts\GetPageTypesNotAssignedToSite.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TemplateLayoutAnalysis\Scripts\GetCmsPageTemplates.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
