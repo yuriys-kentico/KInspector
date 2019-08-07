@@ -154,10 +154,10 @@
     <None Update="WebPartPerformanceAnalysis\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="WebPartPerformanceAnalysis\Scripts\GetAffectedTemplates.sql">
+    <None Update="WebPartPerformanceAnalysis\Scripts\GetCmsPageTemplatesWithWebPartsWithColumnsProperty.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="WebPartPerformanceAnalysis\Scripts\GetDocumentsByPageTemplateIDs.sql">
+    <None Update="WebPartPerformanceAnalysis\Scripts\GetTreeNodesUsingPageTemplates.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
