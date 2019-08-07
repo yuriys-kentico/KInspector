@@ -44,9 +44,9 @@ namespace KenticoInspector.Reports.DatabaseTableSizeAnalysis
 
             return new ReportResults
             {
-                Type = ReportResultsType.Table,
                 Status = ReportResultsStatus.Information,
                 Summary = Metadata.Terms.InformationSummary,
+                Type = ReportResultsType.Table,
                 Data = databaseTableSizeResult
             };
         }
