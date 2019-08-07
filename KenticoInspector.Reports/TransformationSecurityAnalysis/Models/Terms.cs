@@ -4,28 +4,36 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models
 {
     public class Terms
     {
-        public Term WarningSummary { get; set; }
-
         public Term GoodSummary { get; set; }
 
-        public TableNamesTerms TableNames { get; set; }
-
         public IssueDescriptionsTerms IssueDescriptions { get; set; }
+
+        public Term IssueTypes { get; set; }
+
+        public Term WarningSummary { get; set; }
+
+        public TableNamesTerms TableNames { get; set; }
     }
 
     public class TableNamesTerms
     {
         public Term IssueTypes { get; set; }
 
-        public Term TransformationsWithIssues { get; set; }
+        public Term TemplateUsage { get; set; }
 
         public Term TransformationUsage { get; set; }
 
-        public Term TemplateUsage { get; set; }
+        public Term TransformationsWithIssues { get; set; }
     }
 
     public class IssueDescriptionsTerms
     {
+        public Term ServerSideScript { get; set; }
+
+        public Term DocumentsMacro { get; set; }
+
+        public Term QueryMacro { get; set; }
+
         public Term XssQueryHelper { get; set; }
 
         public Term XssQueryString { get; set; }
@@ -39,11 +47,5 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models
         public Term XssDocument { get; set; }
 
         public Term XssWindow { get; set; }
-
-        public Term ServerSideScript { get; set; }
-
-        public Term DocumentsMacro { get; set; }
-
-        public Term QueryMacro { get; set; }
     }
 }

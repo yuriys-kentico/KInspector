@@ -29,7 +29,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
         {
             TransformationID = transformation.TransformationID;
             TransformationFullName = transformation.FullName;
-            TransformationType = transformation.TransformationType.ToString();
+            TransformationType = transformation.TransformationType;
             TransformationUses = uses;
 
             foreach (var issueType in detectedIssueTypes)
@@ -43,15 +43,17 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
             foreach (var issueGroup in groupedIssues)
             {
                 var aggregatedSnippets = issueGroup
-                    .Select(IssueSnippet);
+                    .Select(AsIssueSnippet);
 
                 dynamicIssueProperties[issueGroup.Key] = string.Join(string.Empty, aggregatedSnippets);
             }
         }
 
-        private string IssueSnippet(TransformationIssue issue)
+        private string AsIssueSnippet(TransformationIssue issue)
         {
-            return $"{TransformationIssue.SnippetWrapper}{issue.CodeSnippet}{TransformationIssue.SnippetWrapper}";
+            var snippetWrapper = "...";
+
+            return $"{snippetWrapper}{issue.CodeSnippet}{snippetWrapper}";
         }
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)

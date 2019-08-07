@@ -71,21 +71,21 @@ namespace KenticoInspector.Reports.Tests
                 TransformationName = "ASCXTransformation",
                 TransformationCode = FromFile(@"TestData\CMS_Transformation\TransformationCode\CleanASCX.txt"),
                 ClassName = "PageType1",
-                TransformationType = TransformationType.ASCX
+                TransformationType = "ASCX"
             },
             new CmsTransformation()
             {
                 TransformationName = "JQueryTransformation",
                 TransformationCode = FromFile(@"TestData\CMS_Transformation\TransformationCode\CleanText.txt"),
                 ClassName = "PageType1",
-                TransformationType = TransformationType.JQuery
+                TransformationType = "JQuery"
             },
             new CmsTransformation()
             {
                 TransformationName = "TextTransformation",
                 TransformationCode = FromFile(@"TestData\CMS_Transformation\TransformationCode\CleanText.txt"),
                 ClassName = "PageType2",
-                TransformationType = TransformationType.Text
+                TransformationType = "Text"
             }
         };
 
@@ -131,7 +131,7 @@ namespace KenticoInspector.Reports.Tests
                     TransformationName = "ASCXTransformation",
                     TransformationCode = FromFile(transformationCodeFilePath),
                     ClassName = "PageType1",
-                    TransformationType = TransformationType.ASCX
+                    TransformationType = "ASCX"
                 }
             };
 

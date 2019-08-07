@@ -8,12 +8,6 @@
     * Use of complex data macros
 terms:
   goodSummary: No issues with transformations found.
-  warningSummary: 'Found <summaryCount> issues with transformations categorized into the following issue types: <issueTypesAsCsv>.'
-  tableNames:
-    issueTypes: Issues types
-    transformationsWithIssues: Transformations with issues
-    transformationUsage: Templates using Transformations
-    templateUsage: Pages using templates
   issueDescriptions:
     documentsMacro: The use of Documents in a macro may be a sign of inefficient code or misuse of out-of-the-box methods.
     serverSideScript: Serverside scripts may be a sign of inefficient code or misuse of out-of-the-box methods.
@@ -25,3 +19,10 @@ terms:
     xssRequest: The use of Request potentially renders malicious request variables.
     xssDocument: The use of Document in JavaScript potentially renders malicious data.
     xssWindow: The use of Window in JavaScript potentially renders malicious data.
+  issueTypes: <issueType|XssQueryHelper:XSS query helper>
+  warningSummary: 'Found <summaryCount> issues with transformations categorized into the following issue types: <issueTypesAsCsv>.'
+  tableNames:
+    issueTypes: Issues types
+    templateUsage: Pages using templates
+    transformationUsage: Templates using Transformations
+    transformationsWithIssues: Transformations with issues

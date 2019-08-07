@@ -18,7 +18,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
 
         public string TransformationCode { get; set; }
 
-        public TransformationType TransformationType { get; set; }
+        public string TransformationType { get; set; }
 
         public string ClassName { get; set; }
 
@@ -26,10 +26,10 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
 
         public IList<TransformationIssue> Issues { get; } = new List<TransformationIssue>();
 
-        public void AddIssue(int snippetStartIndex, int snippetLength, string issueType)
+        public void AddIssue(int snippetStartIndex, int snippetLength, string issueType, int snippetPadding = 5)
         {
-            var startIndex = Math.Max(snippetStartIndex - TransformationIssue.SnippetPadding, 0);
-            var length = Math.Min(TransformationCode.Length - startIndex, snippetLength + TransformationIssue.SnippetPadding * 2);
+            var startIndex = Math.Max(snippetStartIndex - snippetPadding, 0);
+            var length = Math.Min(TransformationCode.Length - startIndex, snippetLength + snippetPadding * 2);
 
             Issues.Add(
                 new TransformationIssue(TransformationCode.Substring(startIndex, length), issueType)

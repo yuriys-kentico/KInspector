@@ -10,7 +10,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
 {
     /// <summary>
     /// Contains instance methods returning <see cref="void"/> that are called by the report to analyze a single <see cref="CmsTransformation"/>.
-    /// Each method adds issues using <see cref="CmsTransformation.AddIssue(int, int, string)"/>. If there are any issues found, it also adds itself to <see cref="DetectedIssueTypes"/>.
+    /// Each method adds issues using <see cref="CmsTransformation.AddIssue(int, int, string, int)"/>. If there are any issues found, it also adds itself to <see cref="DetectedIssueTypes"/>.
     /// </summary>
     public class IssueAnalyzers
     {
