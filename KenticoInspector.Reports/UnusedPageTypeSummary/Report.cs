@@ -57,9 +57,9 @@ namespace KenticoInspector.Reports.UnusedPageTypeSummary
 
             return new ReportResults
             {
-                Type = ReportResultsType.Table,
                 Status = ReportResultsStatus.Information,
                 Summary = Metadata.Terms.InformationSummary.With(new { count }),
+                Type = ReportResultsType.Table,
                 Data = data
             };
         }
