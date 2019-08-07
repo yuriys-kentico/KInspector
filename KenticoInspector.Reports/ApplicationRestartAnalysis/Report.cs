@@ -68,9 +68,9 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
 
             return new ReportResults
             {
-                Type = ReportResultsType.Table,
                 Status = ReportResultsStatus.Information,
                 Summary = Metadata.Terms.InformationSummary.With(new { totalEvents, totalStartEvents, totalEndEvents, earliestTime, latestTime }),
+                Type = ReportResultsType.Table,
                 Data = data
             };
         }
