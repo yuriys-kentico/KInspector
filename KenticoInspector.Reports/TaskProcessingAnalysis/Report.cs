@@ -67,9 +67,9 @@ namespace KenticoInspector.Reports.TaskProcessingAnalysis
 
             return new ReportResults()
             {
-                Type = ReportResultsType.StringList,
                 Status = ReportResultsStatus.Warning,
                 Summary = Metadata.Terms.WarningSummary.With(new { count }),
+                Type = ReportResultsType.StringList,
                 Data = data,
             };
         }
