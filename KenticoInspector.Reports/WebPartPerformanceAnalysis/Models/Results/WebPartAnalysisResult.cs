@@ -1,23 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models.Data;
+
 using Newtonsoft.Json;
 
 namespace KenticoInspector.Reports.WebPartPerformanceAnalysis.Models
 {
     public class WebPartAnalysisResult
     {
-        public string ID { get; set; }
+        public string WebPartControlId { get; set; }
 
-        public string Name { get; set; }
+        public string WebPartName { get; set; }
 
-        public string Type { get; set; }
+        public string WebPartType { get; set; }
 
-        public int TemplateId { get; set; }
+        public int PageTemplateId { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<Document> Documents { get; set; }
+        public IEnumerable<TreeNode> TreeNodes { get; set; }
 
-        public int DocumentCount => Documents.Count();
+        public int TreeNodeCount => TreeNodes.Count();
     }
 }

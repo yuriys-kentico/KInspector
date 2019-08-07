@@ -6,6 +6,7 @@ using KenticoInspector.Core.Constants;
 using KenticoInspector.Reports.Tests.Helpers;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models;
+using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models.Data;
 
 using NUnit.Framework;
 
@@ -34,7 +35,7 @@ namespace KenticoInspector.Reports.Tests
         }
 
         [Test]
-        public void Should_ReturnGoodResult_When_WebPartsWithoutUnspecifiedColumns()
+        public void Should_ReturnGoodResult_When_WebPartsWithoutIssues()
         {
             // Arrange
             ArrangeDatabaseService();
@@ -47,7 +48,7 @@ namespace KenticoInspector.Reports.Tests
         }
 
         [Test]
-        public void Should_ReturnWarningResult_When_WebPartsWithUnspecifiedColumns()
+        public void Should_ReturnWarningResult_When_WebPartsWithIssues()
         {
             // Arrange
             ArrangeDatabaseService(PageTemplatesWithIssues);
@@ -63,14 +64,14 @@ namespace KenticoInspector.Reports.Tests
         {
             affectedTemplates = affectedTemplates ?? new List<CmsPageTemplate>();
 
-            _mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetAffectedTemplates, affectedTemplates);
+            _mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetCmsPageTemplatesWithWebPartsWithColumnsProperty, affectedTemplates);
 
             var affectedTemplateIds = affectedTemplates
                 .Select(x => x.PageTemplateID);
 
-            var affectedDocuments = new List<Document>();
+            var affectedDocuments = new List<TreeNode>();
 
-            _mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(Scripts.GetDocumentsByPageTemplateIds, "affectedTemplateIds", affectedTemplateIds, affectedDocuments);
+            _mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(Scripts.GetTreeNodesUsingPageTemplates, "pageTemplatesWithWebPartsWithColumnsPropertyIds", affectedTemplateIds, affectedDocuments);
         }
     }
 }

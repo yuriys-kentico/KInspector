@@ -9,6 +9,7 @@ using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models;
+using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models.Data;
 
 namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
 {
@@ -27,107 +28,135 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
         {
             ReportTags.PortalEngine,
             ReportTags.Performance,
-            ReportTags.WebParts,
+            ReportTags.WebParts
         };
 
         public override ReportResults GetResults()
         {
-            var affectedTemplates = _databaseService.ExecuteSqlFromFile<CmsPageTemplate>(Scripts.GetAffectedTemplates);
+            var pageTemplatesWithWebPartsWithColumnsProperty = _databaseService.ExecuteSqlFromFile<CmsPageTemplate>(Scripts.GetCmsPageTemplatesWithWebPartsWithColumnsProperty);
 
-            var affectedTemplateIds = affectedTemplates
-                .Select(x => x.PageTemplateID);
+            var pageTemplatesWithWebPartsWithColumnsPropertyIds = pageTemplatesWithWebPartsWithColumnsProperty
+                .Select(pageTemplate => pageTemplate.PageTemplateID);
 
-            var affectedDocuments = _databaseService.ExecuteSqlFromFile<Document>(Scripts.GetDocumentsByPageTemplateIds, new { affectedTemplateIds });
+            var treeNodesUsingPageTemplates = _databaseService.ExecuteSqlFromFile<TreeNode>(Scripts.GetTreeNodesUsingPageTemplates, new { pageTemplatesWithWebPartsWithColumnsPropertyIds });
 
-            var templateAnalysisResults = GetTemplateAnalysisResults(affectedTemplates, affectedDocuments);
+            var templateAnalysisResults = GetTemplateAnalysisResults(pageTemplatesWithWebPartsWithColumnsProperty, treeNodesUsingPageTemplates);
 
             return CompileResults(templateAnalysisResults);
         }
 
-        private IEnumerable<TemplateAnalysisResult> GetTemplateAnalysisResults(IEnumerable<CmsPageTemplate> affectedTemplates, IEnumerable<Document> affectedDocuments)
+        private IEnumerable<TemplateAnalysisResult> GetTemplateAnalysisResults(IEnumerable<CmsPageTemplate> pageTemplates, IEnumerable<TreeNode> treeNodesUsingPageTemplates)
         {
             var results = new List<TemplateAnalysisResult>();
 
-            foreach (var template in affectedTemplates)
+            foreach (var pageTemplate in pageTemplates)
             {
-                var documents = affectedDocuments.Where(x => x.DocumentPageTemplateID == template.PageTemplateID);
-                var affectedWebParts = ExtractWebPartsWithEmptyColumnsProperty(template, documents);
+                var treeNodesUsingPageTemplate = treeNodesUsingPageTemplates
+                    .Where(treeNode => treeNode.DocumentPageTemplateID == pageTemplate.PageTemplateID);
+
+                var webPartsWithIssues = ExtractWebPartsWithEmptyColumnsProperty(pageTemplate, treeNodesUsingPageTemplate);
+
+                if (!webPartsWithIssues.Any())
+                {
+                    continue;
+                }
 
                 results.Add(new TemplateAnalysisResult()
                 {
-                    TemplateID = template.PageTemplateID,
-                    TemplateName = template.PageTemplateDisplayName,
-                    TemplateCodename = template.PageTemplateCodeName,
-                    AffectedDocuments = documents,
-                    AffectedWebParts = affectedWebParts
+                    PageTemplateID = pageTemplate.PageTemplateID,
+                    PageTemplateDisplayName = pageTemplate.PageTemplateDisplayName,
+                    PageTemplateCodeName = pageTemplate.PageTemplateCodeName,
+                    TreeNodesWithIssues = treeNodesUsingPageTemplate,
+                    WebPartsWithIssues = webPartsWithIssues
                 });
             }
 
             return results;
         }
 
-        private IEnumerable<WebPartAnalysisResult> ExtractWebPartsWithEmptyColumnsProperty(CmsPageTemplate template, IEnumerable<Document> documents)
+        private IEnumerable<WebPartAnalysisResult> ExtractWebPartsWithEmptyColumnsProperty(CmsPageTemplate template, IEnumerable<TreeNode> treeNodes)
         {
-            var emptyColumnsWebPartProperties = template.PageTemplateWebParts
+            var emptyColumnsWebPartProperties = template
+                .PageTemplateWebParts
                 .Descendants("property")
-                .Where(x => x.Attribute("name").Value == "columns")
-                .Where(x => string.IsNullOrWhiteSpace(x.Value));
+                .Where(property => property
+                    .Attribute("name")
+                    .Value == "columns"
+                )
+                .Where(property => string.IsNullOrWhiteSpace(property.Value));
 
-            var affectedWebPartsXml = emptyColumnsWebPartProperties.Ancestors("webpart");
+            var webPartXmls = emptyColumnsWebPartProperties.Ancestors("webpart");
 
-            return affectedWebPartsXml.Select(x => new WebPartAnalysisResult
+            foreach (var webPartXml in webPartXmls)
             {
-                ID = x.Attribute("controlid").Value,
-                Name = x.Elements("property").FirstOrDefault(p => p.Name == "webparttitle")?.Value,
-                Type = x.Attribute("type").Value,
-                TemplateId = template.PageTemplateID,
-                Documents = documents
-            });
+                yield return new WebPartAnalysisResult
+                {
+                    WebPartControlId = webPartXml
+                        .Attribute("controlid")
+                        .Value,
+                    WebPartName = webPartXml
+                        .Elements("property")
+                        .FirstOrDefault(p => p.Name == "webparttitle")?
+                        .Value,
+                    WebPartType = webPartXml
+                        .Attribute("type")
+                        .Value,
+                    PageTemplateId = template.PageTemplateID,
+                    TreeNodes = treeNodes
+                };
+            }
         }
 
-        private ReportResults CompileResults(IEnumerable<TemplateAnalysisResult> templateSummaries)
+        private ReportResults CompileResults(IEnumerable<TemplateAnalysisResult> templateAnalysisResults)
         {
-            var templateSummaryTable = new TableResult<TemplateAnalysisResult>()
+            if (!templateAnalysisResults.Any())
             {
-                Name = "Template Summary",
-                Rows = templateSummaries
+                return new ReportResults
+                {
+                    Status = ReportResultsStatus.Good,
+                    Summary = Metadata.Terms.GoodSummary
+                };
+            }
+
+            var templateAnalysisResultsResult = new TableResult<TemplateAnalysisResult>()
+            {
+                Name = Metadata.Terms.TableNames.TemplatesWithIssues,
+                Rows = templateAnalysisResults
             };
 
-            var webPartSummaries = templateSummaries.SelectMany(x => x.AffectedWebParts);
-            var webPartSummaryTable = new TableResult<WebPartAnalysisResult>()
+            var webPartsWithIssues = templateAnalysisResults
+                .SelectMany(x => x.WebPartsWithIssues);
+
+            var webPartAnalysisResultsResult = new TableResult<WebPartAnalysisResult>()
             {
-                Name = "Web Part Summary",
-                Rows = webPartSummaries
+                Name = Metadata.Terms.TableNames.WebPartsWithIssues,
+                Rows = webPartsWithIssues
             };
 
-            var documentSummaries = templateSummaries.SelectMany(x => x.AffectedDocuments);
-            var documentSummaryTable = new TableResult<Document>()
+            var treeNodesWithIssues = templateAnalysisResults
+                .SelectMany(x => x.TreeNodesWithIssues);
+
+            var TreeNodesWithIssuesResult = new TableResult<TreeNode>()
             {
-                Name = "Document Summary",
-                Rows = documentSummaries
+                Name = Metadata.Terms.TableNames.TreeNodesWithIssues,
+                Rows = treeNodesWithIssues
             };
 
-            var data = new
-            {
-                TemplateSummaryTable = templateSummaryTable,
-                WebPartSummaryTable = webPartSummaryTable,
-                DocumentSummaryTable = documentSummaryTable
-            };
-
-            var affectedDocumentCount = documentSummaries.Count();
-            var affectedTemplateCount = templateSummaries.Count();
-            var affectedWebPartCount = webPartSummaries.Count();
-
-            var summary = Metadata.Terms.Summary.With(new { affectedDocumentCount, affectedTemplateCount, affectedWebPartCount });
-
-            var status = templateSummaries.Count() > 0 ? ReportResultsStatus.Warning : ReportResultsStatus.Good;
+            var affectedDocumentCount = treeNodesWithIssues.Count();
+            var affectedTemplateCount = templateAnalysisResults.Count();
+            var affectedWebPartCount = webPartsWithIssues.Count();
 
             return new ReportResults
             {
-                Status = status,
-                Summary = summary,
-                Data = data,
-                Type = ReportResultsType.TableList
+                Status = ReportResultsStatus.Warning,
+                Summary = Metadata.Terms.WarningSummary.With(new { affectedDocumentCount, affectedTemplateCount, affectedWebPartCount }),
+                Type = ReportResultsType.TableList,
+                Data = new
+                {
+                    templateAnalysisResultsResult,
+                    webPartAnalysisResultsResult,
+                    TreeNodesWithIssuesResult
+                },
             };
         }
     }

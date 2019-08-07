@@ -9,5 +9,5 @@ SELECT
         View_CMS_Tree_Joined
 	
     WHERE 
-        DocumentPageTemplateID in @affectedTemplateIds
+        DocumentPageTemplateID IN @pageTemplatesWithWebPartsWithColumnsPropertyIds
 

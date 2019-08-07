@@ -2,19 +2,21 @@
 
 namespace KenticoInspector.Reports.WebPartPerformanceAnalysis.Models
 {
-    public class HeaderTerms
-    {
-        public Term DocumentSummary { get; set; }
-
-        public Term TemplateSummary { get; set; }
-
-        public Term WebPartSummary { get; set; }
-    }
-
     public class Terms
     {
-        public HeaderTerms Headers { get; set; }
+        public Term GoodSummary { get; set; }
 
-        public Term Summary { get; set; }
+        public TableNamesTerms TableNames { get; set; }
+
+        public Term WarningSummary { get; set; }
+    }
+
+    public class TableNamesTerms
+    {
+        public Term TemplatesWithIssues { get; set; }
+
+        public Term TreeNodesWithIssues { get; set; }
+
+        public Term WebPartsWithIssues { get; set; }
     }
 }

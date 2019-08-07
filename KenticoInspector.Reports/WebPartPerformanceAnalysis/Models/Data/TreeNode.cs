@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace KenticoInspector.Reports.WebPartPerformanceAnalysis.Models
+namespace KenticoInspector.Reports.WebPartPerformanceAnalysis.Models.Data
 {
-    public class Document
+    public class TreeNode
     {
         public string DocumentName { get; set; }
 
