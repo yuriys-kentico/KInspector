@@ -206,8 +206,8 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
         {
             var combinedResults = new ReportResults
             {
-                Type = ReportResultsType.TableList,
-                Status = ReportResultsStatus.Good
+                Status = ReportResultsStatus.Good,
+                Type = ReportResultsType.TableList
             };
 
             IDictionary<string, object> dataAsDictionary = combinedResults.Data;
