@@ -44,7 +44,6 @@ namespace KenticoInspector.Reports.DatabaseConsistencyCheck
             {
                 return new ReportResults
                 {
-                    Type = ReportResultsType.String,
                     Status = ReportResultsStatus.Good,
                     Summary = Metadata.Terms.GoodSummary
                 };
@@ -52,9 +51,9 @@ namespace KenticoInspector.Reports.DatabaseConsistencyCheck
 
             return new ReportResults
             {
-                Type = ReportResultsType.Table,
                 Status = ReportResultsStatus.Error,
                 Summary = Metadata.Terms.ErrorSummary,
+                Type = ReportResultsType.Table,
                 Data = checkDbResults
             };
         }
