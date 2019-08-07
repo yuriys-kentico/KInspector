@@ -1,12 +1,14 @@
-﻿using KenticoInspector.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.PageTypeAssignmentAnalysis.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using KenticoInspector.Reports.PageTypeAssignmentAnalysis.Models.Data;
 
 namespace KenticoInspector.Reports.PageTypeAssignmentAnalysis
 {
@@ -29,33 +31,37 @@ namespace KenticoInspector.Reports.PageTypeAssignmentAnalysis
 
         public override ReportResults GetResults()
         {
-            var unassignedPageTypes = databaseService.ExecuteSqlFromFile<PageType>(Scripts.GetPageTypesNotAssignedToSite);
+            var pageTypesNotAssignedToSite = databaseService.ExecuteSqlFromFile<CmsPageType>(Scripts.GetPageTypesNotAssignedToSite);
 
-            return CompileResults(unassignedPageTypes);
+            return CompileResults(pageTypesNotAssignedToSite);
         }
 
-        private ReportResults CompileResults(IEnumerable<PageType> unassignedPageTypes)
+        private ReportResults CompileResults(IEnumerable<CmsPageType> pageTypesNotAssignedToSite)
         {
-            var results = new ReportResults
+            if (!pageTypesNotAssignedToSite.Any())
             {
-                Status = ReportResultsStatus.Good,
-                Summary = Metadata.Terms.NoIssuesFound,
-                Type = ReportResultsType.Table,
-                Data = new TableResult<PageType>()
+                return new ReportResults
                 {
-                    Name = Metadata.Terms.UnassignedPageTypesTableHeader,
-                    Rows = unassignedPageTypes
-                }
-            };
-
-            var unassignedPageTypeCount = unassignedPageTypes.Count();
-            if (unassignedPageTypeCount > 0)
-            {
-                results.Status = ReportResultsStatus.Warning;
-                results.Summary = Metadata.Terms.WarningSummary.With(new { unassignedPageTypeCount });
+                    Status = ReportResultsStatus.Good,
+                    Summary = Metadata.Terms.GoodSummary
+                };
             }
 
-            return results;
+            var unassignedPageTypeCount = pageTypesNotAssignedToSite.Count();
+
+            var data = new TableResult<CmsPageType>()
+            {
+                Name = Metadata.Terms.TableNames.UnassignedPageTypes,
+                Rows = pageTypesNotAssignedToSite
+            };
+
+            return new ReportResults
+            {
+                Status = ReportResultsStatus.Warning,
+                Summary = Metadata.Terms.WarningSummary.With(new { unassignedPageTypeCount }),
+                Type = ReportResultsType.Table,
+                Data = data
+            };
         }
     }
 }

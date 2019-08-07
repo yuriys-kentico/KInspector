@@ -4,8 +4,15 @@ namespace KenticoInspector.Reports.PageTypeAssignmentAnalysis.Models
 {
     public class Terms
     {
+        public Term GoodSummary { get; set; }
+
         public Term WarningSummary { get; set; }
-        public Term UnassignedPageTypesTableHeader { get; set; }
-        public Term NoIssuesFound { get; set; }
+
+        public TableNamesTerms TableNames { get; set; }
+    }
+
+    public class TableNamesTerms
+    {
+        public Term UnassignedPageTypes { get; set; }
     }
 }
