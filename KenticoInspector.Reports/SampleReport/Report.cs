@@ -50,9 +50,9 @@ namespace KenticoInspector.Reports.SampleReport
         {
             return new ReportResults()
             {
-                Type = ReportResultsType.StringList,
                 Status = ReportResultsStatus.Information,
                 Summary = Metadata.Terms.InformationSummary.With(new { issueCount }),
+                Type = ReportResultsType.StringList,
                 Data = data
             };
         }
