@@ -1,11 +1,9 @@
 ﻿using System;
 
-namespace KenticoInspector.Reports.ApplicationRestartAnalysis.Models.Data
+namespace KenticoInspector.Reports.ApplicationRestartAnalysis.Models
 {
-    public class CmsEventLog
+    public class ApplicationRestartEvent
     {
-        public int EventID { get; set; }
-
         public string EventCode { get; set; }
 
         public DateTime EventTime { get; set; }
