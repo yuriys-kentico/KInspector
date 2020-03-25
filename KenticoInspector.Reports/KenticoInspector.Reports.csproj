@@ -46,10 +46,10 @@
     <None Update="ClassTableValidation\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ClassTableValidation\Scripts\ClassesWithNoTable.sql">
+    <None Update="ClassTableValidation\Scripts\GetCmsClassesWithMissingTable.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ClassTableValidation\Scripts\TablesWithNoClass.sql">
+    <None Update="ClassTableValidation\Scripts\GetTablesWithMissingClass.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ContentTreeConsistencyAnalysis\Metadata\en-US.yaml">
