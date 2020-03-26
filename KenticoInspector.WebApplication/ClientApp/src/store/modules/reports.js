@@ -27,7 +27,7 @@ const getters = {
 
       const meetsCompatibilityFilters = isCompatible || (showIncompatible && isIncompatible) || (showUntested && isUntested)
 
-      const meetsTagFilter = taggedWith.length == 0 || item.tags.some(t=>taggedWith.includes(t))
+      const meetsTagFilter = taggedWith.length == 0 || item.tags.some(t => taggedWith.includes(t))
 
       return meetsCompatibilityFilters && meetsTagFilter
     })
@@ -51,8 +51,8 @@ const getters = {
 }
 
 const actions = {
-    getAll: ({ commit }, instanceGuid) => {
-        api.reportService.getReports(instanceGuid)
+  getAll: ({ commit }, instanceGuid) => {
+    api.reportService.getReports(instanceGuid)
       .then(items => {
         commit('setItems', items)
       })
@@ -76,10 +76,10 @@ const actions = {
 }
 
 const mutations = {
-  setItems (state, items) {
+  setItems(state, items) {
     state.items = items
   },
-  setItemResults (state, { resultId, loading, results }) {
+  setItemResults(state, { resultId, loading, results }) {
     Vue.set(state.reportResults, resultId, { loading, results })
   },
   setFilterSetting(state, { name, value }) {
@@ -98,11 +98,11 @@ export default {
   mutations
 }
 
-function getTagsFromReports (allTags, report) {
+function getTagsFromReports(allTags, report) {
   allTags.push(...report.tags)
   return allTags
 }
 
-function getUniqueTags (allTags) {
+function getUniqueTags(allTags) {
   return [...new Set(allTags)]
 }

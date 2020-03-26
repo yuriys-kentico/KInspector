@@ -1,16 +1,12 @@
 <template>
   <v-menu offset-y>
     <template v-slot:activator="{ on }">
-      <v-btn
-        flat
-        v-on="on"
-        active-class="ignore"
-        :color="color"
-        >
-        <div
-          v-if="isConnected"
-          class="text-xs-right caption"
-          >
+      <v-btn flat
+             v-on="on"
+             active-class="ignore"
+             :color="color">
+        <div v-if="isConnected"
+             class="text-xs-right caption">
           <span class="grey--text text-lowercase">Server </span>
           <span class="white--text">{{connectedInstance.databaseSettings.server}}</span>
           <br>
@@ -18,33 +14,26 @@
           <span class="white--text">{{connectedInstance.databaseSettings.database}}</span>
         </div>
         <span v-else>Disconnected</span>
-        <v-icon
-          right
-          >
+        <v-icon right>
           {{icon}}
         </v-icon>
       </v-btn>
     </template>
     <v-card>
-      <instance-details
-        v-if="isConnected"
-        :instance="connectedInstance">
-        </instance-details>
+      <instance-details v-if="isConnected"
+                        :instance="connectedInstance">
+      </instance-details>
       <v-card-actions>
-        <v-btn
-          v-if="!isConnected"
-          to="/connect"
-          block
-          color="success"
-          >
+        <v-btn v-if="!isConnected"
+               to="/connect"
+               block
+               color="success">
           Connect
         </v-btn>
-        <v-btn
-          v-else
-          @click="doDisconnect()"
-          block
-          color="error"
-          >
+        <v-btn v-else
+               @click="doDisconnect()"
+               block
+               color="error">
           Disconnect
         </v-btn>
       </v-card-actions>
@@ -53,38 +42,38 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
 
-import InstanceDetails from './instance-details'
+  import InstanceDetails from './instance-details'
 
-export default {
-  components: {
-    InstanceDetails
-  },
-  computed: {
-    ...mapGetters('instances',[
-      'isConnected',
-      'connectedInstance',
-      'getInstanceDisplayName',
-    ]),
-    color () {
-      return this.isConnected ? 'success' : 'error'
+  export default {
+    components: {
+      InstanceDetails
     },
-    status () {
-      return this.isConnected ? `Server: ${this.connectedInstance.databaseConfiguration.serverName}<br>Database: ${this.connectedInstance.databaseConfiguration.databaseName}` : 'Disconnected'
+    computed: {
+      ...mapGetters('instances', [
+        'isConnected',
+        'connectedInstance',
+        'getInstanceDisplayName',
+      ]),
+      color() {
+        return this.isConnected ? 'success' : 'error'
+      },
+      status() {
+        return this.isConnected ? `Server: ${this.connectedInstance.databaseConfiguration.serverName}<br>Database: ${this.connectedInstance.databaseConfiguration.databaseName}` : 'Disconnected'
+      },
+      icon() {
+        return this.isConnected ? 'mdi-power-plug' : 'mdi-power-plug-off'
+      }
     },
-    icon () {
-      return this.isConnected ? 'mdi-power-plug' : 'mdi-power-plug-off'
-    }
-  },
-  methods: {
-    ...mapActions('instances', [
-      'disconnect'
-    ]),
-    doDisconnect() {
-      this.disconnect()
-      this.$router.push('/connect')
+    methods: {
+      ...mapActions('instances', [
+        'disconnect'
+      ]),
+      doDisconnect() {
+        this.disconnect()
+        this.$router.push('/connect')
+      }
     }
   }
-}
 </script>

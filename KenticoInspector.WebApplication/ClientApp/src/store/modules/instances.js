@@ -29,12 +29,12 @@ const getters = {
 }
 
 const actions = {
-  async getAll ({ commit }) {
+  async getAll({ commit }) {
     commit('setItems', await api.getInstances())
   },
 
-  async upsertItem ({ commit, dispatch }, instance) {
-    commit('setUpserting',true)
+  async upsertItem({ commit, dispatch }, instance) {
+    commit('setUpserting', true)
     try {
       const newInstance = await api.upsertInstance(instance)
       dispatch('getAll')
@@ -43,16 +43,16 @@ const actions = {
       commit('setUpsertingError', error)
     }
 
-    commit('setUpserting',false)
+    commit('setUpserting', false)
   },
 
-  async deleteItem ({ dispatch }, guid) {
+  async deleteItem({ dispatch }, guid) {
     await api.deleteInstance(guid)
     await dispatch('getAll')
   },
 
-  async connect ({ commit }, guid) {
-    commit('setConnecting',true)
+  async connect({ commit }, guid) {
+    commit('setConnecting', true)
 
     try {
       const instanceDetails = await api.getInstanceDetails(guid)
@@ -61,7 +61,7 @@ const actions = {
       commit('setConnectionError', error)
     }
 
-    commit('setConnecting',false)
+    commit('setConnecting', false)
   },
 
   cancelConnecting: ({ commit }) => {
@@ -75,27 +75,27 @@ const actions = {
 }
 
 const mutations = {
-  setConnecting (state, status) {
+  setConnecting(state, status) {
     state.connecting = status
   },
 
-  setConnectionError (state, reason) {
+  setConnectionError(state, reason) {
     state.connectionError = reason
   },
 
-  setUpserting (state, status) {
+  setUpserting(state, status) {
     state.upserting = status
   },
 
-  setUpsertingError (state, reason) {
+  setUpsertingError(state, reason) {
     state.upsertingError = reason
   },
 
-  setCurrentInstanceDetails (state, instanceDetails) {
+  setCurrentInstanceDetails(state, instanceDetails) {
     state.currentInstanceDetails = instanceDetails
   },
 
-  setItems (state, items) {
+  setItems(state, items) {
     state.items = items
   },
 }

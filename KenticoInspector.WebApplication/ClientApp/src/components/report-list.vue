@@ -1,10 +1,8 @@
 <template>
   <div>
-    <report-list-item
-      v-for="report in reports"
-      :key="report.codename"
-      :report="report"
-      />
+    <report-list-item v-for="report in reports"
+                      :key="report.codename"
+                      :report="report" />
     <div v-if="reports.length === 0">
       No reports
     </div>
@@ -12,17 +10,17 @@
 </template>
 
 <script>
-import ReportListItem from '../components/report-list-item'
+  import ReportListItem from '../components/report-list-item'
 
-export default {
-  components: {
-    ReportListItem
-  },
-  props: {
-    reports: {
-      type: Array,
-      default: () => ([])
+  export default {
+    components: {
+      ReportListItem
+    },
+    props: {
+      reports: {
+        type: Array,
+        default: () => ([])
+      }
     }
   }
-}
 </script>
