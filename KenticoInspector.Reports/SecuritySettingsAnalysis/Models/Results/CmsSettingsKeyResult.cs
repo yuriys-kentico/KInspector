@@ -44,13 +44,13 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Results
         public CmsSettingsKeyResult(
             CmsSettingsKeyResult cmsSettingsKeyResult,
             IEnumerable<CmsSettingsCategory> cmsSettingsCategories,
-            IEnumerable<Site> sites,
+            IEnumerable<CmsSite> sites,
             IDictionary<string, string> resxValues
             )
         {
             SiteName = sites
-                .FirstOrDefault(site => site.Id == cmsSettingsKeyResult.siteID)
-                .Name;
+                .FirstOrDefault(site => site.SiteId == cmsSettingsKeyResult.siteID)
+                .SiteName;
 
             KeyID = cmsSettingsKeyResult.KeyID;
 

@@ -1,9 +1,11 @@
-﻿using KenticoInspector.Core;
+﻿using System;
+using System.Reflection;
+
+using KenticoInspector.Core;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Services.Interfaces;
+
 using Moq;
-using System;
-using System.Reflection;
 
 namespace KenticoInspector.Reports.Tests.Helpers
 {
@@ -15,7 +17,7 @@ namespace KenticoInspector.Reports.Tests.Helpers
         }
 
         /// <summary>
-        /// Sets up <see cref="IReportMetadataService"/> to return a new <see cref="Labels"/> instead of the real metadata.
+        /// Sets up <see cref="IReportMetadataService"/> to return a new <see cref="ReportMetadata.Terms"/> instead of the real metadata.
         /// This is because the metadata does not influence the data retrieved by the report.
         /// </summary>
         /// <param name="mockReportMetadataService">Mocked <see cref="IReportMetadataService"/>.</param>

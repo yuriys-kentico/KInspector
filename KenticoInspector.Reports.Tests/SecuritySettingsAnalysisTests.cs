@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-
+using System.Xml.Linq;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Reports.SecuritySettingsAnalysis;
@@ -302,11 +302,10 @@ namespace KenticoInspector.Reports.Tests
 
         private void ArrangeCmsFileService(string webConfigPath)
         {
-            var webConfig = new XmlDocument();
-            webConfig.Load(webConfigPath);
+            var webConfig = XDocument.Parse(webConfigPath);
 
             _mockCmsFileService
-                .Setup(p => p.GetXmlDocument(_mockInstance.Path, DefaultKenticoPaths.WebConfigFile))
+                .Setup(p => p.GetXDocument(_mockInstance.Path, DefaultKenticoPaths.WebConfigFile))
                 .Returns(webConfig);
 
             _mockCmsFileService

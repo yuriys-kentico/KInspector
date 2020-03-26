@@ -67,10 +67,10 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
             var sites = instanceService
                 .GetInstanceDetails(instanceService.CurrentInstance)
                 .Sites
-                .Append(new Site()
+                .Append(new CmsSite()
                 {
-                    Id = 0,
-                    Name = Metadata.Terms.GlobalSiteName
+                    SiteId = 0,
+                    SiteName = Metadata.Terms.GlobalSiteName
                 });
 
             var instancePath = instanceService.CurrentInstance.Path;
@@ -85,7 +85,7 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
                     resxValues
                     ));
 
-            var webConfigXml = cmsFileService.GetXmlDocument(instancePath, DefaultKenticoPaths.WebConfigFile);
+            var webConfigXml = cmsFileService.GetXDocument(instancePath, DefaultKenticoPaths.WebConfigFile);
 
             var webConfigSettingsResults = GetWebConfigSettingsResults(webConfigXml);
 
@@ -107,24 +107,21 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
             }
         }
 
-        private IEnumerable<WebConfigSettingResult> GetWebConfigSettingsResults(XmlDocument webConfigXml)
+        private IEnumerable<WebConfigSettingResult> GetWebConfigSettingsResults(XDocument webConfigXml)
         {
-            // This conversion is temporary pending standardization of XDocument usage
-            var webConfig = ToXDocument(webConfigXml);
-
-            var appSettings = webConfig
+            var appSettings = webConfigXml
                 .Descendants("appSettings")
                 .Elements();
 
             var appSettingsResults = GetAppSettingsResults(appSettings);
 
-            var systemWebElements = webConfig
+            var systemWebElements = webConfigXml
                 .Descendants("system.web")
                 .Elements();
 
             var systemWebSettingsResults = GetSystemWebSettingsResults(systemWebElements);
 
-            var connectionStrings = webConfig
+            var connectionStrings = webConfigXml
                 .Descendants("connectionStrings")
                 .Elements();
 

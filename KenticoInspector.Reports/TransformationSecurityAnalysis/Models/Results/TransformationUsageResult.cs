@@ -1,32 +1,35 @@
 ﻿using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data;
 
+using Newtonsoft.Json;
+
 namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
 {
-    public class TransformationUsageResult
+    public class TransformationUsageResult : CmsPageTemplate
     {
-        public int TemplateId { get; }
+        [JsonProperty(Order = 1)]
+        public string WebPartControlId { get; }
 
-        public string TemplateCodeName { get; }
+        [JsonProperty(Order = 2)]
+        public string WebPartPropertyName { get; }
 
-        public string TemplateDisplayName { get; }
+        [JsonProperty(Order = 3)]
+        public int TransformationID { get; }
 
-        public string WebPart { get; }
+        [JsonProperty(Order = 4)]
+        public string TransformationFullName { get; }
 
-        public string Property { get; }
-
-        public string Transformation { get; }
-
-        public string TransformationType { get; }
-
-        public TransformationUsageResult(PageTemplate pageTemplate, WebPart webPart, WebPartProperty webPartProperty, Transformation transformation)
+        public TransformationUsageResult(CmsPageTemplate pageTemplate, WebPart webPart, WebPartProperty webPartProperty, CmsTransformation transformation)
         {
-            TemplateId = pageTemplate.Id;
-            TemplateCodeName = pageTemplate.CodeName;
-            TemplateDisplayName = pageTemplate.DisplayName;
-            WebPart = webPart.ControlId;
-            Property = webPartProperty.Name;
-            Transformation = transformation.FullName;
-            TransformationType = transformation.TransformationType.ToString();
+            PageTemplateID = pageTemplate.PageTemplateID;
+            PageTemplateCodeName = pageTemplate.PageTemplateCodeName;
+            PageTemplateDisplayName = pageTemplate.PageTemplateDisplayName;
+            PageTemplateWebParts = pageTemplate.PageTemplateWebParts;
+
+            WebPartControlId = webPart.ControlId;
+            WebPartPropertyName = webPartProperty.Name;
+
+            TransformationID = transformation.TransformationID;
+            TransformationFullName = transformation.FullName;
         }
     }
 }

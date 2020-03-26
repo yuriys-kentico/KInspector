@@ -1,4 +1,18 @@
-﻿SELECT NodeID, NodeAliasPath, NodeSiteID, NodeLinkedNodeID 
-	FROM CMS_Tree
-	WHERE	NodeID not in (SELECT DocumentNodeID from CMS_Document)
-	and NodeLinkedNodeID is null
+﻿SELECT 
+    NodeID, 
+    NodeAliasPath, 
+    NodeSiteID, 
+    NodeLinkedNodeID 
+	
+    FROM 
+        CMS_Tree
+	
+    WHERE
+        NodeID NOT IN (
+            SELECT 
+                DocumentNodeID 
+                
+                FROM 
+                    CMS_Document
+        )
+	    AND NodeLinkedNodeID IS NULL

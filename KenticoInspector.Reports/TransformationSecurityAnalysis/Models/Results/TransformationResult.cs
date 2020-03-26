@@ -14,19 +14,23 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
         private readonly IDictionary<string, string> dynamicIssueProperties = new Dictionary<string, string>();
 
         [JsonProperty]
-        public string Name { get; }
+        public int TransformationID { get; set; }
 
         [JsonProperty]
-        public string Type { get; }
+        public string TransformationFullName { get; set; }
 
         [JsonProperty]
-        public int Uses { get; }
+        public string TransformationType { get; set; }
 
-        public TransformationResult(Transformation transformation, int uses, IEnumerable<string> detectedIssueTypes)
+        [JsonProperty]
+        public int TransformationUses { get; }
+
+        public TransformationResult(CmsTransformation transformation, int uses, IEnumerable<string> detectedIssueTypes)
         {
-            Name = transformation.FullName;
-            Type = transformation.TransformationType.ToString();
-            Uses = uses;
+            TransformationID = transformation.TransformationID;
+            TransformationFullName = transformation.FullName;
+            TransformationType = transformation.TransformationType;
+            TransformationUses = uses;
 
             foreach (var issueType in detectedIssueTypes)
             {
@@ -39,15 +43,17 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
             foreach (var issueGroup in groupedIssues)
             {
                 var aggregatedSnippets = issueGroup
-                    .Select(IssueSnippet);
+                    .Select(AsIssueSnippet);
 
                 dynamicIssueProperties[issueGroup.Key] = string.Join(string.Empty, aggregatedSnippets);
             }
         }
 
-        private string IssueSnippet(TransformationIssue issue)
+        private string AsIssueSnippet(TransformationIssue issue)
         {
-            return $"{TransformationIssue.SnippetWrapper}{issue.CodeSnippet}{TransformationIssue.SnippetWrapper}";
+            var snippetWrapper = "...";
+
+            return $"{snippetWrapper}{issue.CodeSnippet}{snippetWrapper}";
         }
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)

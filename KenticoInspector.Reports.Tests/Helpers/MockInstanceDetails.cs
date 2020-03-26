@@ -1,6 +1,7 @@
-﻿using KenticoInspector.Core.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using KenticoInspector.Core.Models;
 
 namespace KenticoInspector.Reports.Tests.Helpers
 {
@@ -10,9 +11,9 @@ namespace KenticoInspector.Reports.Tests.Helpers
         {
             AdministrationVersion = new Version("9.0"),
             DatabaseVersion = new Version("9.0"),
-            Sites = new List<Site>
+            Sites = new List<CmsSite>
             {
-                new Site { DomainName = "kentico9.com" }
+                new CmsSite { SiteDomainName = "kentico9.com" }
             }
         };
 
@@ -20,9 +21,9 @@ namespace KenticoInspector.Reports.Tests.Helpers
         {
             AdministrationVersion = new Version("10.0"),
             DatabaseVersion = new Version("10.0"),
-            Sites = new List<Site>
+            Sites = new List<CmsSite>
             {
-                new Site { DomainName = "kentico10.com" }
+                new CmsSite { SiteDomainName = "kentico10.com" }
             }
         };
 
@@ -30,9 +31,9 @@ namespace KenticoInspector.Reports.Tests.Helpers
         {
             AdministrationVersion = new Version("11.0"),
             DatabaseVersion = new Version("11.0"),
-            Sites = new List<Site>
+            Sites = new List<CmsSite>
             {
-                new Site { DomainName = "kentico11.com" }
+                new CmsSite { SiteDomainName = "kentico11.com" }
             }
         };
 
@@ -40,9 +41,9 @@ namespace KenticoInspector.Reports.Tests.Helpers
         {
             AdministrationVersion = new Version("12.0"),
             DatabaseVersion = new Version("12.0"),
-            Sites = new List<Site>
+            Sites = new List<CmsSite>
             {
-                new Site { DomainName = "kentico12.com" }
+                new CmsSite { SiteDomainName = "kentico12.com" }
             }
         };
 

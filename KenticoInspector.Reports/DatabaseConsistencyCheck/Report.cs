@@ -1,12 +1,13 @@
-﻿using KenticoInspector.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+
+using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.DatabaseConsistencyCheck.Models;
-using System;
-using System.Collections.Generic;
-using System.Data;
 
 namespace KenticoInspector.Reports.DatabaseConsistencyCheck
 {
@@ -21,7 +22,8 @@ namespace KenticoInspector.Reports.DatabaseConsistencyCheck
 
         public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12");
 
-        public override IList<string> Tags => new List<string> {
+        public override IList<string> Tags => new List<string>
+        {
             ReportTags.Health
         };
 
@@ -36,28 +38,24 @@ namespace KenticoInspector.Reports.DatabaseConsistencyCheck
 
         private ReportResults CompileResults(DataTable checkDbResults)
         {
-            var hasIssues = checkDbResults.Rows.Count > 0;
+            var hasNoIssues = checkDbResults.Rows.Count == 0;
 
-            if (hasIssues)
+            if (hasNoIssues)
             {
                 return new ReportResults
                 {
-                    Type = ReportResultsType.Table,
-                    Status = ReportResultsStatus.Error,
-                    Summary = Metadata.Terms.CheckResultsTableForAnyIssues,
-                    Data = checkDbResults
-                };
-            }
-            else
-            {
-                return new ReportResults
-                {
-                    Type = ReportResultsType.String,
                     Status = ReportResultsStatus.Good,
-                    Summary = Metadata.Terms.NoIssuesFound,
-                    Data = string.Empty
+                    Summary = Metadata.Terms.GoodSummary
                 };
             }
+
+            return new ReportResults
+            {
+                Status = ReportResultsStatus.Error,
+                Summary = Metadata.Terms.ErrorSummary,
+                Type = ReportResultsType.Table,
+                Data = checkDbResults
+            };
         }
     }
 }

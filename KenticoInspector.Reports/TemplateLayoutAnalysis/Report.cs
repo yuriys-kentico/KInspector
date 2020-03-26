@@ -1,12 +1,15 @@
-﻿using KenticoInspector.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.TemplateLayoutAnalysis.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using KenticoInspector.Reports.TemplateLayoutAnalysis.Models.Data;
+using KenticoInspector.Reports.TemplateLayoutAnalysis.Models.Results;
 
 namespace KenticoInspector.Reports.TemplateLayoutAnalysis
 {
@@ -29,36 +32,51 @@ namespace KenticoInspector.Reports.TemplateLayoutAnalysis
 
         public override ReportResults GetResults()
         {
-            var identicalLayouts = databaseService.ExecuteSqlFromFile<IdenticalPageLayouts>(Scripts.GetIdenticalLayouts);
+            var pageTemplates = databaseService.ExecuteSqlFromFile<CmsPageTemplate>(Scripts.GetCmsPageTemplates);
 
-            return CompileResults(identicalLayouts);
+            var identicalPageTemplateResults = GetIdenticalPageTemplateResults(pageTemplates);
+
+            return CompileResults(identicalPageTemplateResults);
         }
 
-        private ReportResults CompileResults(IEnumerable<IdenticalPageLayouts> identicalPageLayouts)
+        private IEnumerable<IdenticalPageTemplateResult> GetIdenticalPageTemplateResults(IEnumerable<CmsPageTemplate> pageTemplates)
         {
-            var countIdenticalPageLayouts = identicalPageLayouts.Count();
+            return pageTemplates
+                .GroupBy(
+                    pageTemplate => pageTemplate.PageTemplateLayout,
+                    pageTemplate => $"{pageTemplate.PageTemplateCodeName} ({pageTemplate.PageTemplateID})"
+                )
+                .Where(pageTemplate => pageTemplate.Count() > 1)
+                .Select(identicalPageTemplates => new IdenticalPageTemplateResult(identicalPageTemplates.Key, identicalPageTemplates.ToList()))
+                .ToList();
+        }
 
-            var results = new ReportResults
+        private ReportResults CompileResults(IEnumerable<IdenticalPageTemplateResult> identicalPageTemplateResults)
+        {
+            if (!identicalPageTemplateResults.Any())
             {
-                Status = ReportResultsStatus.Information,
-                Type = ReportResultsType.Table,
-                Data = new TableResult<dynamic>()
+                return new ReportResults
                 {
-                    Name = Metadata.Terms.IdenticalPageLayouts,
-                    Rows = identicalPageLayouts
-                }
+                    Status = ReportResultsStatus.Good,
+                    Summary = Metadata.Terms.GoodSummary
+                };
+            }
+
+            var count = identicalPageTemplateResults.Count();
+
+            var data = new TableResult<IdenticalPageTemplateResult>()
+            {
+                Name = Metadata.Terms.TableNames.IdenticalPageLayouts,
+                Rows = identicalPageTemplateResults
             };
 
-            if (countIdenticalPageLayouts == 0)
+            return new ReportResults
             {
-                results.Summary = Metadata.Terms.NoIdenticalPageLayoutsFound;
-            }
-            else
-            {
-                results.Summary = Metadata.Terms.CountIdenticalPageLayoutFound.With(new { count = countIdenticalPageLayouts });
-            }
-
-            return results;
+                Status = ReportResultsStatus.Information,
+                Summary = Metadata.Terms.InformationSummary.With(new { count }),
+                Type = ReportResultsType.Table,
+                Data = data
+            };
         }
     }
 }

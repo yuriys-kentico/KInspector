@@ -1,4 +1,12 @@
-﻿SELECT Child.NodeID
-	FROM CMS_Tree as Child
-	LEFT JOIN CMS_Tree as Parent on Child.NodeParentID = Parent.NodeID
-	WHERE (Child.NodeLevel - 1) != Parent.NodeLevel
+﻿SELECT 
+    Child.NodeID
+
+    FROM 
+        CMS_Tree AS Child
+
+    LEFT JOIN CMS_Tree AS Parent 
+        ON 
+            Child.NodeParentID = Parent.NodeID
+
+	WHERE 
+        (Child.NodeLevel - 1) != Parent.NodeLevel

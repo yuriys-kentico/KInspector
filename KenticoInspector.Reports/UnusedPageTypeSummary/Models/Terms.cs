@@ -4,7 +4,15 @@ namespace KenticoInspector.Reports.UnusedPageTypeSummary.Models
 {
     public class Terms
     {
-        public Term CountUnusedPageType { get; set; }
+        public Term GoodSummary { get; set; }
+
+        public Term InformationSummary { get; set; }
+
+        public TableNamesTerms TableNames { get; set; }
+    }
+
+    public class TableNamesTerms
+    {
         public Term UnusedPageTypes { get; set; }
     }
 }

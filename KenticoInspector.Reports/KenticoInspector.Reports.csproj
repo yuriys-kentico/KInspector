@@ -46,7 +46,7 @@
     <None Update="ApplicationRestartAnalysis\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ApplicationRestartAnalysis\Scripts\ApplicationRestartEvents.sql">
+    <None Update="ApplicationRestartAnalysis\Scripts\GetEventLogStartOrEndEvents.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ClassTableValidation\Metadata\en-US.yaml">
@@ -61,7 +61,7 @@
     <None Update="ContentTreeConsistencyAnalysis\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ContentTreeConsistencyAnalysis\Scripts\GetCmsClassItems.sql">
+    <None Update="ContentTreeConsistencyAnalysis\Scripts\GetCmsClass.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ContentTreeConsistencyAnalysis\Scripts\GetCmsDocumentCoupledDataItems.sql">
@@ -121,22 +121,22 @@
     <None Update="TaskProcessingAnalysis\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="DebugConfigurationAnalysis\Scripts\GetDebugSettingsValues.sql">
+    <None Update="DebugConfigurationAnalysis\Scripts\GetCMSSettingsKeysForDebug.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TaskProcessingAnalysis\Scripts\GetCountOfUnprocessedIntegrationBusTasks.sql">
+    <None Update="TaskProcessingAnalysis\Scripts\GetIntegrationTasksCountInPast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TaskProcessingAnalysis\Scripts\GetCountOfUnprocessedScheduledTasks.sql">
+    <None Update="TaskProcessingAnalysis\Scripts\GetCmsScheduledTasksCountInPast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TaskProcessingAnalysis\Scripts\GetCountOfUnprocessedSearchTasks.sql">
+    <None Update="TaskProcessingAnalysis\Scripts\GetCmsSearchTasksCountInPast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TaskProcessingAnalysis\Scripts\GetCountOfUnprocessedStagingTasks.sql">
+    <None Update="TaskProcessingAnalysis\Scripts\GetStagingTasksCountInpast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TaskProcessingAnalysis\Scripts\GetCountOfUnprocessedWebFarmTasks.sql">
+    <None Update="TaskProcessingAnalysis\Scripts\GetCmsWebFarmTaskCountInPast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="PageTypeAssignmentAnalysis\Metadata\en-US.yaml">
@@ -145,7 +145,7 @@
     <None Update="PageTypeAssignmentAnalysis\Scripts\GetPageTypesNotAssignedToSite.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TemplateLayoutAnalysis\Scripts\GetIdenticalLayouts.sql">
+    <None Update="TemplateLayoutAnalysis\Scripts\GetCmsPageTemplates.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TemplateLayoutAnalysis\Metadata\en-US.yaml">
@@ -163,7 +163,7 @@
     <None Update="TransformationSecurityAnalysis\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TransformationSecurityAnalysis\Scripts\GetPages.sql">
+    <None Update="TransformationSecurityAnalysis\Scripts\GetTreeNodes.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TransformationSecurityAnalysis\Scripts\GetPageTemplates.sql">
@@ -172,7 +172,7 @@
     <None Update="TransformationSecurityAnalysis\Scripts\GetTransformations.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnusedPageTypeSummary\Scripts\GetUnusedPageTypes.sql">
+    <None Update="UnusedPageTypeSummary\Scripts\GetCmsClassNotInViewCmsTreeJoined.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="UnusedPageTypeSummary\Metadata\en-US.yaml">
@@ -184,10 +184,10 @@
     <None Update="WebPartPerformanceAnalysis\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="WebPartPerformanceAnalysis\Scripts\GetAffectedTemplates.sql">
+    <None Update="WebPartPerformanceAnalysis\Scripts\GetCmsPageTemplatesWithWebPartsWithColumnsProperty.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="WebPartPerformanceAnalysis\Scripts\GetDocumentsByPageTemplateIDs.sql">
+    <None Update="WebPartPerformanceAnalysis\Scripts\GetTreeNodesUsingPageTemplates.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

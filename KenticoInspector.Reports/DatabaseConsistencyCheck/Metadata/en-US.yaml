@@ -12,5 +12,5 @@
       * Validates link-level consistency between table metadata and file system directories and files when storing **varbinary(max)** data in the file system using `FILESTREAM`.
       * Validates the Service Broker data in the database.
 terms:
-  checkResultsTableForAnyIssues: Check results table for any issues
-  noIssuesFound: No issues found.
+  errorSummary: Check results table for any issues
+  goodSummary: No issues found.

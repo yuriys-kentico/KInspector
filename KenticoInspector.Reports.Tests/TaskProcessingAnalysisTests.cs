@@ -1,9 +1,12 @@
-using KenticoInspector.Core.Constants;
-using KenticoInspector.Reports.TaskProcessingAnalysis;
-using KenticoInspector.Reports.TaskProcessingAnalysis.Models;
-using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+
+using KenticoInspector.Core.Constants;
+using KenticoInspector.Core.Models;
+using KenticoInspector.Reports.TaskProcessingAnalysis;
+using KenticoInspector.Reports.TaskProcessingAnalysis.Models;
+
+using NUnit.Framework;
 
 namespace KenticoInspector.Reports.Tests
 {
@@ -19,98 +22,98 @@ namespace KenticoInspector.Reports.Tests
         }
 
         [Test]
-        public void Should_ReturnGoodResult_When_ThereAreNoUnprocessedTasks()
+        public void Should_ReturnGoodResult_When_TasksWithoutIssues()
         {
             // Arrange
-            SetupAllDatabaseQueries();
+            ArrangeDatabaseService();
 
             // Act
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status == ReportResultsStatus.Good);
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
         }
 
         [Test]
-        public void Should_ReturnWarningResult_When_ThereAreUnprocessedIntegrationBusTasks()
+        public void Should_ReturnWarningResult_When_IntegrationBusTasksWithIssues()
         {
             // Arrange
-            SetupAllDatabaseQueries(unprocessedIntegrationBusTasks: 1);
+            ArrangeDatabaseService(unprocessedIntegrationBusTasks: 1);
 
             // Act
             var results = _mockReport.GetResults();
 
             // Assert
-            AssertThatResultsDataIncludesTaskTypeDetails(results.Data, TaskType.IntegrationBusTask);
-            Assert.That(results.Status == ReportResultsStatus.Warning);
+            AssertThatResultsDataIncludesTaskTypeDetails(results.Data, _mockReport.Metadata.Terms.CountIntegrationBusTask);
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
         }
 
         [Test]
-        public void Should_ReturnWarningResult_When_ThereAreUnprocessedScheduledTasks()
+        public void Should_ReturnWarningResult_When_ScheduledTasksWithIssues()
         {
             // Arrange
-            SetupAllDatabaseQueries(unprocessedScheduledTasks: 1);
+            ArrangeDatabaseService(unprocessedScheduledTasks: 1);
 
             // Act
             var results = _mockReport.GetResults();
 
             // Assert
-            AssertThatResultsDataIncludesTaskTypeDetails(results.Data, TaskType.ScheduledTask);
-            Assert.That(results.Status == ReportResultsStatus.Warning);
+            AssertThatResultsDataIncludesTaskTypeDetails(results.Data, _mockReport.Metadata.Terms.CountScheduledTask);
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
         }
 
         [Test]
-        public void Should_ReturnWarningResult_When_ThereAreUnprocessedSearchTasks()
+        public void Should_ReturnWarningResult_When_SearchTasksWithIssues()
         {
             // Arrange
-            SetupAllDatabaseQueries(unprocessedSearchTasks: 1);
+            ArrangeDatabaseService(unprocessedSearchTasks: 1);
 
             // Act
             var results = _mockReport.GetResults();
 
             // Assert
-            AssertThatResultsDataIncludesTaskTypeDetails(results.Data, TaskType.SearchTask);
-            Assert.That(results.Status == ReportResultsStatus.Warning);
+            AssertThatResultsDataIncludesTaskTypeDetails(results.Data, _mockReport.Metadata.Terms.CountSearchTask);
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
         }
 
         [Test]
-        public void Should_ReturnWarningResult_When_ThereAreUnprocessedStagingTasks()
+        public void Should_ReturnWarningResult_When_StagingTasksWithIssues()
         {
             // Arrange
-            SetupAllDatabaseQueries(unprocessedStagingTasks: 1);
+            ArrangeDatabaseService(unprocessedStagingTasks: 1);
 
             // Act
             var results = _mockReport.GetResults();
 
             // Assert
-            AssertThatResultsDataIncludesTaskTypeDetails(results.Data, TaskType.StagingTask);
-            Assert.That(results.Status == ReportResultsStatus.Warning);
+            AssertThatResultsDataIncludesTaskTypeDetails(results.Data, _mockReport.Metadata.Terms.CountStagingTask);
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
         }
 
         [Test]
-        public void Should_ReturnWarningResult_When_ThereAreUnprocessedWebFarmTasks()
+        public void Should_ReturnWarningResult_When_WebFarmTasksWithIssues()
         {
             // Arrange
-            SetupAllDatabaseQueries(unprocessedWebFarmTasks: 1);
+            ArrangeDatabaseService(unprocessedWebFarmTasks: 1);
 
             // Act
             var results = _mockReport.GetResults();
 
             // Assert
-            AssertThatResultsDataIncludesTaskTypeDetails(results.Data, TaskType.WebFarmTask);
-            Assert.That(results.Status == ReportResultsStatus.Warning);
+            AssertThatResultsDataIncludesTaskTypeDetails(results.Data, _mockReport.Metadata.Terms.CountWebFarmTask);
+            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
         }
 
-        private static void AssertThatResultsDataIncludesTaskTypeDetails(dynamic data, TaskType taskType)
+        private static void AssertThatResultsDataIncludesTaskTypeDetails(dynamic data, Term term)
         {
             var resultsData = (IEnumerable<string>)data;
-            var hasTasksListedInResults = resultsData.Any(x => x.Contains(taskType.ToString(), System.StringComparison.InvariantCultureIgnoreCase));
+            var hasTasksListedInResults = resultsData.Any(x => x.Contains(term.ToString(), System.StringComparison.InvariantCultureIgnoreCase));
 
-            Assert.That(hasTasksListedInResults, $"'{taskType}' not found in data.");
+            Assert.That(hasTasksListedInResults, $"'{term}' not found in data.");
         }
 
-        private void SetupAllDatabaseQueries(
-                    int unprocessedIntegrationBusTasks = 0,
+        private void ArrangeDatabaseService(
+            int unprocessedIntegrationBusTasks = 0,
             int unprocessedScheduledTasks = 0,
             int unprocessedSearchTasks = 0,
             int unprocessedStagingTasks = 0,
@@ -118,23 +121,23 @@ namespace KenticoInspector.Reports.Tests
         )
         {
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetCountOfUnprocessedIntegrationBusTasks))
+                .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetIntegrationTasksCountInPast24Hours))
                 .Returns(unprocessedIntegrationBusTasks);
 
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetCountOfUnprocessedScheduledTasks))
+                .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetCmsScheduledTasksCountInPast24Hours))
                 .Returns(unprocessedScheduledTasks);
 
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetCountOfUnprocessedSearchTasks))
+                .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetCmsSearchTasksCountInPast24Hours))
                 .Returns(unprocessedSearchTasks);
 
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetCountOfUnprocessedStagingTasks))
+                .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetStagingTasksCountInpast24Hours))
                 .Returns(unprocessedStagingTasks);
 
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetCountOfUnprocessedWebFarmTasks))
+                .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetCmsWebFarmTaskCountInPast24Hours))
                 .Returns(unprocessedWebFarmTasks);
         }
     }

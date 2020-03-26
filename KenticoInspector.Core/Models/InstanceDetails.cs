@@ -11,6 +11,6 @@ namespace KenticoInspector.Core.Models
 
         public Version DatabaseVersion { get; set; }
 
-        public IEnumerable<Site> Sites { get; set; }
+        public IEnumerable<CmsSite> Sites { get; set; }
     }
 }

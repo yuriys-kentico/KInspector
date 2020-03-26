@@ -1,22 +1,11 @@
-﻿using System.Collections.Generic;
-
-using KenticoInspector.Core.Models;
-using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Analysis;
+﻿using KenticoInspector.Core.Models;
 
 namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
 {
     public class IssueTypeResult
     {
-        public string Name { get; }
+        public string Name { get; set; }
 
-        public string Description { get; }
-
-        public IssueTypeResult(string issueType, IDictionary<string, Term> detectedIssueTypes)
-        {
-            detectedIssueTypes.TryGetValue(issueType, out Term description);
-
-            Name = TransformationIssue.ReplaceEachUppercaseLetterWithASpaceAndTheLetter(issueType);
-            Description = description;
-        }
+        public string Description { get; set; }
     }
 }
