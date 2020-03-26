@@ -7,6 +7,7 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Analysis;
@@ -133,9 +134,8 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
 
             if (!allIssues.Any())
             {
-                return new ReportResults()
+                return new ReportResults(ReportResultsStatus.Good)
                 {
-                    Status = ReportResultsStatus.Good,
                     Summary = Metadata.Terms.GoodSummary
                 };
             }
@@ -147,11 +147,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
             var issueTypes = oneIssueOfEachType
                 .Select(AsIssueTypeResult);
 
-            var issueTypesResult = new TableResult<IssueTypeResult>
-            {
-                Name = Metadata.Terms.TableNames.IssueTypes,
-                Rows = issueTypes
-            };
+            var issueTypesResult = issueTypes.AsResult().WithLabel(Metadata.Terms.TableNames.IssueTypes);
 
             var usedIssueTypes = IssueAnalyzers.DetectedIssueTypes
                 .Keys
@@ -170,30 +166,18 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
             var transformationsResultRows = allTransformations
                 .Select(transformation => new TransformationResult(transformation, CountTransformationUses(transformation, pageTemplates), usedIssueTypes));
 
-            var transformationsResult = new TableResult<TransformationResult>
-            {
-                Name = Metadata.Terms.TableNames.TransformationsWithIssues,
-                Rows = transformationsResultRows
-            };
+            var transformationsResult = transformationsResultRows.AsResult().WithLabel(Metadata.Terms.TableNames.TransformationsWithIssues);
 
             var transformationUsageResultRows = pageTemplates
                 .SelectMany(AsTransformationUsageResults);
 
-            var transformationUsageResult = new TableResult<TransformationUsageResult>
-            {
-                Name = Metadata.Terms.TableNames.TransformationUsage,
-                Rows = transformationUsageResultRows
-            };
+            var transformationUsageResult = transformationUsageResultRows.AsResult().WithLabel(Metadata.Terms.TableNames.TransformationUsage);
 
             var templateUsageResultRows = pageTemplates
                 .SelectMany(pageTemplate => pageTemplate.TreeNodes)
                 .Select(page => new TemplateUsageResult(page, sites));
 
-            var templateUsageResult = new TableResult<TemplateUsageResult>
-            {
-                Name = Metadata.Terms.TableNames.TemplateUsage,
-                Rows = templateUsageResultRows
-            };
+            var templateUsageResult = templateUsageResultRows.AsResult().WithLabel(Metadata.Terms.TableNames.TemplateUsage);
 
             var summaryCount = allTransformations
                 .Select(transformation => transformation.Issues)
@@ -202,12 +186,10 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
             var issueTypesAsCsv = string.Join(',', usedIssueTypes
                 .Select(issueType => Metadata.Terms.IssueTypes.With(new { issueType })));
 
-            return new ReportResults()
+            return new ReportResults(ReportResultsStatus.Warning)
             {
-                Status = ReportResultsStatus.Warning,
                 Summary = Metadata.Terms.WarningSummary.With(new { summaryCount, issueTypesAsCsv }),
-                Type = ReportResultsType.TableList,
-                Data = new
+                Data =
                 {
                     issueTypesResult,
                     transformationsResult,

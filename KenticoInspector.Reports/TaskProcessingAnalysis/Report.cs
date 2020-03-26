@@ -6,6 +6,7 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.TaskProcessingAnalysis.Models;
 using KenticoInspector.Reports.TaskProcessingAnalysis.Models.Results;
@@ -54,31 +55,27 @@ namespace KenticoInspector.Reports.TaskProcessingAnalysis
 
             if (count == 0)
             {
-                return new ReportResults()
+                return new ReportResults(ReportResultsStatus.Good)
                 {
-                    Status = ReportResultsStatus.Good,
                     Summary = Metadata.Terms.GoodSummary
                 };
             }
 
-            var data = taskTypesAndCounts
-                .Where(taskTypeAndCount => taskTypeAndCount.Count > 0)
-                .Select(AsTaskCountLine);
-
-            return new ReportResults()
+            var results = new ReportResults(ReportResultsStatus.Warning)
             {
-                Status = ReportResultsStatus.Warning,
-                Summary = Metadata.Terms.WarningSummary.With(new { count }),
-                Type = ReportResultsType.StringList,
-                Data = data,
+                Summary = Metadata.Terms.WarningSummary.With(new { count })
             };
-        }
 
-        private static string AsTaskCountLine(TaskCountResult taskCountResult)
-        {
-            var count = taskCountResult.Count;
+            var lines = taskTypesAndCounts
+                .Where(taskTypeAndCount => taskTypeAndCount.Count > 0)
+                .Select(taskTypeAndCount => taskTypeAndCount.Term.With(new { count = taskTypeAndCount.Count }));
 
-            return taskCountResult.Term.With(new { count });
+            foreach (var result in lines)
+            {
+                results.Data.Add(result);
+            }
+
+            return results;
         }
     }
 }

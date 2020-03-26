@@ -6,6 +6,7 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.TemplateLayoutAnalysis.Models;
 using KenticoInspector.Reports.TemplateLayoutAnalysis.Models.Data;
@@ -55,27 +56,17 @@ namespace KenticoInspector.Reports.TemplateLayoutAnalysis
         {
             if (!identicalPageTemplateResults.Any())
             {
-                return new ReportResults
+                return new ReportResults(ReportResultsStatus.Good)
                 {
-                    Status = ReportResultsStatus.Good,
                     Summary = Metadata.Terms.GoodSummary
                 };
             }
-
             var count = identicalPageTemplateResults.Count();
 
-            var data = new TableResult<IdenticalPageTemplateResult>()
+            return new ReportResults(ReportResultsStatus.Information)
             {
-                Name = Metadata.Terms.TableNames.IdenticalPageLayouts,
-                Rows = identicalPageTemplateResults
-            };
-
-            return new ReportResults
-            {
-                Status = ReportResultsStatus.Information,
                 Summary = Metadata.Terms.InformationSummary.With(new { count }),
-                Type = ReportResultsType.Table,
-                Data = data
+                Data = identicalPageTemplateResults.AsResult().WithLabel(Metadata.Terms.TableNames.IdenticalPageLayouts)
             };
         }
     }

@@ -3,6 +3,7 @@ using System.Linq;
 
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Reports.ClassTableValidation;
 using KenticoInspector.Reports.ClassTableValidation.Models;
 using KenticoInspector.Reports.ClassTableValidation.Models.Data;
@@ -76,8 +77,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.GetAnonymousTableResult<TableResult<DatabaseTable>>("tableResults").Rows.Count(), Is.EqualTo(0));
-            Assert.That(results.GetAnonymousTableResult<TableResult<CmsClass>>("classResults").Rows.Count(), Is.EqualTo(1));
+            Assert.That(results.Data.First<TableResult<CmsClass>>().Rows.Count(), Is.EqualTo(1));
             Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
         }
 
@@ -105,8 +105,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.GetAnonymousTableResult<TableResult<DatabaseTable>>("tableResults").Rows.Count(), Is.EqualTo(1));
-            Assert.That(results.GetAnonymousTableResult<TableResult<CmsClass>>("classResults").Rows.Count(), Is.EqualTo(0));
+            Assert.That(results.Data.First<TableResult<DatabaseTable>>().Rows.Count(), Is.EqualTo(1));
             Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
         }
 

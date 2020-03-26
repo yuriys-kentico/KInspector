@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
-
+using System.Linq;
 using KenticoInspector.Core.Constants;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Reports.DatabaseTableSizeAnalysis;
 using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Data;
 using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Models;
@@ -35,7 +36,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Data.Rows.Count, Is.EqualTo(25));
+            Assert.That(results.Data.First<TableResult<DatabaseTableSize>>().Rows.Count(), Is.EqualTo(25));
             Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Information));
         }
 

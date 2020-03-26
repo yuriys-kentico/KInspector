@@ -5,6 +5,7 @@ using System.Xml.Linq;
 
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data;
@@ -186,10 +187,7 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
-
-            var rowCount = results.GetAnonymousTableResult<TableResult<VersionHistoryMismatchResult>>(_mockReport.Metadata.Terms.TableNames.WorkflowInconsistencies).Rows.Count();
-
-            Assert.That(rowCount, Is.EqualTo(4));
+            Assert.That(results.Data.First<TableResult<VersionHistoryMismatchResult>>().Rows.Count(), Is.EqualTo(4));
         }
 
         private void SetupAllDatabaseQueries(

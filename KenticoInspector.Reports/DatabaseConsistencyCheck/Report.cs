@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-
+using System.Linq;
 using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.DatabaseConsistencyCheck.Models;
 
@@ -42,19 +43,16 @@ namespace KenticoInspector.Reports.DatabaseConsistencyCheck
 
             if (hasNoIssues)
             {
-                return new ReportResults
+                return new ReportResults(ReportResultsStatus.Good)
                 {
-                    Status = ReportResultsStatus.Good,
                     Summary = Metadata.Terms.GoodSummary
                 };
             }
 
-            return new ReportResults
+            return new ReportResults(ReportResultsStatus.Error)
             {
-                Status = ReportResultsStatus.Error,
                 Summary = Metadata.Terms.ErrorSummary,
-                Type = ReportResultsType.Table,
-                Data = checkDbResults
+                Data = checkDbResults.Rows.OfType<DataRow>().AsResult()
             };
         }
     }

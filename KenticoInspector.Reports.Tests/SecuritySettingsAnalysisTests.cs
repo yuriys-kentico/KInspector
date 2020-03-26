@@ -4,6 +4,7 @@ using System.Xml;
 using System.Xml.Linq;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Reports.SecuritySettingsAnalysis;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models;
@@ -225,10 +226,8 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
-
             Assert.That(results.Summary, Is.EqualTo(mockReport.Metadata.Terms.Summaries.Warning.ToString()));
-
-            Assert.That(GetResult<TableResult<CmsSettingsKeyResult>>(results).Rows.Count(), Is.EqualTo(5));
+            Assert.That(results.Data.First<TableResult<CmsSettingsKeyResult>>().Rows.Count(), Is.EqualTo(5));
         }
 
         [TestCase(
@@ -246,10 +245,8 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
-
             Assert.That(results.Summary, Is.EqualTo(mockReport.Metadata.Terms.Summaries.Warning.ToString()));
-
-            Assert.That(GetResult<TableResult<WebConfigSettingResult>>(results).Rows.Count(), Is.EqualTo(8));
+            Assert.That(results.Data.First<TableResult<WebConfigSettingResult>>().Rows.Count(), Is.EqualTo(8));
         }
 
         [TestCase(
@@ -267,11 +264,9 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
-
             Assert.That(results.Summary, Is.EqualTo(mockReport.Metadata.Terms.Summaries.Warning.ToString()));
-
-            Assert.That(GetResult<TableResult<CmsSettingsKeyResult>>(results).Rows.Count(), Is.EqualTo(5));
-            Assert.That(GetResult<TableResult<WebConfigSettingResult>>(results).Rows.Count(), Is.EqualTo(8));
+            Assert.That(results.Data.First<TableResult<CmsSettingsKeyResult>>().Rows.Count(), Is.EqualTo(5));
+            Assert.That(results.Data.First<TableResult<WebConfigSettingResult>>().Rows.Count(), Is.EqualTo(8));
         }
 
         private void ArrangeDatabaseService(
@@ -302,7 +297,7 @@ namespace KenticoInspector.Reports.Tests
 
         private void ArrangeCmsFileService(string webConfigPath)
         {
-            var webConfig = XDocument.Parse(webConfigPath);
+            var webConfig = XDocument.Load(webConfigPath);
 
             _mockCmsFileService
                 .Setup(p => p.GetXDocument(_mockInstance.Path, DefaultKenticoPaths.WebConfigFile))
@@ -311,16 +306,6 @@ namespace KenticoInspector.Reports.Tests
             _mockCmsFileService
                 .Setup(p => p.GetResourceStringsFromResx(_mockInstance.Path, DefaultKenticoPaths.PrimaryResxFile))
                 .Returns(new Dictionary<string, string>());
-        }
-
-        private static TResult GetResult<TResult>(ReportResults results)
-        {
-            IDictionary<string, object> dictionaryData = results.Data;
-
-            return dictionaryData
-                .Values
-                .OfType<TResult>()
-                .First();
         }
     }
 }

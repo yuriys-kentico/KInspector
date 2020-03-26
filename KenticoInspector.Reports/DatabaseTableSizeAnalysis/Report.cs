@@ -5,6 +5,7 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Data;
 using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Models;
@@ -36,18 +37,10 @@ namespace KenticoInspector.Reports.DatabaseTableSizeAnalysis
 
         private ReportResults CompileResults(IEnumerable<DatabaseTableSize> top25LargestTables)
         {
-            var databaseTableSizeResult = new TableResult<DatabaseTableSize>
+            return new ReportResults(ReportResultsStatus.Information)
             {
-                Name = Metadata.Terms.TableNames.Top25Results,
-                Rows = top25LargestTables
-            };
-
-            return new ReportResults
-            {
-                Status = ReportResultsStatus.Information,
                 Summary = Metadata.Terms.InformationSummary,
-                Type = ReportResultsType.Table,
-                Data = databaseTableSizeResult
+                Data = top25LargestTables.AsResult().WithLabel(Metadata.Terms.TableNames.Top25Results)
             };
         }
     }

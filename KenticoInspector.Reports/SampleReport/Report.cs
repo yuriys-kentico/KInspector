@@ -6,6 +6,7 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.SampleReport.Models;
 
@@ -33,28 +34,24 @@ namespace KenticoInspector.Reports.SampleReport
         {
             var issueCount = random.Next(0, 3);
 
-            var data = new List<string>();
+            return CompileResults(issueCount);
+        }
+
+        private ReportResults CompileResults(int issueCount)
+        {
+            var results = new ReportResults(ReportResultsStatus.Information)
+            {
+                Summary = Metadata.Terms.InformationSummary.With(new { issueCount })
+            };
 
             for (int i = 0; i < issueCount; i++)
             {
                 var name = $"test-{i}";
                 var problem = GetRandomString(10);
-
-                data.Add(Metadata.Terms.DetailedResult.With(new { name, problem }));
+                results.Data.Add(Metadata.Terms.DetailedResult.With(new { name, problem }));
             }
 
-            return CompileResults(issueCount, data);
-        }
-
-        private ReportResults CompileResults(int issueCount, IEnumerable<string> data)
-        {
-            return new ReportResults()
-            {
-                Status = ReportResultsStatus.Information,
-                Summary = Metadata.Terms.InformationSummary.With(new { issueCount }),
-                Type = ReportResultsType.StringList,
-                Data = data
-            };
+            return results;
         }
 
         private string GetRandomString(int size)

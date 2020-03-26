@@ -3,6 +3,7 @@ using System.Linq;
 
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Reports.TaskProcessingAnalysis;
 using KenticoInspector.Reports.TaskProcessingAnalysis.Models;
 
@@ -104,12 +105,15 @@ namespace KenticoInspector.Reports.Tests
             Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
         }
 
-        private static void AssertThatResultsDataIncludesTaskTypeDetails(dynamic data, Term term)
+        private static void AssertThatResultsDataIncludesTaskTypeDetails(ReportResultsData data, Term term)
         {
-            var resultsData = (IEnumerable<string>)data;
-            var hasTasksListedInResults = resultsData.Any(x => x.Contains(term.ToString(), System.StringComparison.InvariantCultureIgnoreCase));
-
-            Assert.That(hasTasksListedInResults, $"'{term}' not found in data.");
+            foreach (var result in data)
+            {
+                if (result is StringResult stringResult)
+                {
+                    Assert.That(stringResult.String, Does.Contain(term.ToString()));
+                }
+            }
         }
 
         private void ArrangeDatabaseService(

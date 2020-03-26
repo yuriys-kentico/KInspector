@@ -6,6 +6,7 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data;
@@ -71,18 +72,13 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
             var nodeIds = databaseService.ExecuteSqlFromFile<int>(sqlScriptRelativeFilePath);
             var details = databaseService.ExecuteSqlFromFile<T>(getDetailsScript, new { nodeIds });
 
-            var status = details.Count() > 0 ? ReportResultsStatus.Error : ReportResultsStatus.Good;
-
-            var data = new TableResult<T>
-            {
-                Name = tableName,
-                Rows = details
-            };
+            var count = details.Count();
 
             return new ConsistencyResult(
-                status,
+                count > 0 ? ReportResultsStatus.Error : ReportResultsStatus.Good,
                 tableName,
-                data
+                details.AsResult().WithLabel(tableName),
+                count
             );
         }
 
@@ -113,20 +109,15 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
                 comparisonResults.AddRange(classComparisionResults);
             }
 
-            var status = comparisonResults.Count() > 0 ? ReportResultsStatus.Error : ReportResultsStatus.Good;
+            var count = comparisonResults.Count();
 
             var tableName = Metadata.Terms.TableNames.WorkflowInconsistencies;
 
-            var data = new TableResult<VersionHistoryMismatchResult>
-            {
-                Name = tableName,
-                Rows = comparisonResults
-            };
-
             return new ConsistencyResult(
-                status,
+                count > 0 ? ReportResultsStatus.Error : ReportResultsStatus.Good,
                 tableName,
-                data
+                comparisonResults.AsResult().WithLabel(tableName),
+                count
             );
         }
 
@@ -204,25 +195,18 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
 
         private ReportResults CompileResults(params ConsistencyResult[] allTableResults)
         {
-            var combinedResults = new ReportResults
-            {
-                Status = ReportResultsStatus.Good,
-                Type = ReportResultsType.TableList
-            };
-
-            IDictionary<string, object> dataAsDictionary = combinedResults.Data;
+            var combinedResults = new ReportResults(ReportResultsStatus.Good);
 
             foreach (var reportResult in allTableResults)
             {
-                var tableName = reportResult.TableName;
-
                 if (reportResult.Status == ReportResultsStatus.Error)
                 {
-                    dataAsDictionary.Add(tableName, reportResult.Data);
+                    combinedResults.Data.Add(reportResult.Data);
 
-                    var count = reportResult.Data.Rows.Count;
+                    var name = reportResult.TableName;
+                    var count = reportResult.Count;
 
-                    combinedResults.Summary += Metadata.Terms.ErrorSummary.With(new { tableName, count });
+                    combinedResults.Summary += Metadata.Terms.ErrorSummary.With(new { name, count });
                     combinedResults.Status = ReportResultsStatus.Error;
                 }
             }

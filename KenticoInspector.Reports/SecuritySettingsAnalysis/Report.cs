@@ -8,6 +8,7 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models;
@@ -190,64 +191,28 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
         {
             if (!cmsSettingsKeyResults.Any() && !webConfigSettingsResults.Any())
             {
-                return new ReportResults
+                return new ReportResults(ReportResultsStatus.Good)
                 {
-                    Status = ReportResultsStatus.Good,
                     Summary = Metadata.Terms.Summaries.Good
                 };
             }
 
-            var errorReportResults = new ReportResults
+            var cmsSettingsKeyResultsCount = cmsSettingsKeyResults.Count();
+            var webConfigSettingsResultsCount = webConfigSettingsResults.Count();
+
+            return new ReportResults(ReportResultsStatus.Warning)
             {
-                Type = ReportResultsType.TableList,
-                Status = ReportResultsStatus.Warning
-            };
-
-            var cmsSettingsKeyResultsCount = IfAnyAddTableResult(
-                errorReportResults.Data,
-                cmsSettingsKeyResults,
-                Metadata.Terms.TableTitles.AdminSecuritySettings
-                );
-
-            var webConfigSettingsResultsCount = IfAnyAddTableResult(
-                errorReportResults.Data,
-                webConfigSettingsResults,
-                Metadata.Terms.TableTitles.WebConfigSecuritySettings
-                );
-
-            errorReportResults.Summary = Metadata.Terms.Summaries.Warning.With(new
-            {
-                cmsSettingsKeyResultsCount,
-                webConfigSettingsResultsCount
-            });
-
-            return errorReportResults;
-        }
-
-        private static int IfAnyAddTableResult<T>(dynamic data, IEnumerable<T> results, Term tableNameTerm)
-        {
-            if (results.Any())
-            {
-                var tableResult = new TableResult<T>
+                Summary = Metadata.Terms.Summaries.Warning.With(new
                 {
-                    Name = tableNameTerm,
-                    Rows = results
-                };
-
-                IDictionary<string, object> dictionaryData = data;
-
-                dictionaryData.Add(tableNameTerm, tableResult);
-            }
-
-            return results.Count();
-        }
-
-        private static XDocument ToXDocument(XmlDocument document, LoadOptions options = LoadOptions.None)
-        {
-            using (var reader = new XmlNodeReader(document))
-            {
-                return XDocument.Load(reader, options);
-            }
+                    cmsSettingsKeyResultsCount,
+                    webConfigSettingsResultsCount
+                }),
+                Data =
+                {
+                    cmsSettingsKeyResults.AsResult().WithLabel(Metadata.Terms.TableTitles.AdminSecuritySettings),
+                    webConfigSettingsResults.AsResult().WithLabel(Metadata.Terms.TableTitles.WebConfigSecuritySettings)
+                }
+            };
         }
     }
 }

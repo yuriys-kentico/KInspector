@@ -7,6 +7,7 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models.Data;
@@ -111,47 +112,32 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
         {
             if (!templateAnalysisResults.Any())
             {
-                return new ReportResults
+                return new ReportResults(ReportResultsStatus.Good)
                 {
-                    Status = ReportResultsStatus.Good,
                     Summary = Metadata.Terms.GoodSummary
                 };
             }
 
-            var templateAnalysisResultsResult = new TableResult<TemplateAnalysisResult>()
-            {
-                Name = Metadata.Terms.TableNames.TemplatesWithIssues,
-                Rows = templateAnalysisResults
-            };
+            var templateAnalysisResultsResult = templateAnalysisResults.AsResult().WithLabel(Metadata.Terms.TableNames.TemplatesWithIssues);
 
             var webPartsWithIssues = templateAnalysisResults
                 .SelectMany(x => x.WebPartsWithIssues);
 
-            var webPartAnalysisResultsResult = new TableResult<WebPartAnalysisResult>()
-            {
-                Name = Metadata.Terms.TableNames.WebPartsWithIssues,
-                Rows = webPartsWithIssues
-            };
+            var webPartAnalysisResultsResult = webPartsWithIssues.AsResult().WithLabel(Metadata.Terms.TableNames.WebPartsWithIssues);
 
             var treeNodesWithIssues = templateAnalysisResults
                 .SelectMany(x => x.TreeNodesWithIssues);
 
-            var TreeNodesWithIssuesResult = new TableResult<CmsTreeNode>()
-            {
-                Name = Metadata.Terms.TableNames.TreeNodesWithIssues,
-                Rows = treeNodesWithIssues
-            };
+            var TreeNodesWithIssuesResult = treeNodesWithIssues.AsResult().WithLabel(Metadata.Terms.TableNames.TreeNodesWithIssues);
 
             var affectedDocumentCount = treeNodesWithIssues.Count();
             var affectedTemplateCount = templateAnalysisResults.Count();
             var affectedWebPartCount = webPartsWithIssues.Count();
 
-            return new ReportResults
+            return new ReportResults(ReportResultsStatus.Warning)
             {
-                Status = ReportResultsStatus.Warning,
                 Summary = Metadata.Terms.WarningSummary.With(new { affectedDocumentCount, affectedTemplateCount, affectedWebPartCount }),
-                Type = ReportResultsType.TableList,
-                Data = new
+                Data =
                 {
                     templateAnalysisResultsResult,
                     webPartAnalysisResultsResult,

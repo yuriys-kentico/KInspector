@@ -6,6 +6,7 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services.Interfaces;
 
 using KenticoInspector.Reports.UnusedPageTypeSummary.Models;
@@ -40,27 +41,18 @@ namespace KenticoInspector.Reports.UnusedPageTypeSummary
         {
             if (!classesNotInViewCmsTreeJoined.Any())
             {
-                return new ReportResults
+                return new ReportResults(ReportResultsStatus.Good)
                 {
-                    Status = ReportResultsStatus.Good,
                     Summary = Metadata.Terms.GoodSummary
                 };
             }
 
             var count = classesNotInViewCmsTreeJoined.Count();
 
-            var data = new TableResult<CmsClass>()
+            return new ReportResults(ReportResultsStatus.Information)
             {
-                Name = Metadata.Terms.TableNames.UnusedPageTypes,
-                Rows = classesNotInViewCmsTreeJoined
-            };
-
-            return new ReportResults
-            {
-                Status = ReportResultsStatus.Information,
                 Summary = Metadata.Terms.InformationSummary.With(new { count }),
-                Type = ReportResultsType.Table,
-                Data = data
+                Data = classesNotInViewCmsTreeJoined.AsResult().WithLabel(Metadata.Terms.TableNames.UnusedPageTypes)
             };
         }
     }

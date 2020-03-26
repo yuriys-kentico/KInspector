@@ -3,6 +3,7 @@ using System.Linq;
 
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Reports.PageTypeFieldAnalysis;
 using KenticoInspector.Reports.PageTypeFieldAnalysis.Models;
 
@@ -65,10 +66,9 @@ namespace KenticoInspector.Reports.Tests
 
             // Act
             var results = mockReport.GetResults();
-            var resultsData = results.Data as TableResult<CmsPageTypeField>;
 
             // Assert
-            Assert.That(resultsData.Rows.Count(), Is.EqualTo(2));
+            Assert.That(results.Data.First<TableResult<CmsPageTypeField>>().Rows.Count(), Is.EqualTo(2));
             Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Information));
         }
     }

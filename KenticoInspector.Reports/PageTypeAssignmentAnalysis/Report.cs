@@ -6,6 +6,7 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.PageTypeAssignmentAnalysis.Models;
 using KenticoInspector.Reports.PageTypeAssignmentAnalysis.Models.Data;
@@ -40,27 +41,18 @@ namespace KenticoInspector.Reports.PageTypeAssignmentAnalysis
         {
             if (!pageTypesNotAssignedToSite.Any())
             {
-                return new ReportResults
+                return new ReportResults(ReportResultsStatus.Good)
                 {
-                    Status = ReportResultsStatus.Good,
                     Summary = Metadata.Terms.GoodSummary
                 };
             }
 
             var unassignedPageTypeCount = pageTypesNotAssignedToSite.Count();
 
-            var data = new TableResult<CmsPageType>()
+            return new ReportResults(ReportResultsStatus.Warning)
             {
-                Name = Metadata.Terms.TableNames.UnassignedPageTypes,
-                Rows = pageTypesNotAssignedToSite
-            };
-
-            return new ReportResults
-            {
-                Status = ReportResultsStatus.Warning,
                 Summary = Metadata.Terms.WarningSummary.With(new { unassignedPageTypeCount }),
-                Type = ReportResultsType.Table,
-                Data = data
+                Data = pageTypesNotAssignedToSite.AsResult().WithLabel(Metadata.Terms.TableNames.UnassignedPageTypes)
             };
         }
     }

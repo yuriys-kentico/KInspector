@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
-
+using System.Linq;
 using KenticoInspector.Core.Constants;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Reports.UnusedPageTypeSummary;
 using KenticoInspector.Reports.UnusedPageTypeSummary.Models;
 using KenticoInspector.Reports.UnusedPageTypeSummary.Models.Data;
@@ -78,7 +79,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Data.Rows.Count, Is.EqualTo(6));
+            Assert.That(results.Data.First<TableResult<CmsClass>>().Rows.Count(), Is.EqualTo(6));
             Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Information));
         }
     }

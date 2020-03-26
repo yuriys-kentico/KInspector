@@ -7,6 +7,7 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.DebugConfigurationAnalysis.Models;
 using KenticoInspector.Reports.DebugConfigurationAnalysis.Models.Data;
@@ -95,42 +96,27 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
 
             if (!explicitlyEnabledSettings.Any() && !compilationDebugAndTraceAreEnabled)
             {
-                return new ReportResults()
+                return new ReportResults(ReportResultsStatus.Good)
                 {
-                    Status = ReportResultsStatus.Good,
                     Summary = Metadata.Terms.GoodSummary
                 };
             }
 
-            var results = new ReportResults()
-            {
-                Status = ReportResultsStatus.Warning,
-                Type = ReportResultsType.TableList
-            };
+            var results = new ReportResults(ReportResultsStatus.Warning);
 
             if (explicitlyEnabledSettings.Any())
             {
                 var explicitlyEnabledSettingsCount = explicitlyEnabledSettings.Count();
 
                 results.Summary += Metadata.Terms.WarningSummary.With(new { explicitlyEnabledSettingsCount });
-
-                results.Data.DatabaseSettingsEnabledNotByDefaultResults = new TableResult<CmsSettingsKey>()
-                {
-                    Name = Metadata.Terms.TableNames.ExplicitlyEnabledSettings,
-                    Rows = explicitlyEnabledSettings
-                };
+                results.Data.Add(explicitlyEnabledSettings.AsResult().WithLabel(Metadata.Terms.TableNames.ExplicitlyEnabledSettings));
             }
 
-            results.Data.AllDatabaseSettings = new TableResult<CmsSettingsKey>()
-            {
-                Name = Metadata.Terms.TableNames.Overview,
-                Rows = databaseSettingsKeys
-            };
+            results.Data.Add(databaseSettingsKeys.AsResult().WithLabel(Metadata.Terms.TableNames.Overview));
 
             if (compilationDebugAndTraceAreEnabled)
             {
                 results.Status = ReportResultsStatus.Error;
-
                 results.Summary += Metadata.Terms.ErrorSummary.With(new { compilationDebugIsEnabled, traceIsEnabled });
             }
 
@@ -140,11 +126,7 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
                 new CmsSettingsKey("Trace", Metadata.Terms.WebConfig.TraceKeyDisplayName, traceIsEnabled, false)
             };
 
-            results.Data.WebConfigSettingsResults = new TableResult<CmsSettingsKey>()
-            {
-                Name = Metadata.Terms.TableNames.WebConfig,
-                Rows = webConfigSettingsKeys
-            };
+            results.Data.Add(webConfigSettingsKeys.AsResult().WithLabel(Metadata.Terms.TableNames.WebConfig));
 
             return results;
         }

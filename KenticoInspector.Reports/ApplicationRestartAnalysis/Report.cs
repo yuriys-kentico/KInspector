@@ -6,6 +6,7 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.ApplicationRestartAnalysis.Models;
 using KenticoInspector.Reports.ApplicationRestartAnalysis.Models.Data;
@@ -43,9 +44,8 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
         {
             if (!cmsEventLogs.Any())
             {
-                return new ReportResults
+                return new ReportResults(ReportResultsStatus.Good)
                 {
-                    Status = ReportResultsStatus.Good,
                     Summary = Metadata.Terms.Summaries.Good
                 };
             }
@@ -77,18 +77,10 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
                 totalStartEvents
             });
 
-            var data = new TableResult<CmsEventLog>()
+            return new ReportResults(ReportResultsStatus.Information)
             {
-                Name = Metadata.Terms.TableTitles.ApplicationRestartEvents,
-                Rows = cmsEventLogs
-            };
-
-            return new ReportResults
-            {
-                Data = data,
-                Status = ReportResultsStatus.Information,
                 Summary = summary,
-                Type = ReportResultsType.Table
+                Data = cmsEventLogs.AsResult().WithLabel(Metadata.Terms.TableTitles.ApplicationRestartEvents)
             };
         }
     }

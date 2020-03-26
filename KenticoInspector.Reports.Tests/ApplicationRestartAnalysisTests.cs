@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using KenticoInspector.Core.Constants;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Reports.ApplicationRestartAnalysis;
 using KenticoInspector.Reports.ApplicationRestartAnalysis.Models;
 using KenticoInspector.Reports.ApplicationRestartAnalysis.Models.Data;
@@ -68,8 +69,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Type, Is.EqualTo(ReportResultsType.Table));
-            Assert.That(results.Data.Rows.Count, Is.EqualTo(2));
+            Assert.That(results.Data.First<TableResult<CmsEventLog>>().Rows.Count(), Is.EqualTo(2));
             Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Information));
         }
     }

@@ -8,6 +8,7 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.RobotsTxtConfigurationSummary.Models;
 
@@ -56,21 +57,17 @@ namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
         {
             if (uriStatusCode == statusCodeWithoutIssues)
             {
-                return new ReportResults
+                return new ReportResults(ReportResultsStatus.Good)
                 {
-                    Status = ReportResultsStatus.Good,
-                    Summary = Metadata.Terms.GoodSummary.With(new { testUri }),
-                    Type = ReportResultsType.String
+                    Summary = Metadata.Terms.GoodSummary.With(new { testUri })
                 };
             }
 
             int uriStatusInteger = (int)uriStatusCode;
 
-            return new ReportResults
+            return new ReportResults(ReportResultsStatus.Warning)
             {
-                Status = ReportResultsStatus.Warning,
-                Summary = Metadata.Terms.WarningSummary.With(new { testUri, uriStatusInteger }),
-                Type = ReportResultsType.String
+                Summary = Metadata.Terms.WarningSummary.With(new { testUri, uriStatusInteger })
             };
         }
     }

@@ -7,6 +7,7 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.ColumnFieldValidation.Models;
 using KenticoInspector.Reports.ColumnFieldValidation.Models.Data;
@@ -212,56 +213,28 @@ namespace KenticoInspector.Reports.ColumnFieldValidation
         {
             if (!cmsClassesWithAddedFields.Any() && !tablesWithAddedColumns.Any())
             {
-                return new ReportResults()
+                return new ReportResults(ReportResultsStatus.Good)
                 {
-                    Status = ReportResultsStatus.Good,
                     Summary = Metadata.Terms.Summaries.Good
                 };
             }
 
-            var errorReportResults = new ReportResults
+            var cmsClassesResultCount = cmsClassesWithAddedFields.Count();
+            var tablesResultCount = tablesWithAddedColumns.Count();
+
+            return new ReportResults(ReportResultsStatus.Error)
             {
-                Type = ReportResultsType.TableList,
-                Status = ReportResultsStatus.Error
-            };
-
-            var cmsClassesResultCount = IfAnyAddTableResult(
-                errorReportResults.Data,
-                cmsClassesWithAddedFields,
-                Metadata.Terms.TableTitles.ClassesWithAddedFields
-            );
-
-            var tablesResultCount = IfAnyAddTableResult(
-                errorReportResults.Data,
-                tablesWithAddedColumns,
-                Metadata.Terms.TableTitles.TablesWithAddedColumns
-            );
-
-            errorReportResults.Summary = Metadata.Terms.Summaries.Error.With(new
-            {
-                cmsClassesResultCount,
-                tablesResultCount
-            });
-
-            return errorReportResults;
-        }
-
-        private static int IfAnyAddTableResult<T>(dynamic data, IEnumerable<T> results, Term tableNameTerm)
-        {
-            if (results.Any())
-            {
-                var tableResult = new TableResult<T>
+                Summary = Metadata.Terms.Summaries.Error.With(new
                 {
-                    Name = tableNameTerm,
-                    Rows = results
-                };
-
-                IDictionary<string, object> dictionaryData = data;
-
-                dictionaryData.Add(tableNameTerm, tableResult);
-            }
-
-            return results.Count();
+                    cmsClassesResultCount,
+                    tablesResultCount
+                }),
+                Data =
+                {
+                    cmsClassesWithAddedFields.AsResult().WithLabel(Metadata.Terms.TableTitles.ClassesWithAddedFields),
+                tablesWithAddedColumns.AsResult().WithLabel(Metadata.Terms.TableTitles.TablesWithAddedColumns)
+                }
+            };
         }
     }
 }

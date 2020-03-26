@@ -6,6 +6,7 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services.Interfaces;
 using KenticoInspector.Reports.ClassTableValidation.Models;
 using KenticoInspector.Reports.ClassTableValidation.Models.Data;
@@ -89,41 +90,22 @@ namespace KenticoInspector.Reports.ClassTableValidation
         {
             if (!tablesWithMissingClass.Any() && !cmsClassesWithMissingTable.Any())
             {
-                return new ReportResults()
+                return new ReportResults(ReportResultsStatus.Good)
                 {
-                    Status = ReportResultsStatus.Good,
                     Summary = Metadata.Terms.Summaries.Good
                 };
             }
 
-            var tableErrors = tablesWithMissingClass.Count();
+            var totalErrors = tablesWithMissingClass.Count() + cmsClassesWithMissingTable.Count();
 
-            var tableResults = new TableResult<DatabaseTable>
+            return new ReportResults(ReportResultsStatus.Error)
             {
-                Name = Metadata.Terms.TableTitles.DatabaseTablesWithMissingKenticoClasses,
-                Rows = tablesWithMissingClass
-            };
-
-            var classErrors = cmsClassesWithMissingTable.Count();
-
-            var classResults = new TableResult<CmsClass>
-            {
-                Name = Metadata.Terms.TableTitles.KenticoClassesWithMissingDatabaseTables,
-                Rows = cmsClassesWithMissingTable
-            };
-
-            var totalErrors = tableErrors + classErrors;
-
-            return new ReportResults
-            {
-                Data = new
-                {
-                    tableResults,
-                    classResults
-                },
-                Status = ReportResultsStatus.Error,
                 Summary = Metadata.Terms.Summaries.Error.With(new { totalErrors }),
-                Type = ReportResultsType.TableList
+                Data =
+                {
+                    tablesWithMissingClass.AsResult().WithLabel(Metadata.Terms.TableTitles.DatabaseTablesWithMissingKenticoClasses),
+                    cmsClassesWithMissingTable.AsResult().WithLabel(Metadata.Terms.TableTitles.KenticoClassesWithMissingDatabaseTables)
+                }
             };
         }
     }

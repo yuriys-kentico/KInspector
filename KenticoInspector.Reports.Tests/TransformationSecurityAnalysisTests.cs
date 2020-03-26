@@ -6,6 +6,7 @@ using System.Xml.Linq;
 
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Reports.Tests.Helpers;
 using KenticoInspector.Reports.TransformationSecurityAnalysis;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models;
@@ -115,7 +116,6 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
-
             Assert.That(results.Summary, Is.EqualTo(mockReport.Metadata.Terms.GoodSummary.ToString()));
         }
 
@@ -143,14 +143,11 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
-
-            Assert.That(results.GetAnonymousTableResult<TableResult<IssueTypeResult>>("issueTypesResult").Rows.Count(), Is.EqualTo(1));
-            Assert.That(results.GetAnonymousTableResult<TableResult<TransformationResult>>("transformationsResult").Rows.Count(), Is.EqualTo(1));
-            Assert.That(results.GetAnonymousTableResult<TableResult<TransformationResult>>("transformationsResult").Rows, Has.One.Matches<TransformationResult>(row => transformationResultEvaluator(row, row as dynamic)));
-
-            Assert.That(results.GetAnonymousTableResult<TableResult<TransformationUsageResult>>("transformationUsageResult").Rows.Count(), Is.EqualTo(1));
-
-            Assert.That(results.GetAnonymousTableResult<TableResult<TemplateUsageResult>>("templateUsageResult").Rows.Count(), Is.EqualTo(2));
+            Assert.That(results.Data.First<TableResult<IssueTypeResult>>().Rows.Count(), Is.EqualTo(1));
+            Assert.That(results.Data.First<TableResult<TransformationResult>>().Rows.Count(), Is.EqualTo(1));
+            Assert.That(results.Data.First<TableResult<TransformationResult>>().Rows, Has.One.Matches<TransformationResult>(row => transformationResultEvaluator(row, row as dynamic)));
+            Assert.That(results.Data.First<TableResult<TransformationUsageResult>>().Rows.Count(), Is.EqualTo(1));
+            Assert.That(results.Data.First<TableResult<TemplateUsageResult>>().Rows.Count(), Is.EqualTo(2));
         }
 
         private void ArrangeDatabaseService(IEnumerable<CmsTransformation> transformation)

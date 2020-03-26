@@ -1,9 +1,11 @@
 ﻿using KenticoInspector.Core.Constants;
+using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Reports.PageTypeAssignmentAnalysis;
 using KenticoInspector.Reports.PageTypeAssignmentAnalysis.Models;
 using KenticoInspector.Reports.PageTypeAssignmentAnalysis.Models.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace KenticoInspector.Reports.Tests
 {
@@ -72,7 +74,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Data.Rows.Count, Is.GreaterThan(0));
+            Assert.That(results.Data.First<TableResult<CmsPageType>>().Rows.Count(), Is.GreaterThan(0));
             Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
         }
 
