@@ -545,7 +545,7 @@ namespace KenticoInspector.Core.Tests
 
         private static TestCaseData GetValidTestCaseWhen(object tokenValues, string returns)
         {
-            // TODO: add SetName($"\"{tokenExpression}\" with {tokenValues} returns \"{returns}\"") once NUnit fixes https://github.com/nunit/nunit3-vs-adapter/issues/607 
+            // TODO: add SetName($"\"{tokenExpression}\" with {tokenValues} returns \"{returns}\"") once NUnit fixes https://github.com/nunit/nunit3-vs-adapter/issues/607
 
             return new TestCaseData(tokenExpression, tokenValues)
                 .Returns(returns)

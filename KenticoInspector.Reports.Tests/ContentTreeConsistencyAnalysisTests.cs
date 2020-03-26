@@ -4,7 +4,6 @@ using System.Linq;
 using System.Xml.Linq;
 
 using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models;

@@ -45,7 +45,7 @@ namespace KenticoInspector.Core.Tokens
 
         private (
             string token,
-            IEnumerable<(string value, char operation, string result)> cases, 
+            IEnumerable<(string value, char operation, string result)> cases,
             string defaultValue
             ) GetExpression(string tokenExpression)
         {
@@ -114,10 +114,10 @@ namespace KenticoInspector.Core.Tokens
         }
 
         public bool TryResolveToken(
-            object token, 
-            string expressionCaseValue, 
-            char operation, 
-            string expressionCaseResult, 
+            object token,
+            string expressionCaseValue,
+            char operation,
+            string expressionCaseResult,
             out string resolvedValue
             )
         {

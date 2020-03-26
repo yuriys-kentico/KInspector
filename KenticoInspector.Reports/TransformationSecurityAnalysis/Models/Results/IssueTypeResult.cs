@@ -1,6 +1,4 @@
-﻿using KenticoInspector.Core.Models;
-
-namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
+﻿namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
 {
     public class IssueTypeResult
     {

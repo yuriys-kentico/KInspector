@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using System.Xml.Linq;
+
 using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Reports.SecuritySettingsAnalysis;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers;

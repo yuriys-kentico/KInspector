@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+
 using Newtonsoft.Json;
 
 namespace KenticoInspector.Reports.WebPartPerformanceAnalysis.Models.Data

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Reports.UnusedPageTypeSummary;

@@ -2,9 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Dapper;
 
-using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Repositories.Interfaces;
 using KenticoInspector.Core.Services.Interfaces;

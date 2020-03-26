@@ -2,7 +2,6 @@
 using System.Linq;
 
 using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Reports.PageTypeFieldAnalysis;
 using KenticoInspector.Reports.PageTypeFieldAnalysis.Models;

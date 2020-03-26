@@ -1,11 +1,13 @@
-﻿using KenticoInspector.Core.Constants;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Reports.PageTypeAssignmentAnalysis;
 using KenticoInspector.Reports.PageTypeAssignmentAnalysis.Models;
 using KenticoInspector.Reports.PageTypeAssignmentAnalysis.Models.Data;
+
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace KenticoInspector.Reports.Tests
 {
