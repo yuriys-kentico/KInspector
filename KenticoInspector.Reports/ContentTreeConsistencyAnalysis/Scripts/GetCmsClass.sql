@@ -4,9 +4,7 @@
 	ClassID,
 	ClassName,
 	ClassTableName
-
-    FROM 
-        CMS_Class
-
-    WHERE 
-        ClassID IN @classIds
+FROM 
+    CMS_Class
+WHERE 
+    ClassID IN @idsBatch

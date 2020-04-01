@@ -12,8 +12,8 @@
         public static string GetTreeNodeIdsWithBadParentNodeId = $"{BaseDirectory}/{nameof(GetTreeNodeIdsWithBadParentNodeId)}.sql";
         public static string GetTreeNodeIdsWithBadParentSiteId = $"{BaseDirectory}/{nameof(GetTreeNodeIdsWithBadParentSiteId)}.sql";
         public static string GetTreeNodeIdsWithDuplicatedAliasPath = $"{BaseDirectory}/{nameof(GetTreeNodeIdsWithDuplicatedAliasPath)}.sql";
-        public static string GetTreeNodeIdsWithLevelMismatchByAliasPathTest = $"{BaseDirectory}/{nameof(GetTreeNodeIdsWithLevelMismatchByAliasPathTest)}.sql";
-        public static string GetTreeNodeIdsWithLevelMismatchByNodeLevelTest = $"{BaseDirectory}/{nameof(GetTreeNodeIdsWithLevelMismatchByNodeLevelTest)}.sql";
+        public static string GetTreeNodeIdsWithLevelMismatchByAliasPath = $"{BaseDirectory}/{nameof(GetTreeNodeIdsWithLevelMismatchByAliasPath)}.sql";
+        public static string GetTreeNodeIdsWithLevelMismatchByNodeLevel = $"{BaseDirectory}/{nameof(GetTreeNodeIdsWithLevelMismatchByNodeLevel)}.sql";
         public static string GetTreeNodeIdsWithMissingDocument = $"{BaseDirectory}/{nameof(GetTreeNodeIdsWithMissingDocument)}.sql";
         public static string GetTreeNodeIdsWithPageTypeNotAssignedToSite = $"{BaseDirectory}/{nameof(GetTreeNodeIdsWithPageTypeNotAssignedToSite)}.sql";
         public static string GetLatestVersionHistoryIdForAllDocuments = $"{BaseDirectory}/{nameof(GetLatestVersionHistoryIdForAllDocuments)}.sql";

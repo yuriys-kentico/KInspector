@@ -1,8 +1,6 @@
 ﻿SELECT 
     * 
-
-    FROM 
-        [TableName]
-
-    WHERE 
-        [IdColumnName] IN @coupledDataIds
+FROM 
+    [TableName]
+WHERE 
+    [IdColumnName] IN @coupledDataIds

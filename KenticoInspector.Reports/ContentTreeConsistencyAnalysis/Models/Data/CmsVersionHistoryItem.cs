@@ -16,6 +16,10 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data
 
         public int VersionClassID { get; set; }
 
+        public string VersionDocumentName { get; set; }
+
+        public string DocumentNamePath { get; set; }
+
         public DateTime WasPublishedFrom { get; set; }
 
         public int CoupledDataID

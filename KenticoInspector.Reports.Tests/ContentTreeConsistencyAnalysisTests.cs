@@ -20,7 +20,7 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(12)]
     public class ContentTreeConsistencyAnalysisTests : AbstractReportTest<Report, Terms>
     {
-        private Report _mockReport;
+        private readonly Report _mockReport;
 
         private IEnumerable<CmsDocument> DocumentNodesWithIssues => new List<CmsDocument>
         {
@@ -214,10 +214,10 @@ namespace KenticoInspector.Reports.Tests
             SetupCmsTreeNodeQueries(treeNodesWithDuplicatedAliasPath, Scripts.GetTreeNodeIdsWithDuplicatedAliasPath);
 
             treeNodesWithLevelMismatchByAliasPathTest = treeNodesWithLevelMismatchByAliasPathTest ?? new List<CmsTreeNode>();
-            SetupCmsTreeNodeQueries(treeNodesWithLevelMismatchByAliasPathTest, Scripts.GetTreeNodeIdsWithLevelMismatchByAliasPathTest);
+            SetupCmsTreeNodeQueries(treeNodesWithLevelMismatchByAliasPathTest, Scripts.GetTreeNodeIdsWithLevelMismatchByAliasPath);
 
             treeNodesWithLevelMismatchByNodeLevelTest = treeNodesWithLevelMismatchByNodeLevelTest ?? new List<CmsTreeNode>();
-            SetupCmsTreeNodeQueries(treeNodesWithLevelMismatchByNodeLevelTest, Scripts.GetTreeNodeIdsWithLevelMismatchByNodeLevelTest);
+            SetupCmsTreeNodeQueries(treeNodesWithLevelMismatchByNodeLevelTest, Scripts.GetTreeNodeIdsWithLevelMismatchByNodeLevel);
 
             treeNodesWithMissingDocument = treeNodesWithMissingDocument ?? new List<CmsTreeNode>();
             SetupCmsTreeNodeQueries(treeNodesWithMissingDocument, Scripts.GetTreeNodeIdsWithMissingDocument);
@@ -266,32 +266,32 @@ namespace KenticoInspector.Reports.Tests
         private void SetupCmsClassItemsQueries(IEnumerable<CmsClass> returnedItems, string idScript = null)
         {
             var idValues = returnedItems.Select(x => x.ClassID);
-            SetupDetailsAndIdQueries(idValues, returnedItems, idScript, Scripts.GetCmsClass, "classIds");
+            SetupDetailsAndIdQueries(idValues, returnedItems, idScript, Scripts.GetCmsClass, "idsBatch");
         }
 
         private void SetupCmsDocumentNodeQueries(IEnumerable<CmsDocument> returnedItems, string idScript = null)
         {
             var idValues = returnedItems.Select(x => x.DocumentID);
-            SetupDetailsAndIdQueries(idValues, returnedItems, idScript, Scripts.GetDocumentNodeDetails);
+            SetupDetailsAndIdQueries(idValues, returnedItems, idScript, Scripts.GetDocumentNodeDetails, "nodeIds");
         }
 
         private void SetupCmsTreeNodeQueries(IEnumerable<CmsTreeNode> returnedItems, string idScript = null)
         {
             var idValues = returnedItems.Select(x => x.NodeID);
-            SetupDetailsAndIdQueries(idValues, returnedItems, idScript, Scripts.GetTreeNodeDetails);
+            SetupDetailsAndIdQueries(idValues, returnedItems, idScript, Scripts.GetTreeNodeDetails, "nodeIds");
         }
 
         private void SetupCmsVersionHistoryQueries(IEnumerable<CmsVersionHistoryItem> returnedItems, string idScript = null)
         {
             var idValues = returnedItems.Select(x => x.VersionHistoryID);
-            SetupDetailsAndIdQueries(idValues, returnedItems, idScript, Scripts.GetVersionHistoryDetails, "latestVersionHistoryIds");
+            SetupDetailsAndIdQueries(idValues, returnedItems, idScript, Scripts.GetVersionHistoryDetails, "idsBatch");
         }
 
-        private void SetupDetailsAndIdQueries<T>(IEnumerable<int> idValues, IEnumerable<T> returnedItems, string idScript, string detailsScript, string parameterName = "nodeIds")
+        private void SetupDetailsAndIdQueries<T>(IEnumerable<int> idValues, IEnumerable<T> returnedItems, string idScript, string detailsScript, string parameterName)
         {
             if (idValues == null)
             {
-                throw new ArgumentNullException("idValues");
+                throw new ArgumentNullException(nameof(idValues));
             }
 
             if (!string.IsNullOrWhiteSpace(idScript))

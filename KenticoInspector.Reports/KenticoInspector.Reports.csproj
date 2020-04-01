@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -91,10 +91,10 @@
     <None Update="ContentTreeConsistencyAnalysis\Scripts\GetTreeNodeIdsWithDuplicatedAliasPath.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ContentTreeConsistencyAnalysis\Scripts\GetTreeNodeIdsWithLevelMismatchByAliasPathTest.sql">
+    <None Update="ContentTreeConsistencyAnalysis\Scripts\GetTreeNodeIdsWithLevelMismatchByAliasPath.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ContentTreeConsistencyAnalysis\Scripts\GetTreeNodeIdsWithLevelMismatchByNodeLevelTest.sql">
+    <None Update="ContentTreeConsistencyAnalysis\Scripts\GetTreeNodeIdsWithLevelMismatchByNodeLevel.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ContentTreeConsistencyAnalysis\Scripts\GetTreeNodeIdsWithMissingDocument.sql">

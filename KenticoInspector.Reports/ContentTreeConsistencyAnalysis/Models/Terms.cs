@@ -13,7 +13,7 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models
 
     public class TableNamesTerms
     {
-        public Term DocumentNodesWithNoTreeNode { get; set; }
+        public Term DocumentsWithNoTreeNode { get; set; }
 
         public Term TreeNodesWithABadParentNode { get; set; }
 

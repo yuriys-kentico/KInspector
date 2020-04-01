@@ -8,9 +8,7 @@
     NodeClassID, 
     ClassName, 
     ClassDisplayName
-
-    FROM 
-        View_CMS_Tree_Joined
-	
-        WHERE 
-            NodeID in @nodeIds
+FROM 
+    View_CMS_Tree_Joined
+WHERE 
+    NodeID in @nodeIds
