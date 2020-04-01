@@ -11,8 +11,6 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis.Models
     {
         public string WebPartControlId { get; set; }
 
-        public string WebPartName { get; set; }
-
         public string WebPartType { get; set; }
 
         public int PageTemplateId { get; set; }

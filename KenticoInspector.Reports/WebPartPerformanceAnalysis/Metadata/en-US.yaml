@@ -1,6 +1,6 @@
 ﻿details:
   name: Web part performance analysis
-  shortDescription: Displays list of web parts where the **Columns** property is not specified.
+  shortDescription: Shows list of web parts where the **Columns** property is not specified.
   longDescription: |
     Web parts without a specified **Columns** property must load all fields from the database.
     
@@ -8,9 +8,9 @@
     
     For more information, [see documentation](https://docs.kentico.com/k12sp/configuring-kentico/optimizing-performance-of-portal-engine-sites/loading-data-efficiently).
 terms:
-  goodSummary: No issues with web parts with the **Columns** property found.
+  goodSummary: No issues with web parts with the **Columns** property.
   tableNames:
     treeNodesWithIssues: Tree nodes with issues
     templatesWithIssues: Templates with issues
     webPartsWithIssues: Web parts with issues
-  warningSummary: <affectedWebPartCount> <affectedWebPartCount:web part|web parts> on <affectedTemplateCount> <affectedTemplateCount:template|templates> affecting <affectedDocumentCount> <affectedDocumentCount:document|documents>
+  warningSummary: <affectedWebPartCount> <affectedWebPartCount|web part|web parts> on <affectedTemplateCount> <affectedTemplateCount|template|templates> affecting <affectedDocumentCount> <affectedDocumentCount|document|documents>.

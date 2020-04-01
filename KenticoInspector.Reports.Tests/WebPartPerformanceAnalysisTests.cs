@@ -69,7 +69,8 @@ namespace KenticoInspector.Reports.Tests
             var affectedTemplateIds = affectedTemplates
                 .Select(x => x.PageTemplateID);
 
-            var affectedDocuments = new List<CmsTreeNode>();
+            var affectedDocuments = affectedTemplateIds
+                .Select(affectedTemplateId => new CmsTreeNode { DocumentPageTemplateID = affectedTemplateId });
 
             _mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(Scripts.GetTreeNodesUsingPageTemplates, "pageTemplatesWithWebPartsWithColumnsPropertyIds", affectedTemplateIds, affectedDocuments);
         }
