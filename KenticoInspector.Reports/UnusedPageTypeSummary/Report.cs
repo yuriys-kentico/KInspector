@@ -25,7 +25,7 @@ namespace KenticoInspector.Reports.UnusedPageTypeSummary
 
         public override IList<string> Tags => new List<string>
         {
-            ReportTags.Information
+            ReportTags.ContentModeling
         };
 
         public override ReportResults GetResults()
