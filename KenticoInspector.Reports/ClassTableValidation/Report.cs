@@ -57,14 +57,10 @@ namespace KenticoInspector.Reports.ClassTableValidation
 
         private static IEnumerable<string> GetTableWhitelist(Version version)
         {
-            var whitelist = new List<string>();
-
             if (version.Major >= 10)
             {
-                whitelist.Add("CI_Migration");
+                yield return "CI_Migration";
             }
-
-            return whitelist;
         }
 
         private static IEnumerable<DatabaseTable> GetTablesNotInWhitelist(
@@ -75,8 +71,7 @@ namespace KenticoInspector.Reports.ClassTableValidation
             if (tableWhitelist.Any())
             {
                 return tablesWithMissingClass
-                    .Where(t => !tableWhitelist.Contains(t.TableName))
-                    .ToList();
+                    .Where(table => !tableWhitelist.Contains(table.TableName));
             }
 
             return tablesWithMissingClass;
@@ -95,11 +90,12 @@ namespace KenticoInspector.Reports.ClassTableValidation
                 };
             }
 
-            var totalErrors = tablesWithMissingClass.Count() + cmsClassesWithMissingTable.Count();
+            var tablesWithMissingClassCount = tablesWithMissingClass.Count();
+            var cmsClassesWithMissingTableCount = cmsClassesWithMissingTable.Count();
 
             return new ReportResults(ReportResultsStatus.Error)
             {
-                Summary = Metadata.Terms.Summaries.Error.With(new { totalErrors }),
+                Summary = Metadata.Terms.Summaries.Error.With(new { tablesWithMissingClassCount, cmsClassesWithMissingTableCount }),
                 Data =
                 {
                     tablesWithMissingClass.AsResult().WithLabel(Metadata.Terms.TableTitles.DatabaseTablesWithMissingKenticoClasses),
