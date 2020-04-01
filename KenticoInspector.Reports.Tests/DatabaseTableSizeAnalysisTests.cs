@@ -16,7 +16,7 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(12)]
     public class DatabaseTableSizeAnalysisTests : AbstractReportTest<Report, Terms>
     {
-        private Report _mockReport;
+        private readonly Report _mockReport;
 
         public DatabaseTableSizeAnalysisTests(int majorVersion) : base(majorVersion)
         {
