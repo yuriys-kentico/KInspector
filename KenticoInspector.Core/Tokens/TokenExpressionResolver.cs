@@ -5,9 +5,11 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 
+using static KenticoInspector.Core.Tokens.Constants;
+
 namespace KenticoInspector.Core.Tokens
 {
-    public class TokenExpressionResolver
+    public static class TokenExpressionResolver
     {
         private static IEnumerable<(Type tokenExpressionType, string pattern)> TokenExpressionTypePatterns { get; set; }
 
@@ -32,13 +34,13 @@ namespace KenticoInspector.Core.Tokens
 
                 var patternVariants = new[]
                 {
-                    $"([{Constants.Space}]{pattern}[{Constants.Space}{Constants.Period}{Constants.Colon}])",
-                    $"({pattern}[{Constants.Space}{Constants.Period}{Constants.Colon}])",
-                    $"([{Constants.Space}]{pattern})",
+                    $"([{new string(LeadingChars)}]{pattern}[{new string(TrailingChars)}])",
+                    $"({pattern}[{new string(TrailingChars)}])",
+                    $"([{new string(LeadingChars)}]{pattern})",
                     $"(^{pattern}$)"
                 };
 
-                var joinedPattern = string.Join(Constants.Pipe, patternVariants);
+                var joinedPattern = string.Join(Pipe, patternVariants);
 
                 return (type, joinedPattern);
             }
@@ -50,7 +52,7 @@ namespace KenticoInspector.Core.Tokens
                 .Select(tokenExpressionTypePattern => tokenExpressionTypePattern.pattern)
                 .Where(pattern => !string.IsNullOrEmpty(pattern));
 
-            var joinedTokenExpressionPatterns = string.Join(Constants.Pipe, allTokenExpressionPatterns);
+            var joinedTokenExpressionPatterns = string.Join(Pipe, allTokenExpressionPatterns);
 
             var tokenDictionary = GetValuesDictionary(tokenValues);
 
@@ -67,17 +69,17 @@ namespace KenticoInspector.Core.Tokens
                 return dictionary;
             }
 
+            bool PropertyIsNotIndexableAndHasGetter(PropertyInfo prop)
+            {
+                return prop.GetIndexParameters().Length == 0
+                    && prop.GetMethod != null;
+            };
+
             return tokenValues
                 .GetType()
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(PropertyIsNotIndexableAndHasGetter)
                 .ToDictionary(property => property.Name, property => property.GetValue(tokenValues));
-        }
-
-        private static bool PropertyIsNotIndexableAndHasGetter(PropertyInfo prop)
-        {
-            return prop.GetIndexParameters().Length == 0
-                && prop.GetMethod != null;
         }
 
         private static string ResolveTokenExpression(string tokenExpression, IDictionary<string, object> tokenDictionary)
@@ -100,7 +102,7 @@ namespace KenticoInspector.Core.Tokens
 
             if (string.IsNullOrEmpty(resolvedExpression) && leadingChar != null && trailingChar != null)
             {
-                return Constants.Space.ToString();
+                return Space.ToString();
             }
             else
             {
@@ -110,29 +112,39 @@ namespace KenticoInspector.Core.Tokens
 
         private static (char?, string, char?) GetSplitExpression(string tokenExpression)
         {
-            char? leadingChar = null;
-            char? trailingChar = null;
-
-            var leadingChars = new[] { Constants.Space };
-            var trailingChars = new[] { Constants.Space, Constants.Period, Constants.Colon };
-
-            if (tokenExpression.Any())
+            switch (tokenExpression.Length)
             {
-                var firstChar = tokenExpression.First();
-                var lastChar = tokenExpression.Last();
+                case 0:
+                case 1:
+                    return (null, tokenExpression, null);
 
-                foreach (var item in leadingChars)
-                {
-                    if (firstChar == item) leadingChar = item;
-                }
+                case 2:
+                default:
+                    var tokenExpressionSpan = tokenExpression.AsSpan();
 
-                foreach (var item in trailingChars)
-                {
-                    if (lastChar == item) trailingChar = item;
-                }
+                    char? leadingChar = tokenExpressionSpan[0];
+                    char? trailingChar = tokenExpressionSpan[tokenExpression.Length - 1];
+
+                    if (!LeadingChars.Contains(leadingChar.Value))
+                    {
+                        leadingChar = null;
+                    }
+                    else
+                    {
+                        tokenExpression = tokenExpression.Substring(1);
+                    }
+
+                    if (!TrailingChars.Contains(trailingChar.Value))
+                    {
+                        trailingChar = null;
+                    }
+                    else
+                    {
+                        tokenExpression = tokenExpression.Substring(0, tokenExpression.Length - 1);
+                    }
+
+                    return (leadingChar, tokenExpression, trailingChar);
             }
-
-            return (leadingChar, tokenExpression.TrimStart(leadingChars).TrimEnd(trailingChars), trailingChar);
         }
     }
 }

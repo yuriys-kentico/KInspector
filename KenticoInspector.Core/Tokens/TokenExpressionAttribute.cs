@@ -3,7 +3,7 @@
 namespace KenticoInspector.Core.Tokens
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class TokenExpressionAttribute : Attribute
+    public sealed class TokenExpressionAttribute : Attribute
     {
         internal string Pattern { get; }
 

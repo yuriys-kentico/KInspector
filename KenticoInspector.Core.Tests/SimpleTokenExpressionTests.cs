@@ -222,7 +222,7 @@ namespace KenticoInspector.Core.Tests
             yield return GetValidTestCaseWhen(TokenValues.Is1_5, returns: "issues");
             yield return GetValidTestCaseWhen(TokenValues.Is5, returns: "issues");
             yield return GetValidTestCaseWhen(TokenValues.IsSome_Text, returns: "issues");
-            yield return GetValidTestCaseWhen(TokenValues.IsTrue, returns: "issues");
+            yield return GetValidTestCaseWhen(TokenValues.IsTrue, returns: "issue");
             yield return GetValidTestCaseWhen(TokenValues.IsFalse, returns: "issues");
             yield return GetValidTestCaseWhen(TokenValues.IsVersion, returns: "issues");
 

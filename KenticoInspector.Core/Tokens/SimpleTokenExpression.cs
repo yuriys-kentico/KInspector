@@ -4,6 +4,8 @@ using System.Linq;
 
 using KenticoInspector.Core.Extensions;
 
+using static KenticoInspector.Core.Tokens.Constants;
+
 namespace KenticoInspector.Core.Tokens
 {
     /// <summary>
@@ -52,10 +54,10 @@ namespace KenticoInspector.Core.Tokens
             if (string.IsNullOrEmpty(tokenExpression))
                 throw new ArgumentException($"'{tokenExpression}' looks like a simple token expression but does not contain a token.");
 
-            var segments = tokenExpression.Split(Constants.Pipe);
+            var segments = tokenExpression.Split(Pipe);
 
-            if (segments[0].Contains(Constants.Colon))
-                throw new FormatException($"Simple token expression token '{segments[0]}' must not contain a {Constants.Colon}.");
+            if (segments[0].Contains(Colon))
+                throw new FormatException($"Simple token expression token '{segments[0]}' must not contain a {Colon}.");
 
             var cases = new List<(string, char, string)>();
 
@@ -69,7 +71,7 @@ namespace KenticoInspector.Core.Tokens
                     break;
 
                 default:
-                    if (!segments[segments.Length - 1].Contains(Constants.Colon))
+                    if (!segments[segments.Length - 1].Contains(Colon))
                     {
                         defaultValue = segments[segments.Length - 1];
                     }
@@ -87,30 +89,28 @@ namespace KenticoInspector.Core.Tokens
 
         private static (string, char, string) GetCase(string expressionCase)
         {
-            var operation = Constants.Equals;
+            var operation = Equality;
 
-            var pair = expressionCase.SplitAtFirst(Constants.Colon);
+            var (first, second) = expressionCase.SplitAtFirst(Colon);
 
-            if (!expressionCase.Contains(Constants.Colon))
+            if (!expressionCase.Contains(Colon))
             {
-                return (null, operation, pair.first);
+                return (null, operation, first);
             }
 
-            var firstChar = pair.first[0];
+            var firstChar = first[0];
 
-            var operationChars = new[] { Constants.MoreThan, Constants.LessThan };
-
-            if (!operationChars.Contains(firstChar))
+            if (!OperationChars.Contains(firstChar))
             {
-                return (pair.first, operation, pair.second);
+                return (first, operation, second);
             }
 
-            foreach (var item in operationChars)
+            foreach (var item in OperationChars)
             {
                 if (firstChar == item) operation = item;
             }
 
-            return (pair.first.Substring(1), operation, pair.second);
+            return (first.Substring(1), operation, second);
         }
 
         public bool TryResolveToken(
@@ -156,7 +156,7 @@ namespace KenticoInspector.Core.Tokens
             return resolved;
         }
 
-        private bool TryResolveIntToken(int token, string expressionCaseValue, char operation)
+        private static bool TryResolveIntToken(int token, string expressionCaseValue, char operation)
         {
             return TryResolveDoubleToken(token, expressionCaseValue, operation);
         }
@@ -167,9 +167,9 @@ namespace KenticoInspector.Core.Tokens
 
             if (expressionCaseValueIsDouble)
             {
-                if (operation == Constants.Equals && token == doubleExpressionCaseValue
-                    || operation == Constants.LessThan && token < doubleExpressionCaseValue
-                    || operation == Constants.MoreThan && token > doubleExpressionCaseValue)
+                if (operation == Equality && token == doubleExpressionCaseValue
+                    || operation == LessThan && token < doubleExpressionCaseValue
+                    || operation == MoreThan && token > doubleExpressionCaseValue)
                 {
                     return true;
                 }
@@ -192,6 +192,10 @@ namespace KenticoInspector.Core.Tokens
                 {
                     return true;
                 }
+            }
+            else if (string.IsNullOrEmpty(expressionCaseValue) && token)
+            {
+                return true;
             }
 
             return false;
