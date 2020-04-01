@@ -11,7 +11,7 @@ namespace KenticoInspector.Infrastructure.Repositories
     {
         private readonly IDatabaseService databaseService;
 
-        private static readonly string getCmsSitesPath = @"Scripts/GetCmsSites.sql";
+        private const string getCmsSitesPath = @"Scripts/GetCmsSites.sql";
 
         public SiteRepository(IDatabaseService databaseService)
         {

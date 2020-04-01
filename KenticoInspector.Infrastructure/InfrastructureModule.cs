@@ -1,31 +1,25 @@
-﻿using System.Reflection;
-
-using Autofac;
+﻿using Autofac;
 
 using KenticoInspector.Core.Repositories.Interfaces;
 using KenticoInspector.Core.Services.Interfaces;
 
 namespace KenticoInspector.Infrastructure
 {
-    public class InfrastructureModule : Autofac.Module
+    public class InfrastructureModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
-            var assemblies = Assembly.GetExecutingAssembly();
-
-            builder.RegisterAssemblyTypes(assemblies)
-                .Where(t => t.IsClass
-                    && !t.IsAbstract
-                    && typeof(IService).IsAssignableFrom(t)
-                    )
+            builder.RegisterAssemblyTypes(typeof(InfrastructureModule).Assembly)
+                .Where(type => type.IsClass)
+                .Where(type => !type.IsAbstract)
+                .Where(type => typeof(IService).IsAssignableFrom(type))
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
 
-            builder.RegisterAssemblyTypes(assemblies)
-                .Where(t => t.IsClass
-                    && !t.IsAbstract
-                    && typeof(IRepository).IsAssignableFrom(t)
-                    )
+            builder.RegisterAssemblyTypes(typeof(InfrastructureModule).Assembly)
+                .Where(type => type.IsClass)
+                .Where(type => !type.IsAbstract)
+                .Where(type => typeof(IRepository).IsAssignableFrom(type))
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
         }
