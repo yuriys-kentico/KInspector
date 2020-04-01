@@ -7,7 +7,7 @@
     * Serverside scripts
     * Use of complex data macros
 terms:
-  goodSummary: No issues with transformations found.
+  goodSummary: No issues with transformations.
   issueDescriptions:
     documentsMacro: The use of Documents in a macro may be a sign of inefficient code or misuse of out-of-the-box methods.
     serverSideScript: Serverside scripts may be a sign of inefficient code or misuse of out-of-the-box methods.
@@ -19,8 +19,8 @@ terms:
     xssRequest: The use of Request potentially renders malicious request variables.
     xssDocument: The use of Document in JavaScript potentially renders malicious data.
     xssWindow: The use of Window in JavaScript potentially renders malicious data.
-  issueTypes: <issueType|XssQueryHelper:XSS query helper>
-  warningSummary: 'Found <summaryCount> issues with transformations categorized into the following issue types: <issueTypesAsCsv>.'
+  issueTypes: <issueType|XssQueryHelper:XSS QueryHelper|XssQueryString:XSS QueryString|XssHttpContext:XSS HttpContext|XssServer:XSS server|XssRequest:XSS request|XssDocument:XSS document|XssWindow:XSS window|ServerSideScript:Serverside scripts|DocumentsMacro:Documents macro|QueryMacro:QueryString macro>
+  warningSummary: '<summaryCount> issues with transformations categorized into the following issue types: <issueTypesAsCsv>.'
   tableNames:
     issueTypes: Issues types
     templateUsage: Pages using templates

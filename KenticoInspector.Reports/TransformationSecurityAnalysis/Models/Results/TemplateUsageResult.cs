@@ -8,7 +8,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
 {
     public class TemplateUsageResult : CmsTreeNode
     {
-        public string SiteName { get; }
+        public string SiteName { get; set; }
 
         public TemplateUsageResult(CmsTreeNode page, IEnumerable<CmsSite> sites)
         {

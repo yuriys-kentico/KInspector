@@ -24,7 +24,12 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
 
         public string FullName => $"{ClassName}.{TransformationName}";
 
-        public IList<TransformationIssue> Issues { get; } = new List<TransformationIssue>();
+        public IList<TransformationIssue> Issues { get; }
+
+        public CmsTransformation()
+        {
+            Issues = new List<TransformationIssue>();
+        }
 
         public void AddIssue(int snippetStartIndex, int snippetLength, string issueType, int snippetPadding = 5)
         {

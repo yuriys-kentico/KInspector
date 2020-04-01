@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-
-using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Analysis;
+using System.Web;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data;
 
 using Newtonsoft.Json;
@@ -23,7 +22,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
         public string TransformationType { get; set; }
 
         [JsonProperty]
-        public int TransformationUses { get; }
+        public int TransformationUses { get; set; }
 
         public TransformationResult(CmsTransformation transformation, int uses, IEnumerable<string> detectedIssueTypes)
         {
@@ -34,7 +33,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
 
             foreach (var issueType in detectedIssueTypes)
             {
-                dynamicIssueProperties.TryAdd(issueType, null);
+                dynamicIssueProperties.TryAdd(issueType, string.Empty);
             }
 
             var groupedIssues = transformation.Issues
@@ -42,18 +41,11 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
 
             foreach (var issueGroup in groupedIssues)
             {
-                var aggregatedSnippets = issueGroup
-                    .Select(AsIssueSnippet);
-
-                dynamicIssueProperties[issueGroup.Key] = string.Join(string.Empty, aggregatedSnippets);
+                foreach (var issue in issueGroup)
+                {
+                    dynamicIssueProperties[issueGroup.Key] += HttpUtility.HtmlEncode($"...{issue.CodeSnippet}...");
+                }
             }
-        }
-
-        private string AsIssueSnippet(TransformationIssue issue)
-        {
-            var snippetWrapper = "...";
-
-            return $"{snippetWrapper}{issue.CodeSnippet}{snippetWrapper}";
         }
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
