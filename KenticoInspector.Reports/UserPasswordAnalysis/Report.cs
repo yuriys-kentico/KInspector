@@ -27,8 +27,7 @@ namespace KenticoInspector.Reports.UserPasswordAnalysis
 
         public override IList<string> Tags => new List<string>
         {
-            ReportTags.Security,
-            ReportTags.Configuration
+            ReportTags.Security
         };
 
         public static IEnumerable<string> ExcludedUserNames => new List<string>
