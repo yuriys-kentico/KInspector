@@ -1,21 +1,17 @@
-﻿using System.Reflection;
-
-using Autofac;
+﻿using Autofac;
 
 using KenticoInspector.Core;
 
 namespace KenticoInspector.Reports
 {
-    public class ReportsModule : Autofac.Module
+    public class ReportsModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
-            var assemblies = Assembly.GetExecutingAssembly();
-            builder.RegisterAssemblyTypes(assemblies)
-                .Where(t => t.IsClass
-                    && !t.IsAbstract
-                    && typeof(IReport).IsAssignableFrom(t)
-                    )
+            builder.RegisterAssemblyTypes(typeof(ReportsModule).Assembly)
+                .Where(type => type.IsClass)
+                .Where(type => !type.IsAbstract)
+                .Where(type => typeof(IReport).IsAssignableFrom(type))
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
         }
