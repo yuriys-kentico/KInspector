@@ -16,8 +16,8 @@ details:
       * `KeyName` is not **CMSDebugMacrosDetailed** *(Ignore the settings for enabling more details in macro debugging)*
 terms:
   goodSummary: All checked settings are disabled.
-  warningSummary: '<explicitlyEnabledSettingsCount> database <explicitlyEnabledSettingsCount:setting|settings> explicitly enabled. '
-  errorSummary: <compilationDebugIsEnabled:Compilation debug is enabled.> <traceIsEnabled:Application Tracing is enabled.>
+  warningSummary: '<explicitlyEnabledSettingsCount> database <explicitlyEnabledSettingsCount|setting|settings> explicitly enabled. '
+  errorSummary: Compilation debug is <compilationDebugIsEnabled|enabled|disabled>. Application Tracing is <traceIsEnabled|enabled|disabled>.
   tableNames:
     explicitlyEnabledSettings: Explicitly enabled settings
     overview: Database settings overview

@@ -1,9 +1,7 @@
 ﻿namespace KenticoInspector.Reports.DebugConfigurationAnalysis.Models.Data
 {
-    public class CmsSettingsKey
+    public class WebConfigSettingsKey
     {
-        public int KeyID { get; set; }
-
         public string KeyName { get; set; }
 
         public string KeyDisplayName { get; set; }

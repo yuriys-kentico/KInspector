@@ -18,9 +18,9 @@ namespace KenticoInspector.Reports.Tests
     {
         private readonly Report _mockReport;
 
-        private static readonly string webConfigXml = @"<configuration><system.web><compilation debug=""false"" /></system.web></configuration>";
-        private static readonly string webConfigXmlWithCompilationDebug = @"<configuration><system.web><compilation debug=""true"" /></system.web></configuration>";
-        private static readonly string webConfigXmlWithCompilationDebugAndTrace = @"<configuration><system.web><compilation debug=""falue"" /><trace enabled=""true"" /></system.web></configuration>";
+        private const string webConfigXml = @"<configuration><system.web><compilation debug=""false"" /></system.web></configuration>";
+        private const string webConfigXmlWithCompilationDebug = @"<configuration><system.web><compilation debug=""true"" /></system.web></configuration>";
+        private const string webConfigXmlWithCompilationDebugAndTrace = @"<configuration><system.web><compilation debug=""falue"" /><trace enabled=""true"" /></system.web></configuration>";
 
         public DebugConfigurationAnalysisTests(int majorVersion) : base(majorVersion)
         {
@@ -70,7 +70,14 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnWarningResult_When_AnyDebugConfigurationIsTrueAndNotTheDefaultValue()
         {
             // Arrange
-            var settingsKey = new CmsSettingsKey("CMSDebugEverything", "Enable all debugs", true, false);
+            var settingsKey = new CmsSettingsKey
+            {
+                KeyName = "CMSDebugEverything",
+                KeyDisplayName = "Enable all debugs",
+                KeyValue = true,
+                KeyDefaultValue = false
+            };
+
             ArrangeServices(customDatabaseSettingsValues: new[] { settingsKey });
 
             // Act
@@ -132,24 +139,132 @@ namespace KenticoInspector.Reports.Tests
         {
             var defaultDatabaseSettingsKeyValues = new List<CmsSettingsKey>
             {
-                new CmsSettingsKey("CMSDebugAnalytics", "Enable web analytics debug", false, false),
-                new CmsSettingsKey("CMSDebugCache", "Enable cache access debug", false, false),
-                new CmsSettingsKey("CMSDebugEverything", "Enable all debugs", false, false),
-                new CmsSettingsKey("CMSDebugEverythingEverywhere", "Debug everything everywhere", false, false),
-                new CmsSettingsKey("CMSDebugFiles", "Enable IO operation debug", false, false),
-                new CmsSettingsKey("CMSDebugHandlers", "Enable handlers debug", false, false),
-                new CmsSettingsKey("CMSDebugImportExport", "Debug Import/Export", false, false),
-                new CmsSettingsKey("CMSDebugMacros", "Enable macro debug", false, false),
-                new CmsSettingsKey("CMSDebugOutput", "Enable output debug", false, false),
-                new CmsSettingsKey("CMSDebugRequests", "Enable request debug", false, false),
-                new CmsSettingsKey("CMSDebugResources", "Debug resources", false, false),
-                new CmsSettingsKey("CMSDebugScheduler", "Debug scheduler", true, true),
-                new CmsSettingsKey("CMSDebugSecurity", "Enable security debug", false, false),
-                new CmsSettingsKey("CMSDebugSQLConnections", "Debug SQL connections", false, false),
-                new CmsSettingsKey("CMSDebugSQLQueries", "Enable SQL query debug", false, false),
-                new CmsSettingsKey("CMSDebugViewState", "Enable ViewState debug", false, false),
-                new CmsSettingsKey("CMSDebugWebFarm", "Enable web farm debug", false, false),
-                new CmsSettingsKey("CMSDisableDebug", "Disable debugging", false, false)
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugAnalytics",
+                    KeyDisplayName = "Enable web analytics debug",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugCache",
+                    KeyDisplayName = "Enable cache access debug",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugEverything",
+                    KeyDisplayName = "Enable all debugs",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugEverythingEverywhere",
+                    KeyDisplayName = "Debug everything everywhere",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugFiles",
+                    KeyDisplayName = "Enable IO operation debug",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugHandlers",
+                    KeyDisplayName = "Enable handlers debug",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugImportExport",
+                    KeyDisplayName = "Debug Import/Export",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugMacros",
+                    KeyDisplayName = "Enable macro debug",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugOutput",
+                    KeyDisplayName = "Enable output debug",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugRequests",
+                    KeyDisplayName = "Enable request debug",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugResources",
+                    KeyDisplayName = "Debug resources",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugScheduler",
+                    KeyDisplayName = "Debug scheduler",
+                    KeyValue = true,
+                    KeyDefaultValue = true
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugSecurity",
+                    KeyDisplayName = "Enable security debug",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugSQLConnections",
+                    KeyDisplayName = "Debug SQL connections",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugSQLQueries",
+                    KeyDisplayName = "Enable SQL query debug",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugViewState",
+                    KeyDisplayName = "Enable ViewState debug",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDebugWebFarm",
+                    KeyDisplayName = "Enable web farm debug",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                },
+                new CmsSettingsKey
+                {
+                    KeyName = "CMSDisableDebug",
+                    KeyDisplayName = "Disable debugging",
+                    KeyValue = false,
+                    KeyDefaultValue = false
+                }
             };
 
             foreach (var settingsKey in defaultDatabaseSettingsKeyValues)

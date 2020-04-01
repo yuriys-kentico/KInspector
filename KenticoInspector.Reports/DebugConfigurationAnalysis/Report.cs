@@ -119,10 +119,22 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
                 results.Summary += Metadata.Terms.ErrorSummary.With(new { compilationDebugIsEnabled, traceIsEnabled });
             }
 
-            var webConfigSettingsKeys = new List<CmsSettingsKey>
+            var webConfigSettingsKeys = new List<WebConfigSettingsKey>
             {
-                new CmsSettingsKey("Debug", Metadata.Terms.WebConfig.DebugKeyDisplayName, compilationDebugIsEnabled, false),
-                new CmsSettingsKey("Trace", Metadata.Terms.WebConfig.TraceKeyDisplayName, traceIsEnabled, false)
+                new WebConfigSettingsKey
+                {
+                    KeyName = "Debug",
+                    KeyDisplayName = Metadata.Terms.WebConfig.DebugKeyDisplayName,
+                    KeyValue = compilationDebugIsEnabled,
+                    KeyDefaultValue = false
+                },
+                new WebConfigSettingsKey
+                {
+                    KeyName = "Trace",
+                    KeyDisplayName = Metadata.Terms.WebConfig.TraceKeyDisplayName,
+                    KeyValue = traceIsEnabled,
+                    KeyDefaultValue = false
+                }
             };
 
             results.Data.Add(webConfigSettingsKeys.AsResult().WithLabel(Metadata.Terms.TableNames.WebConfig));
