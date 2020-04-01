@@ -4,5 +4,5 @@
   longDescription: |
     See [robotstxt.org](http://www.robotstxt.org/robotstxt.html) for more details.
 terms:
-  goodSummary: '[robots.txt](<testUri>) found.'
-  warningSummary: '[robots.txt](<testUri>) not found with status code <uriStatusInteger>.'
+  goodSummary: '[robots.txt](<testUri>) exists.'
+  warningSummary: '[robots.txt](<testUri>) responds with status code `<uriStatusInteger>`.'

@@ -21,14 +21,19 @@ namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
         public Report(IInstanceService instanceService, IReportMetadataService reportMetadataService, HttpClient httpClient = null) : base(reportMetadataService)
         {
             this.instanceService = instanceService;
-            this.httpClient = httpClient ?? new HttpClient();
+
+            var httpClientHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+
+            this.httpClient = httpClient ?? new HttpClient(httpClientHandler);
         }
 
         public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12");
 
         public override IList<string> Tags => new List<string>
         {
-            ReportTags.Information,
             ReportTags.SEO,
         };
 
