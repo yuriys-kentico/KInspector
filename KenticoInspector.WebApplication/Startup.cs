@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -51,16 +49,6 @@ namespace KenticoInspector.WebApplication
 
             var container = containerBuilder.Build();
             return new AutofacServiceProvider(container);
-        }
-
-        private static Assembly[] GetAssemblies()
-        {
-            var assemblies = Assembly
-                .GetEntryAssembly()
-                .GetReferencedAssemblies()
-                .Select(Assembly.Load);
-
-            return assemblies.ToArray();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

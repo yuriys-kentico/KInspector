@@ -39,14 +39,6 @@
           <v-list-tile-sub-title>Site Count</v-list-tile-sub-title>
         </v-list-tile-content>
       </v-list-tile>
-      <v-list-tile>
-        <v-list-tile-content>
-          <v-list-tile-title>
-            {{currentInstanceDetails.sites.length}}
-          </v-list-tile-title>
-          <v-list-tile-sub-title>Site Count</v-list-tile-sub-title>
-        </v-list-tile-content>
-      </v-list-tile>
     </template>
     <v-list-tile>
       <v-list-tile-content>

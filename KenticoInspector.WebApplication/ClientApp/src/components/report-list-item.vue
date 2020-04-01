@@ -29,8 +29,7 @@
                 fill-height
                 px-3
                 py-2
-                @click="showDescription = !showDescription"
-                v-ripple="{ class: `grey--text` }">
+                @click="showDescription = !showDescription">
         <v-flex>
           <vue-showdown :markdown="report.metadata.details.shortDescription" />
         </v-flex>
@@ -72,7 +71,7 @@
                 px-3
                 py-2
                 :class="status"
-                @click="showResults = !showResults"
+                @click="hasData && (showResults = !showResults)"
                 v-ripple>
         <v-flex>
           <v-icon :color="resultIconColor"
@@ -83,7 +82,7 @@
           <vue-showdown :markdown="results.summary" class="summary" tag="span" />
         </v-flex>
         <v-spacer></v-spacer>
-        <v-flex shrink>
+        <v-flex shrink v-if="hasData">
           <v-icon>{{ showResults ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
         </v-flex>
       </v-layout>
@@ -91,9 +90,7 @@
 
     <v-slide-y-transition>
       <v-card-text v-if="showResults && hasResults">
-        <report-result-details :type="results.type"
-                               :data="results.data">
-        </report-result-details>
+        <report-result-details :data="results.data" />
       </v-card-text>
     </v-slide-y-transition>
   </v-card>
@@ -136,6 +133,9 @@
       },
       hasResults: function () {
         return !!this.results
+      },
+      hasData: function () {
+        return this.results && this.results.data.length > 0
       },
       status: function () {
         let status = ''
