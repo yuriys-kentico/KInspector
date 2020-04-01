@@ -25,7 +25,7 @@ namespace KenticoInspector.Reports.PageTypeFieldAnalysis
 
         public override IList<string> Tags => new List<string>
         {
-            ReportTags.Information,
+            ReportTags.ContentModeling,
             ReportTags.Health
         };
 

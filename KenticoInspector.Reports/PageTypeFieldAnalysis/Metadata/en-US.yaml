@@ -13,7 +13,7 @@
     For more information, see [this article](https://devnet.kentico.com/articles/conversion-failed-when-converting-from-a-character-string-to-uniqueidentifier).
 terms:
   summaries:
-    information: Found <fieldResultCount> <fieldResultCount|field|fields> that had matching names but different data types. 
+    information: <fieldResultCount> <fieldResultCount|field|fields> that had matching names but different data types. 
     good: No issues with fields with matching names.
   tableTitles:
     matchingPageTypeFieldsWithDifferentDataTypes: Matching page type fields with different data types

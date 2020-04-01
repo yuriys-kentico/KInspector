@@ -1,10 +1,10 @@
 ﻿SELECT 
-    ClassName as PageTypeCodeName,
-    COLUMN_NAME as FieldName,
-    DATA_TYPE as FieldDataType
+    ClassName AS PageTypeCodeName,
+    COLUMN_NAME AS FieldName,
+    DATA_TYPE AS FieldDataType
 FROM
     INFORMATION_SCHEMA.COLUMNS
 INNER JOIN CMS_Class ON
-    ClassTableName = TABLE_NAME
+    ClassTableName = TABLE_NAME COLLATE DATABASE_DEFAULT
 WHERE 
     ClassIsDocumentType = 1
