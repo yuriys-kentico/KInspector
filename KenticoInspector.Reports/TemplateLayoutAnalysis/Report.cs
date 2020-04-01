@@ -26,7 +26,7 @@ namespace KenticoInspector.Reports.TemplateLayoutAnalysis
 
         public override IList<string> Tags => new List<string>
         {
-            ReportTags.Information,
+            ReportTags.ContentModeling,
             ReportTags.PortalEngine
         };
 
