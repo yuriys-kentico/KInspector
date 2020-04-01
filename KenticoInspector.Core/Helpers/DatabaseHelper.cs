@@ -5,17 +5,12 @@ using KenticoInspector.Core.Models;
 
 namespace KenticoInspector.Core.Helpers
 {
-    public class DatabaseHelper
+    public static class DatabaseHelper
     {
         public static IDbConnection GetSqlConnection(DatabaseSettings databaseSettings)
         {
             var connectionString = GetConnectionString(databaseSettings);
 
-            return GetSqlConnection(connectionString);
-        }
-
-        public static IDbConnection GetSqlConnection(string connectionString)
-        {
             return new SqlConnection(connectionString);
         }
 

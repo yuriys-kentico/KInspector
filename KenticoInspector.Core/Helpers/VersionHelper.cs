@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace KenticoInspector.Core.Helpers
 {
-    public class VersionHelper
+    public static class VersionHelper
     {
         public static IList<Version> GetVersionList(params string[] versions)
         {

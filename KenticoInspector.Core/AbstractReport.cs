@@ -18,19 +18,13 @@ namespace KenticoInspector.Core
             this.reportMetadataService = reportMetadataService;
         }
 
-        public string Codename => GetCodename(this.GetType());
+        public string Codename => GetCodename(GetType());
 
         public abstract IList<Version> CompatibleVersions { get; }
 
         public virtual IList<Version> IncompatibleVersions => new List<Version>();
 
-        public ReportMetadata<T> Metadata
-        {
-            get
-            {
-                return metadata ?? (metadata = reportMetadataService.GetReportMetadata<T>(Codename));
-            }
-        }
+        public ReportMetadata<T> Metadata => metadata ?? (metadata = reportMetadataService.GetReportMetadata<T>(Codename));
 
         public abstract IList<string> Tags { get; }
 
