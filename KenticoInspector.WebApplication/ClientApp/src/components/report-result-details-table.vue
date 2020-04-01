@@ -1,8 +1,18 @@
 <template>
   <div>
-    <h4 v-if="name">{{ name }}</h4>
+    <v-card-title>
+      <h4 v-if="label">{{ label }}</h4>
+      <v-spacer></v-spacer>
+      <v-text-field v-if="rows.length > 1"
+                    v-model="search"
+                    label="Search"
+                    single-line
+                    hide-details></v-text-field>
+    </v-card-title>
+
     <v-data-table :headers="headers"
                   :items="rows"
+                  :search="search"
                   :rows-per-page-items="[10, 25, 100, { text: 'All', value:-1}]">
       <template slot="items" slot-scope="props">
         <td v-for="(header, index) in headers" :key="`header-${index}`">
@@ -22,7 +32,7 @@
 <script>
   export default {
     props: {
-      name: {
+      label: {
         type: String,
         default: ""
       },
@@ -31,6 +41,9 @@
         default: () => []
       }
     },
+    data: () => ({
+      search: ""
+    }),
     computed: {
       headers: function () {
         const isValid = this.rows && this.rows.length > 0 && this.rows[0]
