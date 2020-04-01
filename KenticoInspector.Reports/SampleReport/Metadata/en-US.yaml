@@ -1,5 +1,5 @@
 ﻿details:
-  name: Sample Report
+  name: Sample report
   shortDescription: Very basic sample report.
   longDescription: |
     This report is a basic sample report that exists only to be an example/template for creating actual reports.
@@ -10,4 +10,4 @@
       * [YAML/Markdown Cheatsheet](https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/)
 terms:
   detailedResult: <name> reported `<problem>`.
-  informationSummary: <issueCount> <issueCount:issue|issues> found.
+  informationSummary: <issueCount> <issueCount|issue|issues>.

@@ -26,7 +26,7 @@ namespace KenticoInspector.Reports.SampleReport
 
         public override IList<string> Tags => new List<string>
         {
-            ReportTags.Consistency
+            ReportTags.Health
         };
 
         public override ReportResults GetResults()
