@@ -26,8 +26,7 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
 
         public override IList<string> Tags => new List<string>
         {
-            ReportTags.Security,
-            ReportTags.Configuration
+            ReportTags.Security
         };
 
         public Report(

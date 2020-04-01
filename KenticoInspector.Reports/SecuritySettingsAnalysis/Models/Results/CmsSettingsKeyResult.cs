@@ -12,21 +12,21 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Results
         private readonly int siteID;
         private readonly string categoryIDPath;
 
-        public string SiteName { get; }
+        public string SiteName { get; set; }
 
-        public int KeyID { get; }
+        public int KeyID { get; set; }
 
-        public string KeyPath { get; }
+        public string KeyPath { get; set; }
 
-        public string KeyDisplayName { get; }
+        public string KeyDisplayName { get; set; }
 
-        public string KeyDefaultValue { get; }
+        public string KeyDefaultValue { get; set; }
 
-        public string KeyValue { get; }
+        public string KeyValue { get; set; }
 
-        public string RecommendedValue { get; }
+        public string RecommendedValue { get; set; }
 
-        public string RecommendationReason { get; }
+        public string RecommendationReason { get; set; }
 
         public CmsSettingsKeyResult(CmsSettingsKey cmsSettingsKey, string recommendedValue, Term recommendationReason)
         {
