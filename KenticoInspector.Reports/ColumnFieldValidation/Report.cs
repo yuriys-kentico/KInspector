@@ -17,23 +17,19 @@ namespace KenticoInspector.Reports.ColumnFieldValidation
     public class Report : AbstractReport<Terms>
     {
         private readonly IDatabaseService databaseService;
-        private readonly IInstanceService instanceService;
 
         public Report(
             IDatabaseService databaseService,
-            IReportMetadataService reportMetadataService,
-            IInstanceService instanceService
+            IReportMetadataService reportMetadataService
             ) : base(reportMetadataService)
         {
             this.databaseService = databaseService;
-            this.instanceService = instanceService;
         }
 
         public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12");
 
         public override IList<string> Tags => new List<string>
         {
-            ReportTags.Consistency,
             ReportTags.Health
         };
 
