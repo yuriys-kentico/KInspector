@@ -13,7 +13,7 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(12)]
     public class DatabaseConsistencyCheckTests : AbstractReportTest<Report, Terms>
     {
-        private Report _mockReport;
+        private readonly Report _mockReport;
 
         public DatabaseConsistencyCheckTests(int majorVersion) : base(majorVersion)
         {
