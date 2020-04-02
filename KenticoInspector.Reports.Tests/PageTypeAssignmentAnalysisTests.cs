@@ -63,7 +63,7 @@ namespace KenticoInspector.Reports.Tests
 
         public PageTypeAssignmentAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockReportMetadataService.Object);
+            _mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object);
         }
 
         [Test]
@@ -77,7 +77,7 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             Assert.That(results.Data.First<TableResult<CmsPageType>>().Rows.Count(), Is.GreaterThan(0));
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
         }
 
         private void ArrangeDatabaseService(IEnumerable<CmsPageType> unassignedPageTypes)

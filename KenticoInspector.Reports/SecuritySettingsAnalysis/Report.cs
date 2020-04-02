@@ -33,7 +33,7 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
             IDatabaseService databaseService,
             IInstanceService instanceService,
             ICmsFileService cmsFileService,
-            IReportMetadataService reportMetadataService
+            IModuleMetadataService reportMetadataService
             ) : base(reportMetadataService)
         {
             this.databaseService = databaseService;
@@ -189,7 +189,7 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
         {
             if (!cmsSettingsKeyResults.Any() && !webConfigSettingsResults.Any())
             {
-                return new ReportResults(ReportResultsStatus.Good)
+                return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.Summaries.Good
                 };
@@ -198,7 +198,7 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
             var cmsSettingsKeyResultsCount = cmsSettingsKeyResults.Count();
             var webConfigSettingsResultsCount = webConfigSettingsResults.Count();
 
-            return new ReportResults(ReportResultsStatus.Warning)
+            return new ReportResults(ResultsStatus.Warning)
             {
                 Summary = Metadata.Terms.Summaries.Warning.With(new
                 {

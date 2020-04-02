@@ -26,7 +26,7 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
 
         public Report(
             IDatabaseService databaseService,
-            IReportMetadataService reportMetadataService
+            IModuleMetadataService reportMetadataService
             ) : base(reportMetadataService)
         {
             this.databaseService = databaseService;
@@ -43,7 +43,7 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
         {
             if (!cmsEventLogs.Any())
             {
-                return new ReportResults(ReportResultsStatus.Good)
+                return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.Summaries.Good
                 };
@@ -76,7 +76,7 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
                 totalStartEvents
             });
 
-            return new ReportResults(ReportResultsStatus.Information)
+            return new ReportResults(ResultsStatus.Information)
             {
                 Summary = summary,
                 Data = cmsEventLogs.AsResult().WithLabel(Metadata.Terms.TableTitles.ApplicationRestartEvents)

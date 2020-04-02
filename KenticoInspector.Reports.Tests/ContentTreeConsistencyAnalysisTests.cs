@@ -55,7 +55,7 @@ namespace KenticoInspector.Reports.Tests
 
         public ContentTreeConsistencyAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockReportMetadataService.Object);
+            _mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object);
         }
 
         [Test]
@@ -68,7 +68,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
         }
 
         [Test]
@@ -107,7 +107,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
         }
 
         [Test]
@@ -133,7 +133,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
         }
 
         [Test]
@@ -146,7 +146,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
         }
 
         [Test]
@@ -159,7 +159,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
         }
 
         [Test]
@@ -172,7 +172,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
         }
 
         [Test]
@@ -185,7 +185,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
             Assert.That(results.Data.First<TableResult<VersionHistoryMismatchResult>>().Rows.Count(), Is.EqualTo(4));
         }
 

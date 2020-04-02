@@ -15,7 +15,7 @@ namespace KenticoInspector.Reports.DatabaseTableSizeAnalysis
     {
         private readonly IDatabaseService databaseService;
 
-        public Report(IDatabaseService databaseService, IReportMetadataService reportMetadataService) : base(reportMetadataService)
+        public Report(IDatabaseService databaseService, IModuleMetadataService reportMetadataService) : base(reportMetadataService)
         {
             this.databaseService = databaseService;
         }
@@ -36,7 +36,7 @@ namespace KenticoInspector.Reports.DatabaseTableSizeAnalysis
 
         private ReportResults CompileResults(IEnumerable<DatabaseTableSize> top25LargestTables)
         {
-            return new ReportResults(ReportResultsStatus.Information)
+            return new ReportResults(ResultsStatus.Information)
             {
                 Summary = Metadata.Terms.InformationSummary,
                 Data = top25LargestTables.AsResult().WithLabel(Metadata.Terms.TableNames.Top25Results)

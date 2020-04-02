@@ -27,7 +27,7 @@ namespace KenticoInspector.Reports.ClassTableValidation
         public Report(
             IDatabaseService databaseService,
             IInstanceService instanceService,
-            IReportMetadataService reportMetadataService
+            IModuleMetadataService reportMetadataService
             ) : base(reportMetadataService)
         {
             this.databaseService = databaseService;
@@ -84,7 +84,7 @@ namespace KenticoInspector.Reports.ClassTableValidation
         {
             if (!tablesWithMissingClass.Any() && !cmsClassesWithMissingTable.Any())
             {
-                return new ReportResults(ReportResultsStatus.Good)
+                return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.Summaries.Good
                 };
@@ -93,7 +93,7 @@ namespace KenticoInspector.Reports.ClassTableValidation
             var tablesWithMissingClassCount = tablesWithMissingClass.Count();
             var cmsClassesWithMissingTableCount = cmsClassesWithMissingTable.Count();
 
-            return new ReportResults(ReportResultsStatus.Error)
+            return new ReportResults(ResultsStatus.Error)
             {
                 Summary = Metadata.Terms.Summaries.Error.With(new { tablesWithMissingClassCount, cmsClassesWithMissingTableCount }),
                 Data =

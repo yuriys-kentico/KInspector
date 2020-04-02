@@ -17,7 +17,7 @@ namespace KenticoInspector.Reports.SampleReport
 
         private readonly Random random = new Random();
 
-        public Report(IDatabaseService databaseService, IReportMetadataService reportMetadataService) : base(reportMetadataService)
+        public Report(IDatabaseService databaseService, IModuleMetadataService reportMetadataService) : base(reportMetadataService)
         {
             this.databaseService = databaseService;
         }
@@ -38,7 +38,7 @@ namespace KenticoInspector.Reports.SampleReport
 
         private ReportResults CompileResults(int issueCount)
         {
-            var results = new ReportResults(ReportResultsStatus.Information)
+            var results = new ReportResults(ResultsStatus.Information)
             {
                 Summary = Metadata.Terms.InformationSummary.With(new { issueCount })
             };

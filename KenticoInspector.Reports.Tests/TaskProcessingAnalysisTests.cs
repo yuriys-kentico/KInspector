@@ -16,7 +16,7 @@ namespace KenticoInspector.Reports.Tests
 
         public TaskProcessingAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockReportMetadataService.Object);
+            _mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object);
         }
 
         [Test]
@@ -29,7 +29,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             AssertThatResultsDataIncludesTaskTypeDetails(results.Data, _mockReport.Metadata.Terms.CountIntegrationBusTask);
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             AssertThatResultsDataIncludesTaskTypeDetails(results.Data, _mockReport.Metadata.Terms.CountScheduledTask);
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
         }
 
         [Test]
@@ -71,7 +71,7 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             AssertThatResultsDataIncludesTaskTypeDetails(results.Data, _mockReport.Metadata.Terms.CountSearchTask);
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             AssertThatResultsDataIncludesTaskTypeDetails(results.Data, _mockReport.Metadata.Terms.CountStagingTask);
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             AssertThatResultsDataIncludesTaskTypeDetails(results.Data, _mockReport.Metadata.Terms.CountWebFarmTask);
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
         }
 
         private static void AssertThatResultsDataIncludesTaskTypeDetails(ReportResultsData data, Term term)

@@ -91,7 +91,7 @@ namespace KenticoInspector.Reports.Tests
 
         public TransformationSecurityAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            mockReport = new Report(_mockDatabaseService.Object, _mockReportMetadataService.Object, _mockInstanceService.Object);
+            mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object, _mockInstanceService.Object);
         }
 
         private static XDocument ParseXDocumentFromFile(string path)
@@ -114,7 +114,7 @@ namespace KenticoInspector.Reports.Tests
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
             Assert.That(results.Summary, Is.EqualTo(mockReport.Metadata.Terms.GoodSummary.ToString()));
         }
 
@@ -141,7 +141,7 @@ namespace KenticoInspector.Reports.Tests
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
             Assert.That(results.Data.First<TableResult<IssueTypeResult>>().Rows.Count(), Is.EqualTo(1));
             Assert.That(results.Data.First<TableResult<TransformationResult>>().Rows.Count(), Is.EqualTo(1));
             Assert.That(results.Data.First<TableResult<TransformationResult>>().Rows, Has.One.Matches<TransformationResult>(row => transformationResultEvaluator(row, row as dynamic)));

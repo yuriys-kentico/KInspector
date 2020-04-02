@@ -3,6 +3,7 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
+using KenticoInspector.Actions;
 using KenticoInspector.Core;
 using KenticoInspector.Infrastructure;
 using KenticoInspector.Reports;
@@ -46,6 +47,7 @@ namespace KenticoInspector.WebApplication
             containerBuilder.RegisterModule(new CoreModule());
             containerBuilder.RegisterModule(new InfrastructureModule());
             containerBuilder.RegisterModule(new ReportsModule());
+            containerBuilder.RegisterModule(new ActionsModule());
 
             var container = containerBuilder.Build();
             return new AutofacServiceProvider(container);

@@ -16,7 +16,7 @@ namespace KenticoInspector.Reports.UnusedPageTypeSummary
     {
         private readonly IDatabaseService databaseService;
 
-        public Report(IDatabaseService databaseService, IReportMetadataService reportMetadataService) : base(reportMetadataService)
+        public Report(IDatabaseService databaseService, IModuleMetadataService reportMetadataService) : base(reportMetadataService)
         {
             this.databaseService = databaseService;
         }
@@ -39,7 +39,7 @@ namespace KenticoInspector.Reports.UnusedPageTypeSummary
         {
             if (!classesNotInViewCmsTreeJoined.Any())
             {
-                return new ReportResults(ReportResultsStatus.Good)
+                return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.GoodSummary
                 };
@@ -47,7 +47,7 @@ namespace KenticoInspector.Reports.UnusedPageTypeSummary
 
             var count = classesNotInViewCmsTreeJoined.Count();
 
-            return new ReportResults(ReportResultsStatus.Information)
+            return new ReportResults(ResultsStatus.Information)
             {
                 Summary = Metadata.Terms.InformationSummary.With(new { count }),
                 Data = classesNotInViewCmsTreeJoined.AsResult().WithLabel(Metadata.Terms.TableNames.UnusedPageTypes)

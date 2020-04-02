@@ -113,7 +113,7 @@ namespace KenticoInspector.Reports.Tests
         {
             mockReport = new Report(
                 _mockDatabaseService.Object,
-                _mockReportMetadataService.Object
+                _mockModuleMetadataService.Object
                 );
         }
 
@@ -127,7 +127,7 @@ namespace KenticoInspector.Reports.Tests
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
             Assert.That(results.Summary, Is.EqualTo(mockReport.Metadata.Terms.Summaries.Good.ToString()));
         }
 
@@ -141,7 +141,7 @@ namespace KenticoInspector.Reports.Tests
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
             Assert.That(results.Data.First<TableResult<CmsClassResult>>().Rows.Count(), Is.EqualTo(1));
         }
 
@@ -155,7 +155,7 @@ namespace KenticoInspector.Reports.Tests
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
             Assert.That(results.Data.First<TableResult<TableResult>>().Rows.Count(), Is.EqualTo(1));
         }
 

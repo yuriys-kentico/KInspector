@@ -24,7 +24,7 @@ namespace KenticoInspector.Reports.Tests
 
         public DebugConfigurationAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockInstanceService.Object, _mockCmsFileService.Object, _mockReportMetadataService.Object);
+            _mockReport = new Report(_mockDatabaseService.Object, _mockInstanceService.Object, _mockCmsFileService.Object, _mockModuleMetadataService.Object);
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
         }
 
         private void ArrangeServices(IEnumerable<CmsSettingsKey> customDatabaseSettingsValues = null, string customWebconfigXml = null)

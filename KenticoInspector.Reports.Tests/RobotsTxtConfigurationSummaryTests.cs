@@ -38,7 +38,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
 
             var baseUri = new Uri(mockInstance.Url);
 
@@ -62,7 +62,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
 
             var expectedUri = new Uri($"{baseUrl}/{DefaultKenticoPaths.RobotsTxtRelative}");
 
@@ -79,7 +79,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Warning));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
         }
 
         private Report ArrangeReportAndHandlerWithHttpClientReturning(HttpStatusCode httpStatusCode, out Mock<HttpMessageHandler> mockHttpMessageHandler)
@@ -98,9 +98,9 @@ namespace KenticoInspector.Reports.Tests
 
             var httpClient = new HttpClient(mockHttpMessageHandler.Object);
 
-            var report = new Report(_mockInstanceService.Object, _mockReportMetadataService.Object, httpClient);
+            var report = new Report(_mockInstanceService.Object, _mockModuleMetadataService.Object, httpClient);
 
-            MockReportMetadataServiceHelper.SetupReportMetadataService<Terms>(_mockReportMetadataService, report);
+            MockModuleMetadataServiceHelper.SetupModuleMetadataService<Terms>(_mockModuleMetadataService, report);
 
             return report;
         }

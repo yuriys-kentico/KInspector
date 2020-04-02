@@ -17,7 +17,7 @@ namespace KenticoInspector.Reports.TemplateLayoutAnalysis
     {
         private readonly IDatabaseService databaseService;
 
-        public Report(IDatabaseService databaseService, IReportMetadataService reportMetadataService) : base(reportMetadataService)
+        public Report(IDatabaseService databaseService, IModuleMetadataService reportMetadataService) : base(reportMetadataService)
         {
             this.databaseService = databaseService;
         }
@@ -55,14 +55,14 @@ namespace KenticoInspector.Reports.TemplateLayoutAnalysis
         {
             if (!identicalPageTemplateResults.Any())
             {
-                return new ReportResults(ReportResultsStatus.Good)
+                return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.GoodSummary
                 };
             }
             var count = identicalPageTemplateResults.Count();
 
-            return new ReportResults(ReportResultsStatus.Information)
+            return new ReportResults(ResultsStatus.Information)
             {
                 Summary = Metadata.Terms.InformationSummary.With(new { count }),
                 Data = identicalPageTemplateResults.AsResult().WithLabel(Metadata.Terms.TableNames.IdenticalPageLayouts)

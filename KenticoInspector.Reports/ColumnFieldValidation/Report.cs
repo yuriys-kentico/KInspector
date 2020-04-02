@@ -20,7 +20,7 @@ namespace KenticoInspector.Reports.ColumnFieldValidation
 
         public Report(
             IDatabaseService databaseService,
-            IReportMetadataService reportMetadataService
+            IModuleMetadataService reportMetadataService
             ) : base(reportMetadataService)
         {
             this.databaseService = databaseService;
@@ -208,7 +208,7 @@ namespace KenticoInspector.Reports.ColumnFieldValidation
         {
             if (!cmsClassesWithAddedFields.Any() && !tablesWithAddedColumns.Any())
             {
-                return new ReportResults(ReportResultsStatus.Good)
+                return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.Summaries.Good
                 };
@@ -217,7 +217,7 @@ namespace KenticoInspector.Reports.ColumnFieldValidation
             var cmsClassesResultCount = cmsClassesWithAddedFields.Count();
             var tablesResultCount = tablesWithAddedColumns.Count();
 
-            return new ReportResults(ReportResultsStatus.Error)
+            return new ReportResults(ResultsStatus.Error)
             {
                 Summary = Metadata.Terms.Summaries.Error.With(new
                 {

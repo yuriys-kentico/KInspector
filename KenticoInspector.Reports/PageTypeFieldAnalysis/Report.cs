@@ -15,7 +15,7 @@ namespace KenticoInspector.Reports.PageTypeFieldAnalysis
     {
         private readonly IDatabaseService databaseService;
 
-        public Report(IDatabaseService databaseService, IReportMetadataService reportMetadataService)
+        public Report(IDatabaseService databaseService, IModuleMetadataService reportMetadataService)
             : base(reportMetadataService)
         {
             this.databaseService = databaseService;
@@ -43,7 +43,7 @@ namespace KenticoInspector.Reports.PageTypeFieldAnalysis
         {
             if (!fieldsWithMismatchedTypes.Any())
             {
-                return new ReportResults(ReportResultsStatus.Good)
+                return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.Summaries.Good
                 };
@@ -51,7 +51,7 @@ namespace KenticoInspector.Reports.PageTypeFieldAnalysis
 
             var fieldResultCount = fieldsWithMismatchedTypes.Count();
 
-            var results = new ReportResults(ReportResultsStatus.Information)
+            var results = new ReportResults(ResultsStatus.Information)
             {
                 Summary = Metadata.Terms.Summaries.Information.With(new { fieldResultCount }),
                 Data = fieldsWithMismatchedTypes.AsResult().WithLabel(Metadata.Terms.TableTitles.MatchingPageTypeFieldsWithDifferentDataTypes)

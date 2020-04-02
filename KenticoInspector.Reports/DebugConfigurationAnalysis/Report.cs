@@ -23,7 +23,7 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
             IDatabaseService databaseService,
             IInstanceService instanceService,
             ICmsFileService cmsFileService,
-            IReportMetadataService reportMetadataService
+            IModuleMetadataService reportMetadataService
         ) : base(reportMetadataService)
         {
             _databaseService = databaseService;
@@ -95,13 +95,13 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
 
             if (!explicitlyEnabledSettings.Any() && !compilationDebugAndTraceAreEnabled)
             {
-                return new ReportResults(ReportResultsStatus.Good)
+                return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.GoodSummary
                 };
             }
 
-            var results = new ReportResults(ReportResultsStatus.Warning);
+            var results = new ReportResults(ResultsStatus.Warning);
 
             if (explicitlyEnabledSettings.Any())
             {
@@ -115,7 +115,7 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
 
             if (compilationDebugAndTraceAreEnabled)
             {
-                results.Status = ReportResultsStatus.Error;
+                results.Status = ResultsStatus.Error;
                 results.Summary += Metadata.Terms.ErrorSummary.With(new { compilationDebugIsEnabled, traceIsEnabled });
             }
 

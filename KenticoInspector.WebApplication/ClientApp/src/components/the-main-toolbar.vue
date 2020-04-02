@@ -28,6 +28,12 @@
            :disabled="!isConnected">
       <v-icon>mdi-file-chart</v-icon>
     </v-btn>
+    <v-btn flat
+           icon
+           to="/actions"
+           :disabled="!isConnected">
+      <v-icon>mdi-flash</v-icon>
+    </v-btn>
 
     <v-spacer></v-spacer>
     <connection-status-indicator></connection-status-indicator>

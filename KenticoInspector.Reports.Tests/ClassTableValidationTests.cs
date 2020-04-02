@@ -22,7 +22,7 @@ namespace KenticoInspector.Reports.Tests
 
         public ClassTableValidationTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockInstanceService.Object, _mockReportMetadataService.Object);
+            _mockReport = new Report(_mockDatabaseService.Object, _mockInstanceService.Object, _mockModuleMetadataService.Object);
         }
 
         [TestCase(Category = "No invalid classes or tables", TestName = "Database without invalid classes or tables produces a good result")]
@@ -45,7 +45,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
         }
 
         [TestCase(Category = "Class with no table", TestName = "Database with a class with no table produces an error result and lists one class")]
@@ -76,7 +76,7 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             Assert.That(results.Data.First<TableResult<CmsClass>>().Rows.Count(), Is.EqualTo(1));
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
         }
 
         [TestCase(Category = "Table with no class", TestName = "Database with a table with no class produces an error result and lists one table")]
@@ -104,7 +104,7 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             Assert.That(results.Data.First<TableResult<DatabaseTable>>().Rows.Count(), Is.EqualTo(1));
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Error));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
         }
 
         private List<DatabaseTable> GetTableResultsWithoutIssues(bool includeWhitelistedTables = true)

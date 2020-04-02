@@ -17,7 +17,7 @@ namespace KenticoInspector.Reports.UserPasswordAnalysis
     {
         private readonly IDatabaseService databaseService;
 
-        public Report(IDatabaseService databaseService, IReportMetadataService reportMetadataService)
+        public Report(IDatabaseService databaseService, IModuleMetadataService reportMetadataService)
             : base(reportMetadataService)
         {
             this.databaseService = databaseService;
@@ -70,7 +70,7 @@ namespace KenticoInspector.Reports.UserPasswordAnalysis
         {
             if (!usersWithEmptyPasswords.Any() && !usersWithPlaintextPasswords.Any())
             {
-                return new ReportResults(ReportResultsStatus.Good)
+                return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.GoodSummary
                 };
@@ -79,7 +79,7 @@ namespace KenticoInspector.Reports.UserPasswordAnalysis
             var emptyCount = usersWithEmptyPasswords.Count();
             var plaintextCount = usersWithPlaintextPasswords.Count();
 
-            return new ReportResults(ReportResultsStatus.Error)
+            return new ReportResults(ResultsStatus.Error)
             {
                 Summary = Metadata.Terms.ErrorSummary.With(new { emptyCount, plaintextCount }),
                 Data =

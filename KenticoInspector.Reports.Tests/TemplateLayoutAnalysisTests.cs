@@ -49,7 +49,7 @@ namespace KenticoInspector.Reports.Tests
 
         public TemplateLayoutAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockReportMetadataService.Object);
+            _mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object);
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             Assert.That(results.Data.First<TableResult<IdenticalPageTemplateResult>>().Rows.Count(), Is.EqualTo(1));
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Information));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Information));
         }
     }
 }

@@ -40,7 +40,7 @@ namespace KenticoInspector.Reports.Tests
 
         public ApplicationRestartAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockReportMetadataService.Object);
+            _mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object);
         }
 
         [TestCase(Category = "No events", TestName = "Database without events produces a good result")]
@@ -55,7 +55,7 @@ namespace KenticoInspector.Reports.Tests
             var results = _mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Good));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
         }
 
         [TestCase(Category = "One restart event", TestName = "Database with events produces an information result and lists two events")]
@@ -71,7 +71,7 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             Assert.That(results.Data.First<TableResult<CmsEventLog>>().Rows.Count(), Is.EqualTo(2));
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Information));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Information));
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Helpers;
@@ -18,7 +19,7 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
     {
         private readonly IDatabaseService databaseService;
 
-        public Report(IDatabaseService databaseService, IReportMetadataService reportMetadataService) : base(reportMetadataService)
+        public Report(IDatabaseService databaseService, IModuleMetadataService reportMetadataService) : base(reportMetadataService)
         {
             this.databaseService = databaseService;
         }
@@ -230,13 +231,13 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
 
             if (!errorResults.Any())
             {
-                return new ReportResults(ReportResultsStatus.Good)
+                return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.GoodSummary
                 };
             }
 
-            var results = new ReportResults(ReportResultsStatus.Error);
+            var results = new ReportResults(ResultsStatus.Error);
 
             foreach (var reportResult in errorResults)
             {

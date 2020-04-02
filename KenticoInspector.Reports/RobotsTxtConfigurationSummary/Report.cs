@@ -18,7 +18,7 @@ namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
         private readonly IInstanceService instanceService;
         private readonly HttpClient httpClient;
 
-        public Report(IInstanceService instanceService, IReportMetadataService reportMetadataService, HttpClient httpClient = null) : base(reportMetadataService)
+        public Report(IInstanceService instanceService, IModuleMetadataService reportMetadataService, HttpClient httpClient = null) : base(reportMetadataService)
         {
             this.instanceService = instanceService;
 
@@ -61,7 +61,7 @@ namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
         {
             if (uriStatusCode == statusCodeWithoutIssues)
             {
-                return new ReportResults(ReportResultsStatus.Good)
+                return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.GoodSummary.With(new { testUri })
                 };
@@ -69,7 +69,7 @@ namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
 
             int uriStatusInteger = (int)uriStatusCode;
 
-            return new ReportResults(ReportResultsStatus.Warning)
+            return new ReportResults(ResultsStatus.Warning)
             {
                 Summary = Metadata.Terms.WarningSummary.With(new { testUri, uriStatusInteger })
             };

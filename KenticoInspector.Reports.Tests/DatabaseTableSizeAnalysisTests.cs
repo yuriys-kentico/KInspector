@@ -20,7 +20,7 @@ namespace KenticoInspector.Reports.Tests
 
         public DatabaseTableSizeAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockReportMetadataService.Object);
+            _mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object);
         }
 
         [Test]
@@ -38,7 +38,7 @@ namespace KenticoInspector.Reports.Tests
 
             // Assert
             Assert.That(results.Data.First<TableResult<DatabaseTableSize>>().Rows.Count(), Is.EqualTo(25));
-            Assert.That(results.Status, Is.EqualTo(ReportResultsStatus.Information));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Information));
         }
 
         private List<DatabaseTableSize> GetCleanResults(int count)
