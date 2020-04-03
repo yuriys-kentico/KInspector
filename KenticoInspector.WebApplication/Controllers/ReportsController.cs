@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 
-using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Modules;
 using KenticoInspector.Core.Services.Interfaces;
 
 using Microsoft.AspNetCore.Mvc;
@@ -21,15 +18,9 @@ namespace KenticoInspector.WebApplication.Controllers
         }
 
         [HttpGet("{instanceGuid}")]
-        public ActionResult<IEnumerable<IReport>> GetReports(Guid instanceGuid)
-        {
-            return Ok(moduleService.GetReports(instanceGuid));
-        }
+        public IActionResult GetReports(Guid instanceGuid) => Ok(moduleService.GetReports(instanceGuid));
 
         [HttpGet("{codename}/results/{instanceGuid}")]
-        public ActionResult<ReportResults> GetReportResults(string codename, Guid instanceGuid)
-        {
-            return moduleService.GetReportResults(codename, instanceGuid);
-        }
+        public IActionResult GetReportResults(string codename, Guid instanceGuid) => Ok(moduleService.GetReportResults(codename, instanceGuid));
     }
 }

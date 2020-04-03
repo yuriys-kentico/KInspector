@@ -13,7 +13,7 @@ namespace KenticoInspector.Core
 
         private ModuleMetadata<T> metadata;
 
-        public AbstractModule(IModuleMetadataService moduleMetadataService)
+        protected AbstractModule(IModuleMetadataService moduleMetadataService)
         {
             this.moduleMetadataService = moduleMetadataService;
         }

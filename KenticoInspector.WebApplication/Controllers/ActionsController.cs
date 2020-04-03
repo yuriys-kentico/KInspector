@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
-using KenticoInspector.Core.Models;
-using KenticoInspector.Core.Modules;
 using KenticoInspector.Core.Services.Interfaces;
 
 using Microsoft.AspNetCore.Mvc;
@@ -23,20 +21,16 @@ namespace KenticoInspector.WebApplication.Controllers
         }
 
         [HttpGet("{instanceGuid}")]
-        public ActionResult<IEnumerable<IReport>> Get(Guid instanceGuid)
-        {
-            return Ok(moduleService.GetActions(instanceGuid));
-        }
+        public IActionResult GetActions(Guid instanceGuid) => Ok(moduleService.GetActions(instanceGuid));
 
-        // POST api/values
         [HttpPost("{codename}/execute/{instanceGuid}")]
-        public ActionResult<ActionResults> Excecute(string codename, Guid instanceGuid)
+        public async Task<IActionResult> ExecuteAsync(string codename, Guid instanceGuid)
         {
-            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
-            {
-                var optionsJson = reader.ReadToEnd();
-                return moduleService.ExecuteAction(codename, instanceGuid, optionsJson);
-            }
+            using var reader = new StreamReader(Request.Body, Encoding.UTF8);
+
+            var optionsJson = await reader.ReadToEndAsync();
+
+            return Ok(moduleService.ExecuteAction(codename, instanceGuid, optionsJson));
         }
     }
 }

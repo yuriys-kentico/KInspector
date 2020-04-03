@@ -1,15 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-    <StartupObject></StartupObject>
-    <LangVersion>7.1</LangVersion>
-    <Version />
-    <PackageVersion />
-    <AssemblyVersion />
-    <FileVersion />
-    <InformationalVersion />
+    <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,13 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.9.2" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.6.1" />
-    <PackageReference Include="VueCliMiddleware" Version="2.2.0" />
+    <PackageReference Include="Autofac" Version="5.1.2" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
+    <PackageReference Include="VueCliMiddleware" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,5 +26,4 @@
     <ProjectReference Include="..\KenticoInspector.Infrastructure\KenticoInspector.Infrastructure.csproj" />
     <ProjectReference Include="..\KenticoInspector.Reports\KenticoInspector.Reports.csproj" />
   </ItemGroup>
-
 </Project>

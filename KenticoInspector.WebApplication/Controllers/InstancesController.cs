@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Services.Interfaces;
@@ -13,42 +11,26 @@ namespace KenticoInspector.WebApplication.Controllers
     [ApiController]
     public class InstancesController : ControllerBase
     {
-        private readonly IInstanceService _instanceService;
+        private readonly IInstanceService instanceService;
 
         public InstancesController(IInstanceService instanceService)
         {
-            _instanceService = instanceService;
+            this.instanceService = instanceService;
         }
 
         [HttpGet("details/{instanceGuid}")]
-        public ActionResult<InstanceDetails> Details(Guid instanceGuid)
-        {
-            return _instanceService.GetInstanceDetails(instanceGuid);
-        }
+        public IActionResult Details(Guid instanceGuid) => Ok(instanceService.GetInstanceDetails(instanceGuid));
 
         [HttpDelete("{instanceGuid}")]
-        public void Delete(Guid instanceGuid)
-        {
-            _instanceService.DeleteInstance(instanceGuid);
-        }
+        public void Delete(Guid instanceGuid) => instanceService.DeleteInstance(instanceGuid);
 
         [HttpGet]
-        public ActionResult<IEnumerable<Instance>> Get()
-        {
-            var instances = _instanceService.GetInstances();
-            return instances.ToList();
-        }
+        public IActionResult GetInstances() => Ok(instanceService.GetInstances());
 
         [HttpGet("{instanceGuid}")]
-        public ActionResult<Instance> Get(Guid instanceGuid)
-        {
-            return _instanceService.GetInstance(instanceGuid);
-        }
+        public IActionResult Get(Guid instanceGuid) => Ok(instanceService.GetInstance(instanceGuid));
 
         [HttpPost]
-        public Instance Post([FromBody] Instance instance)
-        {
-            return _instanceService.UpsertInstance(instance);
-        }
+        public IActionResult Post([FromBody] Instance instance) => Ok(instanceService.UpsertInstance(instance));
     }
 }

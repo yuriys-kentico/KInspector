@@ -5,14 +5,17 @@ using Autofac.Extensions.DependencyInjection;
 
 using KenticoInspector.Actions;
 using KenticoInspector.Core;
+using KenticoInspector.Core.Converters;
 using KenticoInspector.Infrastructure;
 using KenticoInspector.Reports;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+using Newtonsoft.Json.Serialization;
 
 namespace KenticoInspector.WebApplication
 {
@@ -28,7 +31,11 @@ namespace KenticoInspector.WebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                options.SerializerSettings.Converters.Add(new VersionAsObjectConverter());
+            });
 
             services.AddSpaStaticFiles(configuration =>
             {
@@ -38,23 +45,23 @@ namespace KenticoInspector.WebApplication
             return ConfigureAutofac(services);
         }
 
-        private IServiceProvider ConfigureAutofac(IServiceCollection services)
+        private static IServiceProvider ConfigureAutofac(IServiceCollection services)
         {
             var containerBuilder = new ContainerBuilder();
 
             containerBuilder.Populate(services);
 
-            containerBuilder.RegisterModule(new CoreModule());
-            containerBuilder.RegisterModule(new InfrastructureModule());
-            containerBuilder.RegisterModule(new ReportsModule());
-            containerBuilder.RegisterModule(new ActionsModule());
+            containerBuilder
+                .RegisterModule(new CoreModule())
+                .RegisterModule(new InfrastructureModule())
+                .RegisterModule(new ReportsModule())
+                .RegisterModule(new ActionsModule());
 
-            var container = containerBuilder.Build();
-            return new AutofacServiceProvider(container);
+            return new AutofacServiceProvider(containerBuilder.Build());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -62,13 +69,20 @@ namespace KenticoInspector.WebApplication
             }
             else
             {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
-            app.UseStaticFiles();
-            app.UseSpaStaticFiles();
-            app.UseMvc();
+            app.UseStaticFiles().UseSpaStaticFiles();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp/dist";

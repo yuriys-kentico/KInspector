@@ -100,7 +100,7 @@ namespace KenticoInspector.Core.Helpers
             bool ignoreUnmatchedProperties)
         {
             var deserializerBuilder = new DeserializerBuilder()
-                .WithNamingConvention(new CamelCaseNamingConvention());
+                .WithNamingConvention(CamelCaseNamingConvention.Instance);
 
             if (ignoreUnmatchedProperties)
             {
