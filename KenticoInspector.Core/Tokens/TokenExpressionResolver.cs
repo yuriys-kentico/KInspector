@@ -100,14 +100,7 @@ namespace KenticoInspector.Core.Tokens
                 }
             }
 
-            if (string.IsNullOrEmpty(resolvedExpression) && leadingChar != null && trailingChar != null)
-            {
-                return Space.ToString();
-            }
-            else
-            {
-                return $"{leadingChar}{resolvedExpression ?? innerTokenExpression}{trailingChar}";
-            }
+            return $"{leadingChar}{resolvedExpression ?? innerTokenExpression}{trailingChar}";
         }
 
         private static (char?, string, char?) GetSplitExpression(string tokenExpression)

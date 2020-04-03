@@ -5,4 +5,4 @@
     See [robotstxt.org](http://www.robotstxt.org/robotstxt.html) for more details.
 terms:
   goodSummary: '[robots.txt](<testUri>) exists.'
-  warningSummary: '[robots.txt](<testUri>) responds with status code `<uriStatusInteger>`.'
+  warningSummary: '[robots.txt](<testUri>) responded with status code `<uriStatusInteger>`.'
