@@ -15,7 +15,7 @@ namespace KenticoInspector.Core.Services.Interfaces
 
         InstanceDetails GetInstanceDetails(Guid instanceGuid);
 
-        InstanceDetails GetInstanceDetails(Instance instance);
+        InstanceDetails GetInstanceDetails(Instance? instance);
 
         IList<Instance> GetInstances();
 

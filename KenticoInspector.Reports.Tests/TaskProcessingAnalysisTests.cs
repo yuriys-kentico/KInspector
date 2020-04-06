@@ -12,7 +12,7 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(11)]
     public class TaskProcessingAnalysisTests : AbstractReportTest<Report, Terms>
     {
-        private Report _mockReport;
+        private readonly Report _mockReport;
 
         public TaskProcessingAnalysisTests(int majorVersion) : base(majorVersion)
         {

@@ -49,7 +49,7 @@ namespace KenticoInspector.Reports.Tests.Helpers
 
         public static InstanceDetails Get(int majorVersion, Instance instance)
         {
-            InstanceDetails instanceDetails = null;
+            InstanceDetails? instanceDetails = null;
 
             switch (majorVersion)
             {
@@ -75,7 +75,7 @@ namespace KenticoInspector.Reports.Tests.Helpers
                 instanceDetails.Guid = instance.Guid;
             }
 
-            return instanceDetails;
+            return instanceDetails ?? throw new Exception($"Version '{majorVersion}' not supported.");
         }
     }
 }

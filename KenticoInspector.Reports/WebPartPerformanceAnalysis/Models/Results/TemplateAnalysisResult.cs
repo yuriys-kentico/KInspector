@@ -10,10 +10,10 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis.Models
     public class TemplateAnalysisResult : CmsPageTemplate
     {
         [JsonIgnore]
-        public IEnumerable<CmsTreeNode> TreeNodesWithIssues { get; set; }
+        public IEnumerable<CmsTreeNode> TreeNodesWithIssues { get; set; } = null!;
 
         [JsonIgnore]
-        public IEnumerable<WebPartAnalysisResult> WebPartsWithIssues { get; set; }
+        public IEnumerable<WebPartAnalysisResult> WebPartsWithIssues { get; set; } = null!;
 
         public int TotalAffectedTreeNodes => TreeNodesWithIssues.Count();
 

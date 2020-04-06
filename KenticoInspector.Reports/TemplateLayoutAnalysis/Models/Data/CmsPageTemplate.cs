@@ -4,8 +4,8 @@
     {
         public int PageTemplateID { get; set; }
 
-        public string PageTemplateCodeName { get; set; }
+        public string PageTemplateCodeName { get; set; } = null!;
 
-        public string PageTemplateLayout { get; set; }
+        public string? PageTemplateLayout { get; set; }
     }
 }

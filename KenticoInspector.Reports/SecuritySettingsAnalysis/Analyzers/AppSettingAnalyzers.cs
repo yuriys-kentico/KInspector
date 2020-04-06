@@ -11,8 +11,8 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
 {
     public class AppSettingAnalyzers : AbstractAnalyzers<XElement, WebConfigSettingResult>
     {
-        public override IEnumerable<Expression<Func<XElement, WebConfigSettingResult>>> Analyzers
-            => new List<Expression<Func<XElement, WebConfigSettingResult>>>
+        public override IEnumerable<Expression<Func<XElement, WebConfigSettingResult?>>> Analyzers
+            => new List<Expression<Func<XElement, WebConfigSettingResult?>>>
         {
             CMSEnableCsrfProtection => AnalyzeUsingExpression(
                 CMSEnableCsrfProtection,
@@ -44,22 +44,28 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
         {
         }
 
-        protected override WebConfigSettingResult AnalyzeUsingExpression(
+        protected override WebConfigSettingResult? AnalyzeUsingExpression(
             XElement appSetting,
-            Expression<Func<string, bool>> valueIsRecommended,
+            Expression<Func<string?, bool>> valueIsRecommended,
             string recommendedValue,
             Term recommendationReason
             )
         {
-            string attributeName = valueIsRecommended.Parameters[0].Name;
+            var attributeName = valueIsRecommended.Parameters[0].Name;
 
-            string keyValue = appSetting.Attribute(attributeName)?.Value;
+            var keyValue = appSetting.Attribute(attributeName)?.Value;
 
             if (valueIsRecommended.Compile()(keyValue)) return null;
 
-            string keyName = appSetting.Attribute("key").Value;
+            var keyName = appSetting.Attribute("key").Value;
 
-            return new WebConfigSettingResult(appSetting, keyName, keyValue, recommendedValue, recommendationReason);
+            return new WebConfigSettingResult(appSetting)
+            {
+                KeyName = keyName,
+                KeyValue = keyValue,
+                RecommendedValue = recommendedValue,
+                RecommendationReason = recommendationReason
+            };
         }
     }
 }

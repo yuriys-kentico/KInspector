@@ -190,39 +190,39 @@ namespace KenticoInspector.Reports.Tests
         }
 
         private void SetupAllDatabaseQueries(
-            IEnumerable<CmsDocument> documentsWithMissingTreeNode = null,
-            IEnumerable<CmsTreeNode> treeNodesWithBadParentNodeId = null,
-            IEnumerable<CmsTreeNode> treeNodesWithBadParentSiteId = null,
-            IEnumerable<CmsTreeNode> treeNodesWithDuplicatedAliasPath = null,
-            IEnumerable<CmsTreeNode> treeNodesWithLevelMismatchByAliasPathTest = null,
-            IEnumerable<CmsTreeNode> treeNodesWithLevelMismatchByNodeLevelTest = null,
-            IEnumerable<CmsTreeNode> treeNodesWithMissingDocument = null,
-            IEnumerable<CmsTreeNode> treeNodesWithPageTypeNotAssignedToSite = null,
+            IEnumerable<CmsDocument>? documentsWithMissingTreeNode = null,
+            IEnumerable<CmsTreeNode>? treeNodesWithBadParentNodeId = null,
+            IEnumerable<CmsTreeNode>? treeNodesWithBadParentSiteId = null,
+            IEnumerable<CmsTreeNode>? treeNodesWithDuplicatedAliasPath = null,
+            IEnumerable<CmsTreeNode>? treeNodesWithLevelMismatchByAliasPathTest = null,
+            IEnumerable<CmsTreeNode>? treeNodesWithLevelMismatchByNodeLevelTest = null,
+            IEnumerable<CmsTreeNode>? treeNodesWithMissingDocument = null,
+            IEnumerable<CmsTreeNode>? treeNodesWithPageTypeNotAssignedToSite = null,
             bool isVersionHistoryDataSetClean = true
             )
         {
-            documentsWithMissingTreeNode = documentsWithMissingTreeNode ?? new List<CmsDocument>();
+            documentsWithMissingTreeNode ??= new List<CmsDocument>();
             SetupCmsDocumentNodeQueries(documentsWithMissingTreeNode, Scripts.GetDocumentIdsWithMissingTreeNode);
 
-            treeNodesWithBadParentNodeId = treeNodesWithBadParentNodeId ?? new List<CmsTreeNode>();
+            treeNodesWithBadParentNodeId ??= new List<CmsTreeNode>();
             SetupCmsTreeNodeQueries(treeNodesWithBadParentNodeId, Scripts.GetTreeNodeIdsWithBadParentNodeId);
 
-            treeNodesWithBadParentSiteId = treeNodesWithBadParentSiteId ?? new List<CmsTreeNode>();
+            treeNodesWithBadParentSiteId ??= new List<CmsTreeNode>();
             SetupCmsTreeNodeQueries(treeNodesWithBadParentSiteId, Scripts.GetTreeNodeIdsWithBadParentSiteId);
 
-            treeNodesWithDuplicatedAliasPath = treeNodesWithDuplicatedAliasPath ?? new List<CmsTreeNode>();
+            treeNodesWithDuplicatedAliasPath ??= new List<CmsTreeNode>();
             SetupCmsTreeNodeQueries(treeNodesWithDuplicatedAliasPath, Scripts.GetTreeNodeIdsWithDuplicatedAliasPath);
 
-            treeNodesWithLevelMismatchByAliasPathTest = treeNodesWithLevelMismatchByAliasPathTest ?? new List<CmsTreeNode>();
+            treeNodesWithLevelMismatchByAliasPathTest ??= new List<CmsTreeNode>();
             SetupCmsTreeNodeQueries(treeNodesWithLevelMismatchByAliasPathTest, Scripts.GetTreeNodeIdsWithLevelMismatchByAliasPath);
 
-            treeNodesWithLevelMismatchByNodeLevelTest = treeNodesWithLevelMismatchByNodeLevelTest ?? new List<CmsTreeNode>();
+            treeNodesWithLevelMismatchByNodeLevelTest ??= new List<CmsTreeNode>();
             SetupCmsTreeNodeQueries(treeNodesWithLevelMismatchByNodeLevelTest, Scripts.GetTreeNodeIdsWithLevelMismatchByNodeLevel);
 
-            treeNodesWithMissingDocument = treeNodesWithMissingDocument ?? new List<CmsTreeNode>();
+            treeNodesWithMissingDocument ??= new List<CmsTreeNode>();
             SetupCmsTreeNodeQueries(treeNodesWithMissingDocument, Scripts.GetTreeNodeIdsWithMissingDocument);
 
-            treeNodesWithPageTypeNotAssignedToSite = treeNodesWithPageTypeNotAssignedToSite ?? new List<CmsTreeNode>();
+            treeNodesWithPageTypeNotAssignedToSite ??= new List<CmsTreeNode>();
             SetupCmsTreeNodeQueries(treeNodesWithPageTypeNotAssignedToSite, Scripts.GetTreeNodeIdsWithPageTypeNotAssignedToSite);
 
             var versionHistoryDataSet = new VersionHistoryDataSet(isVersionHistoryDataSetClean);
@@ -234,60 +234,70 @@ namespace KenticoInspector.Reports.Tests
             SetupVersionHistoryCoupledDataQueries(versionHistoryDataSet.CmsVersionHistoryItems, versionHistoryDataSet.CmsClassItems, versionHistoryDataSet.VersionHistoryCoupledData);
         }
 
-        private void SetupVersionHistoryCoupledDataQueries(List<CmsVersionHistoryItem> versionHistoryItems, List<CmsClass> versionHistoryClasses, List<IDictionary<string, object>> versionHistoryCoupledData)
+        private void SetupVersionHistoryCoupledDataQueries(
+            List<CmsVersionHistoryItem> versionHistoryItems,
+            List<CmsClass> versionHistoryClasses,
+            List<IDictionary<string, object?>> versionHistoryCoupledData
+            )
         {
             foreach (var cmsClass in versionHistoryClasses)
             {
-                var coupledDataIds = versionHistoryItems
-                    .Where(versionHistoryItem => versionHistoryItem.VersionClassID == cmsClass.ClassID)
-                    .Select(versionHistoryItem => versionHistoryItem.CoupledDataID);
-
-                var returnedItems = versionHistoryCoupledData
-                    .Where(versionHistoryCoupledDataItem => coupledDataIds
-                        .Contains((int)versionHistoryCoupledDataItem[cmsClass.ClassIDColumn])
-                    );
-
-                var replacements = new Dictionary<string, string>
+                if (cmsClass.ClassIDColumn != null && cmsClass.ClassTableName != null)
                 {
-                    { "TableName", cmsClass.ClassTableName },
-                    { "IdColumnName", cmsClass.ClassIDColumn }
-                };
+                    var coupledDataIds = versionHistoryItems
+                        .Where(versionHistoryItem => versionHistoryItem.VersionClassID == cmsClass.ClassID)
+                        .Select(versionHistoryItem => versionHistoryItem.CoupledDataID);
 
-                _mockDatabaseService.SetupExecuteSqlFromFileGenericWithListParameter(
-                    Scripts.GetCmsDocumentCoupledDataItems,
-                    replacements,
-                    "coupledDataIds",
-                    coupledDataIds,
-                    returnedItems
-                );
+                    var returnedItems = versionHistoryCoupledData
+                        .Where(versionHistoryCoupledDataItem =>
+                        {
+                            var value = versionHistoryCoupledDataItem[cmsClass.ClassIDColumn];
+
+                            return value != null ? coupledDataIds.Contains((int)value) : false;
+                        });
+
+                    var replacements = new Dictionary<string, string>
+                    {
+                        { "TableName", cmsClass.ClassTableName },
+                        { "IdColumnName", cmsClass.ClassIDColumn }
+                    };
+
+                    _mockDatabaseService.SetupExecuteSqlFromFileGenericWithListParameter(
+                        Scripts.GetCmsDocumentCoupledDataItems,
+                        replacements,
+                        "coupledDataIds",
+                        coupledDataIds,
+                        returnedItems
+                    );
+                }
             }
         }
 
-        private void SetupCmsClassItemsQueries(IEnumerable<CmsClass> returnedItems, string idScript = null)
+        private void SetupCmsClassItemsQueries(IEnumerable<CmsClass> returnedItems, string? idScript = null)
         {
             var idValues = returnedItems.Select(x => x.ClassID);
             SetupDetailsAndIdQueries(idValues, returnedItems, idScript, Scripts.GetCmsClass, "idsBatch");
         }
 
-        private void SetupCmsDocumentNodeQueries(IEnumerable<CmsDocument> returnedItems, string idScript = null)
+        private void SetupCmsDocumentNodeQueries(IEnumerable<CmsDocument> returnedItems, string? idScript = null)
         {
             var idValues = returnedItems.Select(x => x.DocumentID);
             SetupDetailsAndIdQueries(idValues, returnedItems, idScript, Scripts.GetDocumentNodeDetails, "nodeIds");
         }
 
-        private void SetupCmsTreeNodeQueries(IEnumerable<CmsTreeNode> returnedItems, string idScript = null)
+        private void SetupCmsTreeNodeQueries(IEnumerable<CmsTreeNode> returnedItems, string? idScript = null)
         {
             var idValues = returnedItems.Select(x => x.NodeID);
             SetupDetailsAndIdQueries(idValues, returnedItems, idScript, Scripts.GetTreeNodeDetails, "nodeIds");
         }
 
-        private void SetupCmsVersionHistoryQueries(IEnumerable<CmsVersionHistoryItem> returnedItems, string idScript = null)
+        private void SetupCmsVersionHistoryQueries(IEnumerable<CmsVersionHistoryItem> returnedItems, string? idScript = null)
         {
             var idValues = returnedItems.Select(x => x.VersionHistoryID);
             SetupDetailsAndIdQueries(idValues, returnedItems, idScript, Scripts.GetVersionHistoryDetails, "idsBatch");
         }
 
-        private void SetupDetailsAndIdQueries<T>(IEnumerable<int> idValues, IEnumerable<T> returnedItems, string idScript, string detailsScript, string parameterName)
+        private void SetupDetailsAndIdQueries<T>(IEnumerable<int> idValues, IEnumerable<T> returnedItems, string? idScript, string detailsScript, string parameterName)
         {
             if (idValues == null)
             {
@@ -311,7 +321,7 @@ namespace KenticoInspector.Reports.Tests
 
             public List<CmsClass> CmsClassItems { get; set; }
 
-            public List<IDictionary<string, object>> VersionHistoryCoupledData { get; set; }
+            public List<IDictionary<string, object?>> VersionHistoryCoupledData { get; set; }
 
             public VersionHistoryDataSet(bool clean = true)
             {
@@ -330,7 +340,7 @@ namespace KenticoInspector.Reports.Tests
                 };
 
                 CmsVersionHistoryItems = new List<CmsVersionHistoryItem>();
-                VersionHistoryCoupledData = new List<IDictionary<string, object>>();
+                VersionHistoryCoupledData = new List<IDictionary<string, object?>>();
 
                 if (clean)
                 {
@@ -345,7 +355,7 @@ namespace KenticoInspector.Reports.Tests
                         WasPublishedFrom = DateTime.Parse("2019-06-06 11:58:49.2430968")
                     });
 
-                    var coupledData = new Dictionary<string, object>
+                    var coupledData = new Dictionary<string, object?>
                     {
                         { "VersioningDataTestID", 5 },
                         { "BoolNoDefault", false },
@@ -375,7 +385,7 @@ namespace KenticoInspector.Reports.Tests
                         WasPublishedFrom = DateTime.Parse("2019-06-14 10:46:18.4493088")
                     });
 
-                    var coupledData = new Dictionary<string, object>
+                    var coupledData = new Dictionary<string, object?>
                     {
                         { "VersioningDataTestID", 6 },
                         { "BoolNoDefault", true },

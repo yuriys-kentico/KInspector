@@ -87,7 +87,7 @@ namespace KenticoInspector.Reports.Tests
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
         }
 
-        private void ArrangeServices(IEnumerable<CmsSettingsKey> customDatabaseSettingsValues = null, string customWebconfigXml = null)
+        private void ArrangeServices(IEnumerable<CmsSettingsKey>? customDatabaseSettingsValues = null, string? customWebconfigXml = null)
         {
             ArrangeResourceStringsMethods();
             ArrangeWebConfigMethods(customWebconfigXml);
@@ -101,7 +101,7 @@ namespace KenticoInspector.Reports.Tests
                 .Returns(new Dictionary<string, string>());
         }
 
-        private void ArrangeWebConfigMethods(string customWebconfigXml)
+        private void ArrangeWebConfigMethods(string? customWebconfigXml)
         {
             var webconfigXml = !string.IsNullOrWhiteSpace(customWebconfigXml) ? customWebconfigXml : webConfigXml;
 
@@ -112,7 +112,7 @@ namespace KenticoInspector.Reports.Tests
                 .Returns(webConfig);
         }
 
-        private void ArrangeDatabaseSettingsMethods(IEnumerable<CmsSettingsKey> customDatabaseSettingsValues)
+        private void ArrangeDatabaseSettingsMethods(IEnumerable<CmsSettingsKey>? customDatabaseSettingsValues)
         {
             var databaseSettingsKeyValuesResults = GetDatabaseSettingsKeyValuesResults(customDatabaseSettingsValues);
 
@@ -121,7 +121,7 @@ namespace KenticoInspector.Reports.Tests
                 .Returns(databaseSettingsKeyValuesResults);
         }
 
-        private List<CmsSettingsKey> GetDatabaseSettingsKeyValuesResults(IEnumerable<CmsSettingsKey> customSettingsKeyValues = null)
+        private List<CmsSettingsKey> GetDatabaseSettingsKeyValuesResults(IEnumerable<CmsSettingsKey>? customSettingsKeyValues = null)
         {
             var results = new List<CmsSettingsKey>();
 

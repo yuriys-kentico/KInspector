@@ -4,8 +4,8 @@ namespace KenticoInspector.Reports.DatabaseConsistencyCheck.Models
 {
     public class Terms
     {
-        public Term ErrorSummary { get; set; }
+        public Term ErrorSummary { get; set; } = null!;
 
-        public Term GoodSummary { get; set; }
+        public Term GoodSummary { get; set; } = null!;
     }
 }

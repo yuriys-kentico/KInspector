@@ -4,9 +4,9 @@
     {
         public int KeyID { get; set; }
 
-        public string KeyName { get; set; }
+        public string KeyName { get; set; } = null!;
 
-        public string KeyDisplayName { get; set; }
+        public string KeyDisplayName { get; set; } = null!;
 
         public bool KeyValue { get; set; }
 

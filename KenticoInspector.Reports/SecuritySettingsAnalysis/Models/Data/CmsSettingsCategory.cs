@@ -4,6 +4,6 @@
     {
         public int CategoryID { get; set; }
 
-        public string CategoryDisplayName { get; set; }
+        public string CategoryDisplayName { get; set; } = null!;
     }
 }

@@ -2,7 +2,7 @@
 {
     public abstract class Result
     {
-        public string Label { get; protected set; }
+        public string? Label { get; protected set; }
 
         public abstract bool HasData { get; }
 

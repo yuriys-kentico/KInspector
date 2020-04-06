@@ -9,14 +9,14 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis.Models
 {
     public class WebPartAnalysisResult
     {
-        public string WebPartControlId { get; set; }
+        public string WebPartControlId { get; set; } = null!;
 
-        public string WebPartType { get; set; }
+        public string WebPartType { get; set; } = null!;
 
         public int PageTemplateId { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<CmsTreeNode> TreeNodes { get; set; }
+        public IEnumerable<CmsTreeNode> TreeNodes { get; set; } = null!;
 
         public int TreeNodeCount => TreeNodes.Count();
     }

@@ -19,17 +19,12 @@ namespace KenticoInspector.Reports.Tests
         protected Mock<IModuleMetadataService> _mockModuleMetadataService;
         protected Mock<ICmsFileService> _mockCmsFileService;
 
-        public AbstractReportTest(int majorVersion)
+        protected AbstractReportTest(int majorVersion)
         {
             var reportCodename = AbstractReport<TermsType>.GetCodename(typeof(ReportType));
 
             TokenExpressionResolver.RegisterTokenExpressions(typeof(TokenExpressionResolver).Assembly);
 
-            InitializeCommonMocks(majorVersion, reportCodename);
-        }
-
-        protected virtual void InitializeCommonMocks(int majorVersion, string reportCodename)
-        {
             _mockInstance = MockInstances.Get(majorVersion);
             _mockInstanceDetails = MockInstanceDetails.Get(majorVersion, _mockInstance);
             _mockInstanceService = MockInstanceServiceHelper.SetupInstanceService(_mockInstance, _mockInstanceDetails);

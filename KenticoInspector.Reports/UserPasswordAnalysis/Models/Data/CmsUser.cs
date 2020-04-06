@@ -6,27 +6,27 @@ namespace KenticoInspector.Reports.UserPasswordAnalysis.Models.Data
     {
         public int UserID { get; set; }
 
-        public string UserName { get; set; }
+        public string UserName { get; set; } = null!;
 
-        public string Email { get; set; }
-
-        [JsonIgnore]
-        public string UserPassword { get; set; }
+        public string? Email { get; set; }
 
         [JsonIgnore]
-        public string UserPasswordFormat { get; set; }
-
-        public string UserPrivilegeLevel { get; set; }
+        public string UserPassword { get; set; } = null!;
 
         [JsonIgnore]
-        public string FirstName { get; set; }
+        public string? UserPasswordFormat { get; set; }
+
+        public string UserPrivilegeLevel { get; set; } = null!;
 
         [JsonIgnore]
-        public string MiddleName { get; set; }
+        public string? FirstName { get; set; }
 
         [JsonIgnore]
-        public string LastName { get; set; }
+        public string? MiddleName { get; set; }
 
-        public string FullName { get; set; }
+        [JsonIgnore]
+        public string? LastName { get; set; }
+
+        public string? FullName { get; set; }
     }
 }

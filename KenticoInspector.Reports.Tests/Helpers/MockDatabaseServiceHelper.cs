@@ -34,7 +34,7 @@ namespace KenticoInspector.Reports.Tests.Helpers
             IDictionary<string, string> literalReplacements,
             string parameterPropertyName,
             IEnumerable<T> parameterPropertyValue,
-            IEnumerable<IDictionary<string, object>> returnValue)
+            IEnumerable<IDictionary<string, object?>> returnValue)
         {
             mockDatabaseService
                 .Setup(
@@ -46,7 +46,7 @@ namespace KenticoInspector.Reports.Tests.Helpers
                         )
                     )
                 )
-                .Returns(returnValue);
+                .Returns(returnValue as IEnumerable<IDictionary<string, object>>);
         }
 
         public static void SetupExecuteSqlFromFile<T>(

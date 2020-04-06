@@ -1,6 +1,6 @@
 ﻿namespace KenticoInspector.Reports.TransformationSecurityAnalysis
 {
-    public class Scripts
+    public static class Scripts
     {
         public static string BaseDirectory = $"{nameof(TransformationSecurityAnalysis)}/Scripts";
         public static string GetTransformations = $"{BaseDirectory}/{nameof(GetTransformations)}.sql";

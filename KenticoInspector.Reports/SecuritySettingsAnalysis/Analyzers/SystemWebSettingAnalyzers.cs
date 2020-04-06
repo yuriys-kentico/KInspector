@@ -11,8 +11,8 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
 {
     public class SystemWebSettingAnalyzers : AbstractAnalyzers<XElement, WebConfigSettingResult>
     {
-        public override IEnumerable<Expression<Func<XElement, WebConfigSettingResult>>> Analyzers
-            => new List<Expression<Func<XElement, WebConfigSettingResult>>>
+        public override IEnumerable<Expression<Func<XElement, WebConfigSettingResult?>>> Analyzers
+            => new List<Expression<Func<XElement, WebConfigSettingResult?>>>
         {
             Authentication => AnalyzeUsingExpression(
                 Authentication.Element("forms"),
@@ -62,26 +62,32 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
         {
         }
 
-        protected override bool Match(string analyzerName, string name)
+        protected override bool Match(string analyzerName, string? name)
         {
             return analyzerName
                 .Equals(name, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        protected override WebConfigSettingResult AnalyzeUsingExpression(
+        protected override WebConfigSettingResult? AnalyzeUsingExpression(
             XElement systemWebSetting,
-            Expression<Func<string, bool>> valueIsRecommended,
+            Expression<Func<string?, bool>> valueIsRecommended,
             string recommendedValue,
             Term recommendationReason
             )
         {
-            string attributeName = valueIsRecommended.Parameters[0].Name;
+            var attributeName = valueIsRecommended.Parameters[0].Name;
 
-            string keyValue = systemWebSetting.Attribute(attributeName)?.Value;
+            var keyValue = systemWebSetting.Attribute(attributeName)?.Value;
 
             if (valueIsRecommended.Compile()(keyValue)) return null;
 
-            return new WebConfigSettingResult(systemWebSetting, attributeName, keyValue, recommendedValue, recommendationReason);
+            return new WebConfigSettingResult(systemWebSetting)
+            {
+                KeyName = attributeName,
+                KeyValue = keyValue,
+                RecommendedValue = recommendedValue,
+                RecommendationReason = recommendationReason
+            };
         }
     }
 }

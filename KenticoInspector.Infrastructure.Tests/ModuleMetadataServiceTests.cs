@@ -12,17 +12,17 @@ using NUnit.Framework;
 
 namespace KenticoInspector.Infrastructure.Tests
 {
+    public class TestTerms
+    {
+        public Term SingleTerm { get; set; } = null!;
+    }
+
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
     public class ModuleMetadataServiceTests
     {
         private readonly IModuleMetadataService moduleMedatadataService;
-
-        public class TestTerms
-        {
-            public Term SingleTerm { get; set; }
-        }
 
         public ModuleMetadataServiceTests(int majorVersion)
         {
@@ -70,50 +70,50 @@ namespace KenticoInspector.Infrastructure.Tests
             // Assert
             Assert.That(() => getModuleMetadata(yamlPath), Throws.Exception);
         }
+    }
 
-        public class YamlTestCases
+    public class YamlTestCases
+    {
+        public static IEnumerable<TestCaseData> YamlMatchesModel
         {
-            public static IEnumerable<TestCaseData> YamlMatchesModel
+            get
             {
-                get
+                yield return GetTestCaseData("en-US", "TestData\\YamlMatches", new ModuleMetadata<TestTerms>
                 {
-                    yield return GetTestCaseData("en-US", "TestData\\YamlMatches", new ModuleMetadata<TestTerms>()
+                    Details = new ModuleDetails
                     {
-                        Details = new ModuleDetails()
-                        {
-                            Name = "Details name",
-                            ShortDescription = "Details shortDescription",
-                            LongDescription = "Details longDescription\n"
-                        },
-                        Terms = new TestTerms()
-                        {
-                            SingleTerm = "Term value"
-                        }
-                    });
-                    yield return GetTestCaseData("en-GB", "TestData\\YamlMatches", new ModuleMetadata<TestTerms>()
+                        Name = "Details name",
+                        ShortDescription = "Details shortDescription",
+                        LongDescription = "Details longDescription\n"
+                    },
+                    Terms = new TestTerms
                     {
-                        Details = new ModuleDetails()
-                        {
-                            Name = "British details name",
-                            ShortDescription = "Details shortDescription",
-                            LongDescription = "Details longDescription\n"
-                        },
-                        Terms = new TestTerms()
-                        {
-                            SingleTerm = "British term value"
-                        }
-                    });
-                }
+                        SingleTerm = "Term value"
+                    }
+                });
+                yield return GetTestCaseData("en-GB", "TestData\\YamlMatches", new ModuleMetadata<TestTerms>
+                {
+                    Details = new ModuleDetails
+                    {
+                        Name = "British details name",
+                        ShortDescription = "Details shortDescription",
+                        LongDescription = "Details longDescription\n"
+                    },
+                    Terms = new TestTerms
+                    {
+                        SingleTerm = "British term value"
+                    }
+                });
             }
+        }
 
-            private static TestCaseData GetTestCaseData(
-                string cultureCode,
-                string yamlPath,
-                ModuleMetadata<TestTerms> resolvedMetadata)
-            {
-                return new TestCaseData(cultureCode, yamlPath, resolvedMetadata);
-                //TODO: add .SetName($"Metadata in culture \"{cultureCode}\" resolves."); once NUnit fixes https://github.com/nunit/nunit3-vs-adapter/issues/607
-            }
+        private static TestCaseData GetTestCaseData(
+            string cultureCode,
+            string yamlPath,
+            ModuleMetadata<TestTerms> resolvedMetadata)
+        {
+            return new TestCaseData(cultureCode, yamlPath, resolvedMetadata);
+            //TODO: add .SetName($"Metadata in culture \"{cultureCode}\" resolves."); once NUnit fixes https://github.com/nunit/nunit3-vs-adapter/issues/607
         }
     }
 }

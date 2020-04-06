@@ -14,13 +14,13 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
     {
         public int TransformationID { get; set; }
 
-        public string TransformationName { get; set; }
+        public string TransformationName { get; set; } = null!;
 
-        public string TransformationCode { get; set; }
+        public string TransformationCode { get; set; } = null!;
 
-        public string TransformationType { get; set; }
+        public string TransformationType { get; set; } = null!;
 
-        public string ClassName { get; set; }
+        public string ClassName { get; set; } = null!;
 
         public string FullName => $"{ClassName}.{TransformationName}";
 

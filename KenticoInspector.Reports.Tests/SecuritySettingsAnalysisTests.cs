@@ -273,7 +273,7 @@ namespace KenticoInspector.Reports.Tests
             IEnumerable<CmsSettingsCategory> cmsSettingsCategories
             )
         {
-            var cmsSettingsKeysNames = new SettingsKeyAnalyzers(null)
+            var cmsSettingsKeysNames = new SettingsKeyAnalyzers(null!)
                 .Analyzers
                 .Select(analyzer => analyzer.Parameters[0].Name);
 

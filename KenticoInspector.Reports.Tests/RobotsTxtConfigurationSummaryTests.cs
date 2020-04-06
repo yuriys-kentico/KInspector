@@ -21,7 +21,7 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(12)]
     public class RobotsTxtConfigurationSummaryTests : AbstractReportTest<Report, Terms>
     {
-        private Report _mockReport;
+        private Report? _mockReport;
 
         public RobotsTxtConfigurationSummaryTests(int majorVersion) : base(majorVersion)
         {
@@ -73,7 +73,7 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnWarningResult_When_RobotsTxtNotFound()
         {
             // Arrange
-            _mockReport = ArrangeReportAndHandlerWithHttpClientReturning(HttpStatusCode.NotFound, out Mock<HttpMessageHandler> mockHttpMessageHandler);
+            _mockReport = ArrangeReportAndHandlerWithHttpClientReturning(HttpStatusCode.NotFound, out _);
 
             // Act
             var results = _mockReport.GetResults();

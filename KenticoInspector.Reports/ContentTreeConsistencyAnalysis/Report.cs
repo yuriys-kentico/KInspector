@@ -46,9 +46,13 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
             );
         }
 
-        private ConsistencyResult GetNodeResult<T>(string tableName, string sqlScriptRelativeFilePath, string getDetailsSqlRelativeFilePath = null)
+        private ConsistencyResult? GetNodeResult<T>(
+            string tableName,
+            string sqlScriptRelativeFilePath,
+            string? getDetailsSqlRelativeFilePath = null
+            ) where T : notnull
         {
-            getDetailsSqlRelativeFilePath = getDetailsSqlRelativeFilePath ?? Scripts.GetTreeNodeDetails;
+            getDetailsSqlRelativeFilePath ??= Scripts.GetTreeNodeDetails;
 
             var nodeIds = databaseService.ExecuteSqlFromFile<int>(sqlScriptRelativeFilePath);
             var details = databaseService.ExecuteSqlFromFile<T>(getDetailsSqlRelativeFilePath, new { nodeIds });
@@ -65,7 +69,7 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
             return null;
         }
 
-        private ConsistencyResult GetWorkflowResult()
+        private ConsistencyResult? GetWorkflowResult()
         {
             var versionHistoryItems = GetItemsWhereInManyIds<CmsVersionHistoryItem>(
                 databaseService.ExecuteSqlFromFile<int>(Scripts.GetLatestVersionHistoryIdForAllDocuments),
@@ -93,7 +97,7 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
                     .Where(versionHistoryItem => versionHistoryItem.CoupledDataID > 0)
                     .Select(versionHistoryItem => versionHistoryItem.CoupledDataID);
 
-                if (coupledDataIds.Any())
+                if (coupledDataIds.Any() && cmsClass.ClassTableName != null && cmsClass.ClassIDColumn != null)
                 {
                     var replacements = new Dictionary<string, string>
                     {
@@ -140,7 +144,7 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
         private static IEnumerable<VersionHistoryMismatchResult> CompareVersionHistoryItemsWithPublishedItems(
             IEnumerable<CmsVersionHistoryItem> versionHistoryItems,
             IEnumerable<IDictionary<string, object>> coupledData,
-            IEnumerable<CmsClassField> classFields)
+            IEnumerable<CmsClassField>? classFields)
         {
             var idColumnName = classFields
                 .FirstOrDefault(classField => classField.IsIdColumn)
@@ -151,7 +155,7 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
                 var coupledDataItem = coupledData
                     .FirstOrDefault(coupledDataRow => (int)coupledDataRow[idColumnName] == versionHistoryItem.CoupledDataID);
 
-                if (coupledDataItem != null)
+                if (coupledDataItem != null && classFields != null)
                 {
                     foreach (var classField in classFields)
                     {
@@ -183,49 +187,47 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
             }
         }
 
-        private static (string VersionHistoryValue, string DocumentValue) ProcessItemValues(string columnType, string versionHistoryXmlValue, object coupledDataColumnValue)
+        private static (string? VersionHistoryValue, string? DocumentValue) ProcessItemValues(string columnType, string? versionHistoryXmlValue, object? coupledDataColumnValue)
         {
-            var hasAtLeastOneNullValue = versionHistoryXmlValue == null || coupledDataColumnValue == null;
-
-            if (hasAtLeastOneNullValue)
+            if (!(versionHistoryXmlValue == null || coupledDataColumnValue == null))
             {
-                return (versionHistoryXmlValue, coupledDataColumnValue?.ToString());
+                switch (columnType)
+                {
+                    case FieldTypes.Date:
+                    case FieldTypes.DateTime:
+                        var versionHistoryValue = DateTimeOffset.Parse(versionHistoryXmlValue);
+                        var documentValueAdjusted = new DateTimeOffset((DateTime)coupledDataColumnValue, versionHistoryValue.Offset);
+
+                        return (versionHistoryValue.ToString(), documentValueAdjusted.ToString());
+
+                    case FieldTypes.Boolean:
+                        return (bool.Parse(versionHistoryXmlValue).ToString(), Convert.ToBoolean(coupledDataColumnValue).ToString());
+
+                    case FieldTypes.Decimal:
+                        var documentValue = Convert.ToDecimal(coupledDataColumnValue);
+                        var documentValueString = documentValue.ToString();
+
+                        var decimalSeparator = NumberFormatInfo.CurrentInfo.CurrencyDecimalSeparator;
+                        var position = documentValueString.IndexOf(decimalSeparator);
+                        var precision = (position == -1) ? 0 : documentValueString.Length - position - 1;
+
+                        var formatting = "0.";
+                        for (int i = 0; i < precision; i++)
+                        {
+                            formatting += "0";
+                        }
+
+                        return (decimal.Parse(versionHistoryXmlValue).ToString(formatting), documentValueString);
+
+                    default:
+                        return (Regex.Replace(versionHistoryXmlValue, @"\n", "\r\n"), coupledDataColumnValue.ToString());
+                }
             }
 
-            switch (columnType)
-            {
-                case FieldTypes.Date:
-                case FieldTypes.DateTime:
-                    var versionHistoryValue = DateTimeOffset.Parse(versionHistoryXmlValue);
-                    var documentValueAdjusted = new DateTimeOffset((DateTime)coupledDataColumnValue, versionHistoryValue.Offset);
-
-                    return (versionHistoryValue.ToString(), documentValueAdjusted.ToString());
-
-                case FieldTypes.Boolean:
-                    return (bool.Parse(versionHistoryXmlValue).ToString(), Convert.ToBoolean(coupledDataColumnValue).ToString());
-
-                case FieldTypes.Decimal:
-                    var documentValue = Convert.ToDecimal(coupledDataColumnValue);
-                    var documentValueString = documentValue.ToString();
-
-                    var decimalSeparator = NumberFormatInfo.CurrentInfo.CurrencyDecimalSeparator;
-                    var position = documentValueString.IndexOf(decimalSeparator);
-                    var precision = (position == -1) ? 0 : documentValueString.Length - position - 1;
-
-                    var formatting = "0.";
-                    for (int i = 0; i < precision; i++)
-                    {
-                        formatting += "0";
-                    }
-
-                    return (decimal.Parse(versionHistoryXmlValue).ToString(formatting), documentValueString);
-
-                default:
-                    return (Regex.Replace(versionHistoryXmlValue, @"\n", "\r\n"), coupledDataColumnValue.ToString());
-            }
+            return (versionHistoryXmlValue, coupledDataColumnValue?.ToString());
         }
 
-        private ReportResults CompileResults(params ConsistencyResult[] allResults)
+        private ReportResults CompileResults(params ConsistencyResult?[] allResults)
         {
             var errorResults = allResults.Where(result => result != null);
 
@@ -241,12 +243,15 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
 
             foreach (var reportResult in errorResults)
             {
-                results.Data.Add(reportResult.Data);
+                if (reportResult != null)
+                {
+                    results.Data.Add(reportResult.Data);
 
-                var tableName = reportResult.Data.Label;
-                var count = reportResult.Count;
+                    var tableName = reportResult.Data.Label;
+                    var count = reportResult.Count;
 
-                results.Summary += Metadata.Terms.ErrorSummary.With(new { tableName, count });
+                    results.Summary += Metadata.Terms.ErrorSummary.With(new { tableName, count });
+                }
             }
 
             return results;

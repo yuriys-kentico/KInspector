@@ -7,10 +7,10 @@ namespace KenticoInspector.Core.Models
     {
         public Guid Guid { get; set; }
 
-        public Version AdministrationVersion { get; set; }
+        public Version AdministrationVersion { get; set; } = null!;
 
-        public Version DatabaseVersion { get; set; }
+        public Version DatabaseVersion { get; set; } = null!;
 
-        public IEnumerable<CmsSite> Sites { get; set; }
+        public IEnumerable<CmsSite> Sites { get; set; } = null!;
     }
 }

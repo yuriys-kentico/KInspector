@@ -81,7 +81,7 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
         private IEnumerable<WebPartAnalysisResult> ExtractWebPartsWithEmptyColumnsProperty(CmsPageTemplate template, IEnumerable<CmsTreeNode> treeNodes)
         {
             var emptyColumnsWebPartProperties = template
-                .PageTemplateWebParts
+                .PageTemplateWebParts?
                 .Descendants("property")
                 .Where(property => property
                     .Attribute("name")

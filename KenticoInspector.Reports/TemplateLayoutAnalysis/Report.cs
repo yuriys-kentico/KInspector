@@ -47,7 +47,11 @@ namespace KenticoInspector.Reports.TemplateLayoutAnalysis
                     pageTemplate => $"{pageTemplate.PageTemplateCodeName} ({pageTemplate.PageTemplateID})"
                 )
                 .Where(pageTemplate => pageTemplate.Count() > 1)
-                .Select(identicalPageTemplates => new IdenticalPageTemplateResult(identicalPageTemplates.Key, identicalPageTemplates.ToList()))
+                .Select(identicalPageTemplates => new IdenticalPageTemplateResult
+                {
+                    PageTemplateLayout = identicalPageTemplates.Key,
+                    PageTemplateCodenamesAndIds = string.Join(", ", identicalPageTemplates.ToList())
+                })
                 .ToList();
         }
 

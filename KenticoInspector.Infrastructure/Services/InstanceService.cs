@@ -9,12 +9,18 @@ namespace KenticoInspector.Infrastructure.Services
 {
     public class InstanceService : IInstanceService
     {
+        private Instance? currentInstance = null;
+
         private readonly IInstanceRepository _instanceRepository;
         private readonly ISiteRepository _siteRepository;
         private readonly IVersionRepository _versionRepository;
         private readonly IDatabaseService _databaseService;
 
-        public Instance CurrentInstance { get; private set; }
+        public Instance CurrentInstance
+        {
+            get => currentInstance ?? throw new InvalidOperationException();
+            private set => currentInstance = value;
+        }
 
         public InstanceService(
             IInstanceRepository instanceRepository,
@@ -52,8 +58,10 @@ namespace KenticoInspector.Infrastructure.Services
             return GetInstanceDetails(instance);
         }
 
-        public InstanceDetails GetInstanceDetails(Instance instance)
+        public InstanceDetails GetInstanceDetails(Instance? instance)
         {
+            instance = instance ?? throw new ArgumentNullException(nameof(instance));
+
             _databaseService.Configure(instance.DatabaseSettings);
 
             return new InstanceDetails

@@ -11,7 +11,7 @@ namespace KenticoInspector.Core.Tokens
 {
     public static class TokenExpressionResolver
     {
-        private static IEnumerable<(Type tokenExpressionType, string pattern)> TokenExpressionTypePatterns { get; set; }
+        private static IEnumerable<(Type tokenExpressionType, string pattern)>? TokenExpressionTypePatterns { get; set; }
 
         public static void RegisterTokenExpressions(Assembly assembly)
         {
@@ -20,12 +20,12 @@ namespace KenticoInspector.Core.Tokens
                 .Where(TypeIsMarkedWithTokenExpressionAttribute)
                 .Select(AsTokenExpressionTypePattern);
 
-            bool TypeIsMarkedWithTokenExpressionAttribute(Type type)
+            static bool TypeIsMarkedWithTokenExpressionAttribute(Type type)
             {
                 return type.IsDefined(typeof(TokenExpressionAttribute), false);
             }
 
-            (Type type, string) AsTokenExpressionTypePattern(Type type)
+            static (Type type, string) AsTokenExpressionTypePattern(Type type)
             {
                 var pattern = type
                     .GetCustomAttributes<TokenExpressionAttribute>(false)
@@ -62,31 +62,30 @@ namespace KenticoInspector.Core.Tokens
             return string.Join(string.Empty, resolvedExpressions);
         }
 
-        private static IDictionary<string, object> GetValuesDictionary(object tokenValues)
+        private static IDictionary<string, object?> GetValuesDictionary(object tokenValues)
         {
-            if (tokenValues is IDictionary<string, object> dictionary)
+            if (tokenValues is IDictionary<string, object?> dictionary)
             {
                 return dictionary;
             }
 
-            bool PropertyIsNotIndexableAndHasGetter(PropertyInfo prop)
-            {
-                return prop.GetIndexParameters().Length == 0
-                    && prop.GetMethod != null;
-            };
-
             return tokenValues
                 .GetType()
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(PropertyIsNotIndexableAndHasGetter)
+                .Where(prop => prop.GetIndexParameters().Length == 0 && prop.GetMethod != null)
                 .ToDictionary(property => property.Name, property => property.GetValue(tokenValues));
         }
 
-        private static string ResolveTokenExpression(string tokenExpression, IDictionary<string, object> tokenDictionary)
+        private static string ResolveTokenExpression(string tokenExpression, IDictionary<string, object?> tokenDictionary)
         {
             var (leadingChar, innerTokenExpression, trailingChar) = GetSplitExpression(tokenExpression);
 
-            string resolvedExpression = null;
+            string? resolvedExpression = null;
+
+            if (TokenExpressionTypePatterns == null)
+            {
+                throw new Exception($"'{nameof(TokenExpressionTypePatterns)}' should be set using '{nameof(RegisterTokenExpressions)}'.");
+            }
 
             foreach (var (tokenExpressionType, pattern) in TokenExpressionTypePatterns)
             {
@@ -94,7 +93,7 @@ namespace KenticoInspector.Core.Tokens
                 {
                     var expressionObject = FormatterServices.GetUninitializedObject(tokenExpressionType) as ITokenExpression;
 
-                    resolvedExpression = expressionObject.Resolve(innerTokenExpression, tokenDictionary);
+                    resolvedExpression = expressionObject?.Resolve(innerTokenExpression, tokenDictionary);
 
                     break;
                 }
@@ -133,7 +132,7 @@ namespace KenticoInspector.Core.Tokens
                     }
                     else
                     {
-                        tokenExpression = tokenExpression.Substring(0, tokenExpression.Length - 1);
+                        tokenExpression = tokenExpression[0..^1];
                     }
 
                     return (leadingChar, tokenExpression, trailingChar);

@@ -4,9 +4,9 @@
     {
         public int DocumentID { get; set; }
 
-        public string DocumentName { get; set; }
+        public string DocumentName { get; set; } = null!;
 
-        public string DocumentNamePath { get; set; }
+        public string? DocumentNamePath { get; set; }
 
         public int DocumentForeignKeyValue { get; set; }
 

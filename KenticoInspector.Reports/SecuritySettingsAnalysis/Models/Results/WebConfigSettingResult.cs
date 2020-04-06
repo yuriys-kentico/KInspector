@@ -2,35 +2,23 @@
 using System.Web;
 using System.Xml.Linq;
 
-using KenticoInspector.Core.Models;
-
 namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Results
 {
     public class WebConfigSettingResult
     {
         public string KeyPath { get; set; }
 
-        public string KeyName { get; set; }
+        public string KeyName { get; set; } = null!;
 
-        public string KeyValue { get; set; }
+        public string? KeyValue { get; set; }
 
-        public string RecommendedValue { get; set; }
+        public string RecommendedValue { get; set; } = null!;
 
-        public string RecommendationReason { get; set; }
+        public string RecommendationReason { get; set; } = null!;
 
-        public WebConfigSettingResult(
-            XElement element,
-            string keyName,
-            string keyValue,
-            string recommendedValue,
-            Term recommendationReason
-            )
+        public WebConfigSettingResult(XElement element)
         {
             KeyPath = GetPath(element);
-            KeyName = keyName;
-            KeyValue = keyValue;
-            RecommendedValue = recommendedValue;
-            RecommendationReason = recommendationReason;
         }
 
         private string GetPath(XElement element)

@@ -5,7 +5,7 @@ using System.Web;
 
 namespace KenticoInspector.Core.Models.Results
 {
-    public class TableResult<T> : Result
+    public class TableResult<T> : Result where T : notnull
     {
         public IEnumerable<T> Rows { get; }
 

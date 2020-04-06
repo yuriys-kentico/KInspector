@@ -75,8 +75,8 @@ namespace KenticoInspector.Core.Tests
 
     public class TokenExpressionTestCases
     {
-        private static string category;
-        private static string tokenExpression;
+        private static string? category;
+        private static string? tokenExpression;
 
         public static IEnumerable<TestCaseData> ValidExpressionsWithOneSegment()
         {

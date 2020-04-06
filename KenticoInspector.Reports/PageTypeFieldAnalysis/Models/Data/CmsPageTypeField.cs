@@ -2,18 +2,16 @@
 {
     public class CmsPageTypeField
     {
-        public string PageTypeCodeName { get; set; }
+        public string PageTypeCodeName { get; set; } = null!;
 
-        public string FieldName { get; set; }
+        public string? FieldName { get; set; }
 
-        public string FieldDataType { get; set; }
+        public string? FieldDataType { get; set; }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            if (obj is CmsPageTypeField)
+            if (obj is CmsPageTypeField comparingField)
             {
-                CmsPageTypeField comparingField = (CmsPageTypeField)obj;
-
                 var fieldsAreEqual = comparingField.FieldName == FieldName && comparingField.FieldDataType == FieldDataType;
 
                 return fieldsAreEqual;

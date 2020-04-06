@@ -12,7 +12,7 @@ namespace KenticoInspector.Reports.Tests.Helpers
             Guid = Guid.NewGuid(),
             Path = "C:\\inetpub\\wwwroot\\Kentico9",
             Url = "http://kentico9.com",
-            DatabaseSettings = null
+            DatabaseSettings = null!
         };
 
         public static Instance Kentico10 = new Instance
@@ -21,7 +21,7 @@ namespace KenticoInspector.Reports.Tests.Helpers
             Guid = Guid.NewGuid(),
             Path = "C:\\inetpub\\wwwroot\\Kentico10",
             Url = "http://kentico10.com",
-            DatabaseSettings = null
+            DatabaseSettings = null!
         };
 
         public static Instance Kentico11 = new Instance
@@ -30,7 +30,7 @@ namespace KenticoInspector.Reports.Tests.Helpers
             Guid = Guid.NewGuid(),
             Path = "C:\\inetpub\\wwwroot\\Kentico11",
             Url = "http://kentico11.com",
-            DatabaseSettings = null
+            DatabaseSettings = null!
         };
 
         public static Instance Kentico12 = new Instance
@@ -39,27 +39,19 @@ namespace KenticoInspector.Reports.Tests.Helpers
             Guid = Guid.NewGuid(),
             Path = "C:\\inetpub\\wwwroot\\Kentico12",
             Url = "http://kentico12.com",
-            DatabaseSettings = null
+            DatabaseSettings = null!
         };
 
         public static Instance Get(int majorVersion)
         {
-            switch (majorVersion)
+            return majorVersion switch
             {
-                case 9:
-                    return Kentico9;
-
-                case 10:
-                    return Kentico10;
-
-                case 11:
-                    return Kentico11;
-
-                case 12:
-                    return Kentico12;
-            }
-
-            return null;
+                9 => Kentico9,
+                10 => Kentico10,
+                11 => Kentico11,
+                12 => Kentico12,
+                _ => throw new Exception($"Version '{majorVersion}' not supported."),
+            };
         }
     }
 }

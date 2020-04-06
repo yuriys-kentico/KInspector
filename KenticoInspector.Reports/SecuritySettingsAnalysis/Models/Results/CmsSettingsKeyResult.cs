@@ -5,40 +5,36 @@ using System.Linq;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Data;
 
+using Newtonsoft.Json;
+
 namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Results
 {
     public class CmsSettingsKeyResult
     {
-        private readonly int siteID;
-        private readonly string categoryIDPath;
+        private readonly string? categoryIdPath;
 
-        public string SiteName { get; set; }
+        [JsonIgnore]
+        public int SiteID { get; set; }
+
+        public string SiteName { get; set; } = null!;
 
         public int KeyID { get; set; }
 
-        public string KeyPath { get; set; }
+        public string KeyPath { get; set; } = null!;
 
-        public string KeyDisplayName { get; set; }
+        public string KeyDisplayName { get; set; } = null!;
 
-        public string KeyDefaultValue { get; set; }
+        public string? KeyDefaultValue { get; set; }
 
-        public string KeyValue { get; set; }
+        public string? KeyValue { get; set; }
 
-        public string RecommendedValue { get; set; }
+        public string RecommendedValue { get; set; } = null!;
 
-        public string RecommendationReason { get; set; }
+        public string RecommendationReason { get; set; } = null!;
 
-        public CmsSettingsKeyResult(CmsSettingsKey cmsSettingsKey, string recommendedValue, Term recommendationReason)
+        public CmsSettingsKeyResult(string? categoryIdPath)
         {
-            siteID = cmsSettingsKey.SiteID;
-            categoryIDPath = cmsSettingsKey.CategoryIDPath;
-
-            KeyID = cmsSettingsKey.KeyID;
-            KeyDisplayName = cmsSettingsKey.KeyDisplayName;
-            KeyDefaultValue = cmsSettingsKey.KeyDefaultValue;
-            KeyValue = cmsSettingsKey.KeyValue;
-            RecommendedValue = recommendedValue;
-            RecommendationReason = recommendationReason;
+            this.categoryIdPath = categoryIdPath;
         }
 
         public CmsSettingsKeyResult(
@@ -49,7 +45,7 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Results
             )
         {
             SiteName = sites
-                .FirstOrDefault(site => site.SiteId == cmsSettingsKeyResult.siteID)
+                .FirstOrDefault(site => site.SiteId == cmsSettingsKeyResult.SiteID)
                 .SiteName;
 
             KeyID = cmsSettingsKeyResult.KeyID;
@@ -76,9 +72,9 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Results
             RecommendationReason = cmsSettingsKeyResult.RecommendationReason;
         }
 
-        public IEnumerable<string> GetCategoryIdsOnPath()
+        public IEnumerable<string>? GetCategoryIdsOnPath()
         {
-            return categoryIDPath
+            return categoryIdPath?
                 .Split('/', StringSplitOptions.RemoveEmptyEntries)
                 .Select(pathSegment => pathSegment.TrimStart('0'));
         }
@@ -90,7 +86,7 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Results
                 .Replace("$}", string.Empty)
                 .ToLowerInvariant();
 
-            if (resxValues.TryGetValue(displayName, out string keyName))
+            if (resxValues.TryGetValue(displayName, out string? keyName))
             {
                 displayName = keyName;
             }

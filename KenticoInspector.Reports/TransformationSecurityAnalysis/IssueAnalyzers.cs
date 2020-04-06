@@ -43,7 +43,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
 
         public void QueryMacro(CmsTransformation transformation) => UseRegexAnalysis(transformation, "{\\?.*|{%.*querystring", ReportTerms.IssueDescriptions.QueryMacro);
 
-        private void UseRegexAnalysis(CmsTransformation transformation, string pattern, Term issueDescription, [CallerMemberName]string issueType = null)
+        private static void UseRegexAnalysis(CmsTransformation transformation, string pattern, Term issueDescription, [CallerMemberName]string? issueType = null)
         {
             var regex = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
@@ -51,11 +51,17 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
 
             if (regexMatches.Count == 0) return;
 
-            DetectedIssueTypes.TryAdd(issueType, issueDescription);
-
-            foreach (Match match in regex.Matches(transformation.TransformationCode))
+            if (!string.IsNullOrEmpty(issueType))
             {
-                transformation.AddIssue(match.Index, match.Length, issueType);
+                DetectedIssueTypes.TryAdd(issueType, issueDescription);
+
+                foreach (Match? match in regex.Matches(transformation.TransformationCode))
+                {
+                    if (match != null)
+                    {
+                        transformation.AddIssue(match.Index, match.Length, issueType);
+                    }
+                }
             }
         }
     }

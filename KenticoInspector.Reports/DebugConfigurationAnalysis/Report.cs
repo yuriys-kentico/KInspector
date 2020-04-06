@@ -65,7 +65,7 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
                     .Replace("$}", string.Empty)
                     .ToLowerInvariant();
 
-                if (resxValues.TryGetValue(key, out string value))
+                if (resxValues.TryGetValue(key, out string? value))
                 {
                     databaseSettingsValue.KeyDisplayName = value;
                 }

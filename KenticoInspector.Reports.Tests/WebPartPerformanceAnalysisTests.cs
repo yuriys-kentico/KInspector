@@ -60,9 +60,9 @@ namespace KenticoInspector.Reports.Tests
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
         }
 
-        private void ArrangeDatabaseService(IEnumerable<CmsPageTemplate> affectedTemplates = null)
+        private void ArrangeDatabaseService(IEnumerable<CmsPageTemplate>? affectedTemplates = null)
         {
-            affectedTemplates = affectedTemplates ?? new List<CmsPageTemplate>();
+            affectedTemplates ??= new List<CmsPageTemplate>();
 
             _mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetCmsPageTemplatesWithWebPartsWithColumnsProperty, affectedTemplates);
 

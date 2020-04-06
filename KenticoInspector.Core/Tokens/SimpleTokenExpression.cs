@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using KenticoInspector.Core.Extensions;
-
 using static KenticoInspector.Core.Tokens.Constants;
 
 namespace KenticoInspector.Core.Tokens
@@ -16,13 +14,13 @@ namespace KenticoInspector.Core.Tokens
     {
         private static readonly char[] expressionBoundary = new[] { '<', '>' };
 
-        public string Resolve(string tokenExpression, IDictionary<string, object> tokenDictionary)
+        public string? Resolve(string tokenExpression, IDictionary<string, object?> tokenDictionary)
         {
             var trimmedTokenExpression = tokenExpression.Trim(expressionBoundary);
 
             var expression = GetExpression(trimmedTokenExpression);
 
-            if (tokenDictionary.TryGetValue(expression.token, out object token))
+            if (tokenDictionary.TryGetValue(expression.token, out var token))
             {
                 foreach (var (value, operation, result) in expression.cases)
                 {
@@ -48,7 +46,7 @@ namespace KenticoInspector.Core.Tokens
         private (
             string token,
             IEnumerable<(string value, char operation, string result)> cases,
-            string defaultValue
+            string? defaultValue
             ) GetExpression(string tokenExpression)
         {
             if (string.IsNullOrEmpty(tokenExpression))
@@ -61,7 +59,7 @@ namespace KenticoInspector.Core.Tokens
 
             var cases = new List<(string, char, string)>();
 
-            string defaultValue = null;
+            string? defaultValue = null;
 
             switch (segments.Length)
             {
@@ -71,9 +69,9 @@ namespace KenticoInspector.Core.Tokens
                     break;
 
                 default:
-                    if (!segments[segments.Length - 1].Contains(Colon))
+                    if (!segments[^1].Contains(Colon))
                     {
-                        defaultValue = segments[segments.Length - 1];
+                        defaultValue = segments[^1];
                     }
 
                     foreach (var segment in segments.Skip(1).Take(segments.Length - 1))
@@ -91,11 +89,22 @@ namespace KenticoInspector.Core.Tokens
         {
             var operation = Equality;
 
-            var (first, second) = expressionCase.SplitAtFirst(Colon);
+            string first = expressionCase;
+            string second = string.Empty;
+
+            var index = expressionCase.IndexOf(Colon);
+
+            if (index > -1)
+            {
+                var charSpan = expressionCase.AsSpan();
+
+                first = new string(charSpan[0..index]);
+                second = new string(charSpan.Slice(index + 1));
+            }
 
             if (!expressionCase.Contains(Colon))
             {
-                return (null, operation, first);
+                return (string.Empty, operation, first);
             }
 
             var firstChar = first[0];
@@ -114,7 +123,7 @@ namespace KenticoInspector.Core.Tokens
         }
 
         public bool TryResolveToken(
-            object token,
+            object? token,
             string expressionCaseValue,
             char operation,
             string expressionCaseResult,
@@ -122,31 +131,20 @@ namespace KenticoInspector.Core.Tokens
             )
         {
             var resolved = false;
-            resolvedValue = null;
+            resolvedValue = string.Empty;
 
             if (token == null)
             {
                 return resolved;
             }
 
-            switch (token)
+            resolved = token switch
             {
-                case int intToken:
-                    resolved = TryResolveIntToken(intToken, expressionCaseValue, operation);
-                    break;
-
-                case double doubleToken:
-                    resolved = TryResolveDoubleToken(doubleToken, expressionCaseValue, operation);
-                    break;
-
-                case bool boolToken:
-                    resolved = TryResolveBoolToken(boolToken, expressionCaseValue);
-                    break;
-
-                default:
-                    resolved = TryResolveStringToken(token.ToString(), expressionCaseValue);
-                    break;
-            }
+                int intToken => TryResolveIntToken(intToken, expressionCaseValue, operation),
+                double doubleToken => TryResolveDoubleToken(doubleToken, expressionCaseValue, operation),
+                bool boolToken => TryResolveBoolToken(boolToken, expressionCaseValue),
+                _ => TryResolveStringToken(token.ToString(), expressionCaseValue),
+            };
 
             if (resolved)
             {
@@ -201,7 +199,7 @@ namespace KenticoInspector.Core.Tokens
             return false;
         }
 
-        private static bool TryResolveStringToken(string token, string expressionCaseValue)
+        private static bool TryResolveStringToken(string? token, string expressionCaseValue)
         {
             if (token == expressionCaseValue)
             {

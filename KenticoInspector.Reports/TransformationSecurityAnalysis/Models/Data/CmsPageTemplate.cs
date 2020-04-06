@@ -14,26 +14,26 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
     [DebuggerDisplay("{PageTemplateCodeName} {PageTemplateDisplayName}")]
     public class CmsPageTemplate
     {
-        private IEnumerable<WebPart> webParts;
+        private IEnumerable<WebPart>? webParts;
 
         public int PageTemplateID { get; set; }
 
-        public string PageTemplateCodeName { get; set; }
+        public string PageTemplateCodeName { get; set; } = null!;
 
-        public string PageTemplateDisplayName { get; set; }
-
-        [JsonIgnore]
-        public XDocument PageTemplateWebParts { get; set; }
+        public string PageTemplateDisplayName { get; set; } = null!;
 
         [JsonIgnore]
-        public IEnumerable<CmsTreeNode> TreeNodes { get; set; }
+        public XDocument? PageTemplateWebParts { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<WebPart> WebParts
+        public IEnumerable<CmsTreeNode> TreeNodes { get; set; } = null!;
+
+        [JsonIgnore]
+        public IEnumerable<WebPart>? WebParts
         {
             get
             {
-                return webParts ?? (webParts = PageTemplateWebParts
+                return webParts ?? (webParts = PageTemplateWebParts?
                    .Descendants("webpart")
                    .Select(webPartXml => new WebPart(webPartXml))
                    .ToList());

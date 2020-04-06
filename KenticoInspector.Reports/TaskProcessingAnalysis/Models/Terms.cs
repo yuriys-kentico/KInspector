@@ -4,18 +4,18 @@ namespace KenticoInspector.Reports.TaskProcessingAnalysis.Models
 {
     public class Terms
     {
-        public Term GoodSummary { get; set; }
+        public Term GoodSummary { get; set; } = null!;
 
-        public Term WarningSummary { get; set; }
+        public Term WarningSummary { get; set; } = null!;
 
-        public Term CountIntegrationBusTask { get; set; }
+        public Term CountIntegrationBusTask { get; set; } = null!;
 
-        public Term CountScheduledTask { get; set; }
+        public Term CountScheduledTask { get; set; } = null!;
 
-        public Term CountSearchTask { get; set; }
+        public Term CountSearchTask { get; set; } = null!;
 
-        public Term CountStagingTask { get; set; }
+        public Term CountStagingTask { get; set; } = null!;
 
-        public Term CountWebFarmTask { get; set; }
+        public Term CountWebFarmTask { get; set; } = null!;
     }
 }

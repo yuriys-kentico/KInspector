@@ -2,8 +2,8 @@
 {
     public class TableResult
     {
-        public string TableName { get; set; }
+        public string TableName { get; set; } = null!;
 
-        public string TableColumnsNotInClass { get; set; }
+        public string TableColumnsNotInClass { get; set; } = null!;
     }
 }

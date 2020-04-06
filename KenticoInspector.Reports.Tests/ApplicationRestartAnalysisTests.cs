@@ -17,7 +17,7 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(12)]
     public class ApplicationRestartAnalysisTests : AbstractReportTest<Report, Terms>
     {
-        private Report _mockReport;
+        private readonly Report _mockReport;
 
         private IEnumerable<CmsEventLog> CmsEventsWithoutStartAndEndCodes => new List<CmsEventLog>();
 

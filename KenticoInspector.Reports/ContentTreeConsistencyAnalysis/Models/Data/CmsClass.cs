@@ -6,20 +6,20 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data
 {
     public class CmsClass
     {
-        private IEnumerable<CmsClassField> _classFields = null;
-        private string _classIdColumn = null;
+        private IEnumerable<CmsClassField>? _classFields = null;
+        private string? _classIdColumn = null;
 
-        public string ClassDisplayName { get; set; }
+        public string ClassDisplayName { get; set; } = null!;
 
-        public XDocument ClassFormDefinitionXml { get; set; }
+        public XDocument? ClassFormDefinitionXml { get; set; }
 
         public int ClassID { get; set; }
 
-        public string ClassName { get; set; }
+        public string ClassName { get; set; } = null!;
 
-        public string ClassTableName { get; set; }
+        public string? ClassTableName { get; set; }
 
-        public IEnumerable<CmsClassField> ClassFields
+        public IEnumerable<CmsClassField>? ClassFields
         {
             get
             {
@@ -32,7 +32,7 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data
             }
         }
 
-        public string ClassIDColumn
+        public string? ClassIDColumn
         {
             get
             {
@@ -48,9 +48,9 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data
             }
         }
 
-        private IEnumerable<CmsClassField> GetFieldsFromXml()
+        private IEnumerable<CmsClassField>? GetFieldsFromXml()
         {
-            var fields = ClassFormDefinitionXml
+            var fields = ClassFormDefinitionXml?
                 .Descendants("field")
                 .Select(field =>
                 {

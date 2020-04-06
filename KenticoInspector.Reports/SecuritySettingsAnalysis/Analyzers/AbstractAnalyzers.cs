@@ -11,20 +11,20 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
     {
         protected Terms ReportTerms { get; }
 
-        public abstract IEnumerable<Expression<Func<TData, TResult>>> Analyzers { get; }
+        public abstract IEnumerable<Expression<Func<TData, TResult?>>> Analyzers { get; }
 
-        public AbstractAnalyzers(Terms reportTerms)
+        protected AbstractAnalyzers(Terms reportTerms)
         {
             ReportTerms = reportTerms;
         }
 
-        public TResult GetAnalysis(
-            Expression<Func<TData, TResult>> analyzer,
+        public TResult? GetAnalysis(
+            Expression<Func<TData, TResult?>> analyzer,
             IEnumerable<TData> settings,
-            Func<TData, string> getSettingName
+            Func<TData, string?> getSettingName
             )
         {
-            TResult result = null;
+            TResult? result = null;
 
             foreach (var setting in settings)
             {
@@ -39,14 +39,14 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
             return result;
         }
 
-        protected virtual bool Match(string analyzerName, string name)
+        protected virtual bool Match(string analyzerName, string? name)
         {
             return analyzerName.Equals(name, StringComparison.InvariantCulture);
         }
 
-        protected virtual TResult AnalyzeUsingExpression(
+        protected virtual TResult? AnalyzeUsingExpression(
             TData element,
-            Expression<Func<string, bool>> valueIsRecommended,
+            Expression<Func<string?, bool>> valueIsRecommended,
             string recommendedValue,
             Term recommendationReason
             )
@@ -54,12 +54,12 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
             throw new NotImplementedException();
         }
 
-        protected static bool IsNullOrEquals(string value, string equals)
+        protected static bool IsNullOrEquals(string? value, string equals)
         {
             return value == null || Equals(value, equals);
         }
 
-        protected static bool Equals(string value, string equals)
+        protected static bool Equals(string? value, string equals)
         {
             return value != null && value.Equals(equals, StringComparison.InvariantCultureIgnoreCase);
         }

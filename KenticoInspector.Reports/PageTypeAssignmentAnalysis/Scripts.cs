@@ -1,6 +1,6 @@
 ﻿namespace KenticoInspector.Reports.PageTypeAssignmentAnalysis
 {
-    public class Scripts
+    public static class Scripts
     {
         public static string BaseDirectory = $"{nameof(PageTypeAssignmentAnalysis)}/Scripts";
 

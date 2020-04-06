@@ -2,7 +2,7 @@
 {
     public class DatabaseTableSize
     {
-        public string TableName { get; set; }
+        public string TableName { get; set; } = null!;
 
         public int Rows { get; set; }
 

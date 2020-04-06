@@ -12,7 +12,7 @@ namespace KenticoInspector.Core.Helpers
         /// <param name="relativeFilePath">Relative file path not starting with a slash (/).</param>
         /// <param name="literalReplacements">Dictionary of string replacements.</param>
         /// <returns></returns>
-        public static string GetSqlQueryText(string relativeFilePath, IDictionary<string, string> literalReplacements = null)
+        public static string GetSqlQueryText(string relativeFilePath, IDictionary<string, string>? literalReplacements = null)
         {
             var executingDirectory = DirectoryHelper.GetExecutingDirectory();
 

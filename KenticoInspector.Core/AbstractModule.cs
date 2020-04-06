@@ -11,7 +11,7 @@ namespace KenticoInspector.Core
     {
         protected readonly IModuleMetadataService moduleMetadataService;
 
-        private ModuleMetadata<T> metadata;
+        private ModuleMetadata<T>? metadata;
 
         protected AbstractModule(IModuleMetadataService moduleMetadataService)
         {
@@ -32,10 +32,11 @@ namespace KenticoInspector.Core
 
         private static string GetDirectParentNamespace(Type reportType)
         {
-            var fullNameSpace = reportType.Namespace;
+            var fullNameSpace = reportType.Namespace ?? throw new InvalidOperationException();
+
             var indexAfterLastPeriod = fullNameSpace.LastIndexOf('.') + 1;
 
-            return fullNameSpace.Substring(indexAfterLastPeriod, fullNameSpace.Length - indexAfterLastPeriod);
+            return fullNameSpace[indexAfterLastPeriod..];
         }
     }
 }

@@ -74,6 +74,7 @@ namespace KenticoInspector.Reports.ColumnFieldValidation
                 var addedFields = classFieldNameTypes
                     .Where(classFieldNameType => !tableColumnNameTypes
                         .Any(tableColumnNameType => classFieldNameType.Name == tableColumnNameType.Column_Name
+                            && tableColumnNameType.Data_Type != null
                             && classFieldNameType.Type.StartsWith(tableColumnNameType.Data_Type)));
 
                 if (addedFields.Any())
@@ -101,7 +102,8 @@ namespace KenticoInspector.Reports.ColumnFieldValidation
             foreach (var tableColumnNameTypes in tableColumnGroups)
             {
                 var matchingCmsClass = cmsClasses
-                    .First(cmsClass => cmsClass.ClassTableName.Equals(
+                    .First(cmsClass => cmsClass.ClassTableName != null
+                        && cmsClass.ClassTableName.Equals(
                         tableColumnNameTypes.Key,
                         StringComparison.InvariantCultureIgnoreCase
                         ));
@@ -116,6 +118,7 @@ namespace KenticoInspector.Reports.ColumnFieldValidation
                 var addedColumns = tableColumnNameTypes
                     .Where(tableColumnNameType => !classFieldNameTypes
                         .Any(classFieldNameType => classFieldNameType.Name == tableColumnNameType.Column_Name
+                            && tableColumnNameType.Data_Type != null
                             && classFieldNameType.Type.StartsWith(tableColumnNameType.Data_Type)))
                     .Select(column => (column.Column_Name, column.Data_Type));
 
@@ -224,10 +227,9 @@ namespace KenticoInspector.Reports.ColumnFieldValidation
                     cmsClassesResultCount,
                     tablesResultCount
                 }),
-                Data =
-                {
+                Data = {
                     cmsClassesWithAddedFields.AsResult().WithLabel(Metadata.Terms.TableTitles.ClassesWithAddedFields),
-                tablesWithAddedColumns.AsResult().WithLabel(Metadata.Terms.TableTitles.TablesWithAddedColumns)
+                    tablesWithAddedColumns.AsResult().WithLabel(Metadata.Terms.TableTitles.TablesWithAddedColumns)
                 }
             };
         }

@@ -13,7 +13,7 @@ namespace KenticoInspector.Infrastructure.Services
     {
         private readonly IDatabaseService databaseService;
 
-        private static readonly string getCmsSettingsPath = @"Scripts/GetCmsSettings.sql";
+        private const string getCmsSettingsPath = @"Scripts/GetCmsSettings.sql";
 
         private const string _administrationDllToCheck = "CMS.DataEngine.dll";
         private const string _relativeAdministrationDllPath = "bin";
@@ -34,21 +34,21 @@ namespace KenticoInspector.Infrastructure.Services
         {
             if (!Directory.Exists(rootPath))
             {
-                return null;
+                throw new DirectoryNotFoundException();
             }
 
             var binDirectory = Path.Combine(rootPath, _relativeAdministrationDllPath);
 
             if (!Directory.Exists(binDirectory))
             {
-                return null;
+                throw new DirectoryNotFoundException();
             }
 
             var dllFileToCheck = Path.Combine(binDirectory, _administrationDllToCheck);
 
             if (!File.Exists(dllFileToCheck))
             {
-                return null;
+                throw new DirectoryNotFoundException();
             }
 
             var fileVersionInfo = FileVersionInfo.GetVersionInfo(dllFileToCheck);

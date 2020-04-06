@@ -11,13 +11,13 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
 {
     public class ConnectionStringAnalyzers : AbstractAnalyzers<XElement, WebConfigSettingResult>
     {
-        public override IEnumerable<Expression<Func<XElement, WebConfigSettingResult>>> Analyzers
-            => new List<Expression<Func<XElement, WebConfigSettingResult>>>
+        public override IEnumerable<Expression<Func<XElement, WebConfigSettingResult?>>> Analyzers
+            => new List<Expression<Func<XElement, WebConfigSettingResult?>>>
         {
             CMSConnectionString => AnalyzeUsingExpression(
                 CMSConnectionString,
                 connectionString
-                    => !connectionString.Contains("user id=sa;", StringComparison.InvariantCultureIgnoreCase),
+                    => connectionString != null && !connectionString.Contains("user id=sa;", StringComparison.InvariantCultureIgnoreCase),
                 ReportTerms.RecommendedValues.NotSaUser,
                 ReportTerms.RecommendationReasons.ConnectionStrings.SaUser
                 ),
@@ -27,22 +27,28 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
         {
         }
 
-        protected override WebConfigSettingResult AnalyzeUsingExpression(
+        protected override WebConfigSettingResult? AnalyzeUsingExpression(
             XElement connectionString,
-            Expression<Func<string, bool>> valueIsRecommended,
+            Expression<Func<string?, bool>> valueIsRecommended,
             string recommendedValue,
             Term recommendationReason
             )
         {
-            string attributeName = valueIsRecommended.Parameters[0].Name;
+            var attributeName = valueIsRecommended.Parameters[0].Name;
 
-            string keyValue = connectionString.Attribute(attributeName)?.Value;
+            var keyValue = connectionString.Attribute(attributeName)?.Value;
 
             if (valueIsRecommended.Compile()(keyValue)) return null;
 
-            string keyName = connectionString.Attribute("name").Value;
+            var keyName = connectionString.Attribute("name").Value;
 
-            return new WebConfigSettingResult(connectionString, keyName, keyValue, recommendedValue, recommendationReason);
+            return new WebConfigSettingResult(connectionString)
+            {
+                KeyName = keyName,
+                KeyValue = keyValue,
+                RecommendedValue = recommendedValue,
+                RecommendationReason = recommendationReason
+            };
         }
     }
 }

@@ -51,19 +51,22 @@ namespace KenticoInspector.Reports.Tests.Helpers
 
         private static void UpdatePropertiesOfObject<T>(T objectToUpdate) where T : new()
         {
-            var objectProperties = objectToUpdate.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var objectProperties = objectToUpdate?.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-            foreach (var property in objectProperties)
+            if (objectProperties != null)
             {
-                if (property.PropertyType == typeof(Term))
+                foreach (var property in objectProperties)
                 {
-                    property.SetValue(objectToUpdate, (Term)property.Name);
-                }
-                else if (property.PropertyType.IsClass)
-                {
-                    var childObject = Activator.CreateInstance(property.PropertyType);
-                    UpdatePropertiesOfObject(childObject);
-                    property.SetValue(objectToUpdate, childObject);
+                    if (property.PropertyType == typeof(Term))
+                    {
+                        property.SetValue(objectToUpdate, (Term)property.Name);
+                    }
+                    else if (property.PropertyType.IsClass)
+                    {
+                        var childObject = Activator.CreateInstance(property.PropertyType);
+                        UpdatePropertiesOfObject(childObject);
+                        property.SetValue(objectToUpdate, childObject);
+                    }
                 }
             }
         }

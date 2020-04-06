@@ -43,7 +43,7 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
 
         public override ReportResults GetResults()
         {
-            var cmsSettingsKeysNames = new SettingsKeyAnalyzers(null)
+            var cmsSettingsKeysNames = new SettingsKeyAnalyzers(null!)
                 .Analyzers
                 .Select(analyzer => analyzer.Parameters[0].Name);
 

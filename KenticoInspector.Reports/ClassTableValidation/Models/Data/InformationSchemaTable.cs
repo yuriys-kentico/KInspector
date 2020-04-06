@@ -2,6 +2,6 @@
 {
     public class DatabaseTable
     {
-        public string TableName { get; set; }
+        public string TableName { get; set; } = null!;
     }
 }

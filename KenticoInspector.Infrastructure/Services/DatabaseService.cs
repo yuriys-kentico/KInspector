@@ -15,7 +15,7 @@ namespace KenticoInspector.Infrastructure.Services
     {
         private const int CommandTimeout = 300;
 
-        private IDbConnection connection;
+        private IDbConnection? connection;
 
         private IDbConnection Connection => connection ?? throw new Exception($"You must run '{nameof(Configure)}' first.");
 
@@ -39,17 +39,20 @@ namespace KenticoInspector.Infrastructure.Services
             return ExecuteSqlFromFile<T>(relativeFilePath, literalReplacements, null);
         }
 
-        public IEnumerable<T> ExecuteSqlFromFile<T>(string relativeFilePath, IDictionary<string, string> literalReplacements, dynamic parameters)
+        public IEnumerable<T> ExecuteSqlFromFile<T>(string relativeFilePath, IDictionary<string, string>? literalReplacements, dynamic? parameters)
         {
             var query = FileHelper.GetSqlQueryText(relativeFilePath, literalReplacements);
-            return Connection.Query<T>(query, (object)parameters, commandTimeout: CommandTimeout);
+
+            return Connection.Query<T>(query, (object?)parameters, commandTimeout: CommandTimeout);
         }
 
         public DataTable ExecuteSqlFromFileAsDataTable(string relativeFilePath)
         {
             var query = FileHelper.GetSqlQueryText(relativeFilePath);
             var result = new DataTable();
+
             result.Load(Connection.ExecuteReader(query, commandTimeout: CommandTimeout));
+
             return result;
         }
 
@@ -58,7 +61,7 @@ namespace KenticoInspector.Infrastructure.Services
             return ExecuteSqlFromFileGeneric(relativeFilePath, null, null);
         }
 
-        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFileGeneric(string relativeFilePath, dynamic parameters = null)
+        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFileGeneric(string relativeFilePath, dynamic? parameters = null)
         {
             return ExecuteSqlFromFileGeneric(relativeFilePath, null, parameters);
         }
@@ -68,10 +71,11 @@ namespace KenticoInspector.Infrastructure.Services
             return ExecuteSqlFromFileGeneric(relativeFilePath, literalReplacements, null);
         }
 
-        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFileGeneric(string relativeFilePath, IDictionary<string, string> literalReplacements, dynamic parameters)
+        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFileGeneric(string relativeFilePath, IDictionary<string, string>? literalReplacements, dynamic? parameters)
         {
             var query = FileHelper.GetSqlQueryText(relativeFilePath, literalReplacements);
-            return Connection.Query(query, (object)parameters, commandTimeout: CommandTimeout)
+
+            return Connection.Query(query, (object?)parameters, commandTimeout: CommandTimeout)
                 .Select(x => (IDictionary<string, object>)x);
         }
 
@@ -90,10 +94,11 @@ namespace KenticoInspector.Infrastructure.Services
             return ExecuteSqlFromFileScalar<T>(relativeFilePath, literalReplacements, null);
         }
 
-        public T ExecuteSqlFromFileScalar<T>(string relativeFilePath, IDictionary<string, string> literalReplacements, dynamic parameters)
+        public T ExecuteSqlFromFileScalar<T>(string relativeFilePath, IDictionary<string, string>? literalReplacements, dynamic? parameters)
         {
             var query = FileHelper.GetSqlQueryText(relativeFilePath, literalReplacements);
-            return Connection.QueryFirst<T>(query, (object)parameters, commandTimeout: CommandTimeout);
+
+            return Connection.QueryFirst<T>(query, (object?)parameters, commandTimeout: CommandTimeout);
         }
     }
 }

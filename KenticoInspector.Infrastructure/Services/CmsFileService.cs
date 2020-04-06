@@ -13,7 +13,7 @@ namespace KenticoInspector.Core.Helpers
         {
             var resourceXml = GetXDocument(instanceRoot, relativeResxFilePath);
 
-            var resourceStringNodes = resourceXml?
+            var resourceStringNodes = resourceXml
                 .Descendants("data")
                 .ToDictionary(
                     element => element.Attribute("name").Value.ToLowerInvariant(),

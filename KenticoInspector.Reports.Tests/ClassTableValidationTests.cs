@@ -16,7 +16,7 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(12)]
     public class ClassTableValidationTests : AbstractReportTest<Report, Terms>
     {
-        private Report _mockReport;
+        private readonly Report _mockReport;
 
         private List<CmsClass> CmsClassesWithTables => new List<CmsClass>();
 

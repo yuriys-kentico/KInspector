@@ -10,7 +10,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
 
         public string TransformationFullName { get; }
 
-        public CmsTransformation Transformation { get; set; }
+        public CmsTransformation? Transformation { get; set; }
 
         public WebPartProperty(XElement propertyXml)
         {

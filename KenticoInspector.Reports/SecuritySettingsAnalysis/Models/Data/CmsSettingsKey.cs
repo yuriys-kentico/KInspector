@@ -6,16 +6,16 @@
 
         public int KeyID { get; set; }
 
-        public string KeyName { get; set; }
+        public string KeyName { get; set; } = null!;
 
-        public string KeyDisplayName { get; set; }
+        public string KeyDisplayName { get; set; } = null!;
 
-        public string KeyValue { get; set; }
+        public string? KeyValue { get; set; }
 
-        public string KeyDefaultValue { get; set; }
+        public string? KeyDefaultValue { get; set; }
 
         public int KeyCategoryID { get; set; }
 
-        public string CategoryIDPath { get; set; }
+        public string? CategoryIDPath { get; set; }
     }
 }

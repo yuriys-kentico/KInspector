@@ -15,7 +15,7 @@ namespace KenticoInspector.Core.Helpers
         {
             var assemblyPath = Assembly.GetExecutingAssembly().CodeBase;
 
-            var assemblyDirectory = Path.GetDirectoryName(assemblyPath);
+            var assemblyDirectory = Path.GetDirectoryName(assemblyPath) ?? throw new DirectoryNotFoundException();
 
             return assemblyDirectory.Substring(filePrefix.Length);
         }

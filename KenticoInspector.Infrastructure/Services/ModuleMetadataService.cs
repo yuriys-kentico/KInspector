@@ -136,9 +136,9 @@ namespace KenticoInspector.Core.Helpers
 
         private static void RecursivelySetPropertyValues(
             Type objectType,
-            object defaultObject,
-            object overrideObject,
-            object targetObject)
+            object? defaultObject,
+            object? overrideObject,
+            object? targetObject)
         {
             var objectTypeProperties = objectType.GetProperties();
 
@@ -148,7 +148,7 @@ namespace KenticoInspector.Core.Helpers
 
                 var defaultObjectPropertyValue = objectTypeProperty.GetValue(defaultObject);
 
-                object overrideObjectPropertyValue = overrideObject != null
+                object? overrideObjectPropertyValue = overrideObject != null
                     ? objectTypeProperty.GetValue(overrideObject)
                     : defaultObjectPropertyValue;
 

@@ -12,8 +12,8 @@ namespace KenticoInspector.Actions.ResetCmsUserLogin
 {
     public class Action : AbstractAction<Terms, Options>
     {
-        private IDatabaseService databaseService;
-        private IInstanceService instanceService;
+        private readonly IDatabaseService databaseService;
+        private readonly IInstanceService instanceService;
 
         public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12");
 

@@ -15,8 +15,8 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
         private readonly IEnumerable<string> dangerousExtensions
             = new[] { "exe", "src", "cs", "dll", "aspx", "ascx", "msi", "bat" };
 
-        public override IEnumerable<Expression<Func<CmsSettingsKey, CmsSettingsKeyResult>>> Analyzers
-            => new List<Expression<Func<CmsSettingsKey, CmsSettingsKeyResult>>>
+        public override IEnumerable<Expression<Func<CmsSettingsKey, CmsSettingsKeyResult?>>> Analyzers
+            => new List<Expression<Func<CmsSettingsKey, CmsSettingsKeyResult?>>>
         {
             CMSAutocompleteEnableForLogin => AnalyzeUsingExpression(
                 CMSAutocompleteEnableForLogin,
@@ -44,20 +44,20 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
                 ),
             CMSForumAttachmentExtensions => AnalyzeUsingExpression(
                 CMSForumAttachmentExtensions,
-                value => !value.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                value => value != null && !value.Split(';', StringSplitOptions.RemoveEmptyEntries)
                     .Any(ext => dangerousExtensions.Contains(ext.ToLower())),
                 ReportTerms.RecommendedValues.NoDangerousExtensions,
                 ReportTerms.RecommendationReasons.SettingsKeys.CMSForumAttachmentExtensions
                 ),
             CMSMaximumInvalidLogonAttempts => AnalyzeUsingExpression(
                 CMSMaximumInvalidLogonAttempts,
-                value => int.Parse(value) <= 5,
+                value => value != null && int.Parse(value) <= 5,
                 ReportTerms.RecommendedValues.InvalidLogonAttempts,
                 ReportTerms.RecommendationReasons.SettingsKeys.CMSMaximumInvalidLogonAttempts
                 ),
             CMSMediaFileAllowedExtensions => AnalyzeUsingExpression(
                 CMSMediaFileAllowedExtensions,
-                value => !value.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                value => value != null && !value.Split(';', StringSplitOptions.RemoveEmptyEntries)
                     .Any(ext => dangerousExtensions.Contains(ext.ToLower())),
                 ReportTerms.RecommendedValues.NoDangerousExtensions,
                 ReportTerms.RecommendationReasons.SettingsKeys.CMSMediaFileAllowedExtensions
@@ -82,13 +82,13 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
                 ),
             CMSPolicyMinimalLength => AnalyzeUsingExpression(
                 CMSPolicyMinimalLength,
-                value => int.Parse(value) >= 8,
+                value => value != null && int.Parse(value) >= 8,
                 ReportTerms.RecommendedValues.PasswordMinimalLength,
                 ReportTerms.RecommendationReasons.SettingsKeys.CMSPolicyMinimalLength
                 ),
             CMSPolicyNumberOfNonAlphaNumChars => AnalyzeUsingExpression(
                 CMSPolicyNumberOfNonAlphaNumChars,
-                value => int.Parse(value) >= 2,
+                value => value != null && int.Parse(value) >= 2,
                 ReportTerms.RecommendedValues.PasswordNumberOfNonAlphaNumChars,
                 ReportTerms.RecommendationReasons.SettingsKeys.CMSPolicyNumberOfNonAlphaNumChars
                 ),
@@ -100,7 +100,7 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
                 ),
             CMSResetPasswordInterval => AnalyzeUsingExpression(
                CMSResetPasswordInterval,
-                value => int.Parse(value) >= 1 && int.Parse(value) <= 12,
+                value => value != null && int.Parse(value) >= 1 && int.Parse(value) <= 12,
                 ReportTerms.RecommendedValues.ResetPasswordInterval,
                 ReportTerms.RecommendationReasons.SettingsKeys.CMSResetPasswordInterval
                 ),
@@ -112,7 +112,7 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
                 ),
             CMSUploadExtensions => AnalyzeUsingExpression(
                 CMSUploadExtensions,
-                value => !value.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                value => value != null && !value.Split(';', StringSplitOptions.RemoveEmptyEntries)
                     .Any(ext => dangerousExtensions.Contains(ext.ToLower())),
                 ReportTerms.RecommendedValues.NoDangerousExtensions,
                 ReportTerms.RecommendationReasons.SettingsKeys.CMSUploadExtensions
@@ -135,18 +135,27 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
         {
         }
 
-        protected override CmsSettingsKeyResult AnalyzeUsingExpression(
+        protected override CmsSettingsKeyResult? AnalyzeUsingExpression(
             CmsSettingsKey cmsSettingsKey,
-            Expression<Func<string, bool>> valueIsRecommended,
+            Expression<Func<string?, bool>> valueIsRecommended,
             string recommendedValue,
             Term recommendationReason
             )
         {
-            string keyValue = cmsSettingsKey.KeyValue;
+            var keyValue = cmsSettingsKey.KeyValue;
 
             if (valueIsRecommended.Compile()(keyValue)) return null;
 
-            return new CmsSettingsKeyResult(cmsSettingsKey, recommendedValue, recommendationReason);
+            return new CmsSettingsKeyResult(cmsSettingsKey.CategoryIDPath)
+            {
+                SiteID = cmsSettingsKey.SiteID,
+                KeyID = cmsSettingsKey.KeyID,
+                KeyDisplayName = cmsSettingsKey.KeyDisplayName,
+                KeyDefaultValue = cmsSettingsKey.KeyDefaultValue,
+                KeyValue = cmsSettingsKey.KeyValue,
+                RecommendedValue = recommendedValue,
+                RecommendationReason = recommendationReason
+            };
         }
     }
 }

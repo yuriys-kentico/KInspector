@@ -17,41 +17,44 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
         public int TransformationID { get; set; }
 
         [JsonProperty]
-        public string TransformationFullName { get; set; }
+        public string? TransformationFullName { get; set; }
 
         [JsonProperty]
-        public string TransformationType { get; set; }
+        public string? TransformationType { get; set; }
 
         [JsonProperty]
         public int TransformationUses { get; set; }
 
-        public TransformationResult(CmsTransformation transformation, int uses, IEnumerable<string> detectedIssueTypes)
+        public TransformationResult(CmsTransformation? transformation, int uses, IEnumerable<string> detectedIssueTypes)
         {
-            TransformationID = transformation.TransformationID;
-            TransformationFullName = transformation.FullName;
-            TransformationType = transformation.TransformationType;
-            TransformationUses = uses;
-
-            foreach (var issueType in detectedIssueTypes)
+            if (transformation != null)
             {
-                dynamicIssueProperties.TryAdd(issueType, string.Empty);
-            }
+                TransformationID = transformation.TransformationID;
+                TransformationFullName = transformation.FullName;
+                TransformationType = transformation.TransformationType;
 
-            var groupedIssues = transformation.Issues
-                .GroupBy(issue => issue.IssueType);
-
-            foreach (var issueGroup in groupedIssues)
-            {
-                foreach (var issue in issueGroup)
+                foreach (var issueType in detectedIssueTypes)
                 {
-                    dynamicIssueProperties[issueGroup.Key] += HttpUtility.HtmlEncode($"...{issue.CodeSnippet}...");
+                    dynamicIssueProperties.TryAdd(issueType, string.Empty);
+                }
+
+                var groupedIssues = transformation.Issues
+                    .GroupBy(issue => issue.IssueType);
+
+                foreach (var issueGroup in groupedIssues)
+                {
+                    foreach (var issue in issueGroup)
+                    {
+                        dynamicIssueProperties[issueGroup.Key] += HttpUtility.HtmlEncode($"...{issue.CodeSnippet}...");
+                    }
                 }
             }
+            TransformationUses = uses;
         }
 
-        public override bool TryGetMember(GetMemberBinder binder, out object result)
+        public override bool TryGetMember(GetMemberBinder binder, out object? result)
         {
-            var exists = dynamicIssueProperties.TryGetValue(binder.Name, out string value);
+            var exists = dynamicIssueProperties.TryGetValue(binder.Name, out string? value);
 
             result = value;
 

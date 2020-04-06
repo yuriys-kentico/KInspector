@@ -12,13 +12,13 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data
 
         public int DocumentID { get; set; }
 
-        public XDocument NodeXml { get; set; }
+        public XDocument NodeXml { get; set; } = null!;
 
         public int VersionClassID { get; set; }
 
-        public string VersionDocumentName { get; set; }
+        public string? VersionDocumentName { get; set; }
 
-        public string DocumentNamePath { get; set; }
+        public string DocumentNamePath { get; set; } = null!;
 
         public DateTime WasPublishedFrom { get; set; }
 

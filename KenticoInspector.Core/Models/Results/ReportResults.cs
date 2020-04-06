@@ -10,7 +10,7 @@ namespace KenticoInspector.Core.Models.Results
         [JsonConverter(typeof(StringEnumConverter))]
         public ResultsStatus Status { get; set; }
 
-        public string Summary { get; set; }
+        public string? Summary { get; set; }
 
         public ReportResultsData Data { get; set; }
 
