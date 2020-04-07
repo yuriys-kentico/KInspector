@@ -17,7 +17,7 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public class ColumnFieldValidationTests : AbstractReportTest<Report, Terms>
+    public class ColumnFieldValidationTests : AbstractReportTests<Report, Terms>
     {
         private readonly Report mockReport;
 
@@ -111,10 +111,7 @@ namespace KenticoInspector.Reports.Tests
 
         public ColumnFieldValidationTests(int majorVersion) : base(majorVersion)
         {
-            mockReport = new Report(
-                _mockDatabaseService.Object,
-                _mockModuleMetadataService.Object
-                );
+            mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
         [TestCase(Category = "Class and table match", TestName = "Matching class and table produce a good result")]
@@ -161,12 +158,12 @@ namespace KenticoInspector.Reports.Tests
 
         private void ArrangeDatabaseService(IEnumerable<CmsClass> cmsClasses, IEnumerable<TableColumn> tableColumns)
         {
-            _mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetCmsClasses, cmsClasses);
+            mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetCmsClasses, cmsClasses);
 
             var classTableNames = cmsClasses
                 .Select(cmsClass => cmsClass.ClassTableName);
 
-            _mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(
+            mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(
                 Scripts.GetTableColumns,
                 nameof(classTableNames),
                 classTableNames,

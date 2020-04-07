@@ -16,7 +16,7 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public class UserPasswordAnalysisTests : AbstractReportTest<Report, Terms>
+    public class UserPasswordAnalysisTests : AbstractReportTests<Report, Terms>
     {
         private readonly Report mockReport;
 
@@ -52,11 +52,9 @@ namespace KenticoInspector.Reports.Tests
             }
         };
 
-        public UserPasswordAnalysisTests(
-            int majorVersion)
-            : base(majorVersion)
+        public UserPasswordAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object);
+            mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
         [Test]
@@ -107,7 +105,7 @@ namespace KenticoInspector.Reports.Tests
         private void ArrangeDatabaseService(
             IEnumerable<CmsUser> cmsUserTable)
         {
-            _mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(
+            mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(
                 Scripts.GetEnabledAndNotExternalUsers,
                 nameof(Report.ExcludedUserNames),
                 Report.ExcludedUserNames,

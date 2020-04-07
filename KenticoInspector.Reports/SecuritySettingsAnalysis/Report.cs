@@ -32,9 +32,8 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
         public Report(
             IDatabaseService databaseService,
             IInstanceService instanceService,
-            ICmsFileService cmsFileService,
-            IModuleMetadataService reportMetadataService
-            ) : base(reportMetadataService)
+            ICmsFileService cmsFileService
+            )
         {
             this.databaseService = databaseService;
             this.instanceService = instanceService;

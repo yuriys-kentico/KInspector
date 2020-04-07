@@ -22,9 +22,8 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
         public Report(
             IDatabaseService databaseService,
             IInstanceService instanceService,
-            ICmsFileService cmsFileService,
-            IModuleMetadataService reportMetadataService
-        ) : base(reportMetadataService)
+            ICmsFileService cmsFileService
+        )
         {
             _databaseService = databaseService;
             _instanceService = instanceService;

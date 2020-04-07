@@ -14,9 +14,9 @@ namespace KenticoInspector.Reports.Tests
 {
     [TestFixture(10)]
     [TestFixture(11)]
-    public class WebPartPerformanceAnalysisTest : AbstractReportTest<Report, Terms>
+    public class WebPartPerformanceAnalysisTest : AbstractReportTests<Report, Terms>
     {
-        private readonly Report _mockReport;
+        private readonly Report mockReport;
 
         private IEnumerable<CmsPageTemplate> PageTemplatesWithIssues => new List<CmsPageTemplate>
         {
@@ -31,7 +31,7 @@ namespace KenticoInspector.Reports.Tests
 
         public WebPartPerformanceAnalysisTest(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object);
+            mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace KenticoInspector.Reports.Tests
             ArrangeDatabaseService();
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
@@ -54,7 +54,7 @@ namespace KenticoInspector.Reports.Tests
             ArrangeDatabaseService(PageTemplatesWithIssues);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
@@ -64,7 +64,7 @@ namespace KenticoInspector.Reports.Tests
         {
             affectedTemplates ??= new List<CmsPageTemplate>();
 
-            _mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetCmsPageTemplatesWithWebPartsWithColumnsProperty, affectedTemplates);
+            mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetCmsPageTemplatesWithWebPartsWithColumnsProperty, affectedTemplates);
 
             var affectedTemplateIds = affectedTemplates
                 .Select(x => x.PageTemplateID);
@@ -72,7 +72,7 @@ namespace KenticoInspector.Reports.Tests
             var affectedDocuments = affectedTemplateIds
                 .Select(affectedTemplateId => new CmsTreeNode { DocumentPageTemplateID = affectedTemplateId });
 
-            _mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(Scripts.GetTreeNodesUsingPageTemplates, "pageTemplatesWithWebPartsWithColumnsPropertyIds", affectedTemplateIds, affectedDocuments);
+            mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(Scripts.GetTreeNodesUsingPageTemplates, "pageTemplatesWithWebPartsWithColumnsPropertyIds", affectedTemplateIds, affectedDocuments);
         }
     }
 }

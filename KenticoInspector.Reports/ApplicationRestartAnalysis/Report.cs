@@ -25,9 +25,8 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
         };
 
         public Report(
-            IDatabaseService databaseService,
-            IModuleMetadataService reportMetadataService
-            ) : base(reportMetadataService)
+            IDatabaseService databaseService
+            )
         {
             this.databaseService = databaseService;
         }

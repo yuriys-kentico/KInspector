@@ -17,7 +17,7 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
     {
         private readonly IDatabaseService _databaseService;
 
-        public Report(IDatabaseService databaseService, IModuleMetadataService reportMetadataService) : base(reportMetadataService)
+        public Report(IDatabaseService databaseService)
         {
             _databaseService = databaseService;
         }

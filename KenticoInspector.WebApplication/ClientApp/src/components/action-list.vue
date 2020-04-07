@@ -1,7 +1,7 @@
 <template>
   <div>
     <action-list-item v-for="action in actions"
-                      :key="action.codename"
+                      :key="action.codeName"
                       :action="action" />
     <div v-if="actions.length === 0">
       No actions

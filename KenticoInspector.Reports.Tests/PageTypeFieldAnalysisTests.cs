@@ -13,7 +13,7 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public class PageTypeFieldAnalysisTests : AbstractReportTest<Report, Terms>
+    public class PageTypeFieldAnalysisTests : AbstractReportTests<Report, Terms>
     {
         private readonly Report mockReport;
 
@@ -37,14 +37,14 @@ namespace KenticoInspector.Reports.Tests
 
         public PageTypeFieldAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object);
+            mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
         [TestCase(Category = "Matching fields have save data types", TestName = "Page type fields with matching names and data types produce a good result")]
         public void Should_ReturnGoodResult_When_FieldsHaveNoIssues()
         {
             // Arrange
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsPageTypeField>(Scripts.GetCmsPageTypeFields))
                 .Returns(CmsPageTypeFieldsWithoutIssues);
 
@@ -59,7 +59,7 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnInformationResult_When_FieldsWithMatchingNamesHaveDifferentDataTypes()
         {
             // Arrange
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsPageTypeField>(Scripts.GetCmsPageTypeFields))
                 .Returns(CmsPageTypeFieldsWithIdenticalNamesAndDifferentDataTypes);
 

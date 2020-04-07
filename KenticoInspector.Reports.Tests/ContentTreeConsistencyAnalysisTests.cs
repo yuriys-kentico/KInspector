@@ -18,9 +18,9 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public class ContentTreeConsistencyAnalysisTests : AbstractReportTest<Report, Terms>
+    public class ContentTreeConsistencyAnalysisTests : AbstractReportTests<Report, Terms>
     {
-        private readonly Report _mockReport;
+        private readonly Report mockReport;
 
         private IEnumerable<CmsDocument> DocumentNodesWithIssues => new List<CmsDocument>
         {
@@ -55,7 +55,7 @@ namespace KenticoInspector.Reports.Tests
 
         public ContentTreeConsistencyAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object);
+            mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace KenticoInspector.Reports.Tests
             SetupAllDatabaseQueries();
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
@@ -78,7 +78,7 @@ namespace KenticoInspector.Reports.Tests
             SetupAllDatabaseQueries(documentsWithMissingTreeNode: DocumentNodesWithIssues);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
@@ -91,7 +91,7 @@ namespace KenticoInspector.Reports.Tests
             SetupAllDatabaseQueries(treeNodesWithBadParentNodeId: TreeNodesWithissues);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
@@ -104,7 +104,7 @@ namespace KenticoInspector.Reports.Tests
             SetupAllDatabaseQueries(treeNodesWithBadParentSiteId: TreeNodesWithissues);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
@@ -117,7 +117,7 @@ namespace KenticoInspector.Reports.Tests
             SetupAllDatabaseQueries(treeNodesWithDuplicatedAliasPath: TreeNodesWithissues);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
@@ -130,7 +130,7 @@ namespace KenticoInspector.Reports.Tests
             SetupAllDatabaseQueries(treeNodesWithLevelMismatchByAliasPathTest: TreeNodesWithissues);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
@@ -143,7 +143,7 @@ namespace KenticoInspector.Reports.Tests
             SetupAllDatabaseQueries(treeNodesWithLevelMismatchByNodeLevelTest: TreeNodesWithissues);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
@@ -156,7 +156,7 @@ namespace KenticoInspector.Reports.Tests
             SetupAllDatabaseQueries(treeNodesWithMissingDocument: TreeNodesWithissues);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
@@ -169,7 +169,7 @@ namespace KenticoInspector.Reports.Tests
             SetupAllDatabaseQueries(treeNodesWithPageTypeNotAssignedToSite: TreeNodesWithissues);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
@@ -182,7 +182,7 @@ namespace KenticoInspector.Reports.Tests
             SetupAllDatabaseQueries(isVersionHistoryDataSetClean: false);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
@@ -262,7 +262,7 @@ namespace KenticoInspector.Reports.Tests
                         { "IdColumnName", cmsClass.ClassIDColumn }
                     };
 
-                    _mockDatabaseService.SetupExecuteSqlFromFileGenericWithListParameter(
+                    mockDatabaseService.SetupExecuteSqlFromFileGenericWithListParameter(
                         Scripts.GetCmsDocumentCoupledDataItems,
                         replacements,
                         "coupledDataIds",
@@ -306,12 +306,12 @@ namespace KenticoInspector.Reports.Tests
 
             if (!string.IsNullOrWhiteSpace(idScript))
             {
-                _mockDatabaseService.SetupExecuteSqlFromFile(idScript, idValues);
+                mockDatabaseService.SetupExecuteSqlFromFile(idScript, idValues);
             }
 
             if (!string.IsNullOrWhiteSpace(detailsScript) && returnedItems != null)
             {
-                _mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(detailsScript, parameterName, idValues, returnedItems);
+                mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(detailsScript, parameterName, idValues, returnedItems);
             }
         }
 

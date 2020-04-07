@@ -23,33 +23,34 @@ namespace KenticoInspector.Core.Helpers
             this.instanceService = instanceService;
         }
 
-        public ModuleMetadata<T> GetModuleMetadata<T>(string moduleCodename)
-            where T : new()
+        public IModuleMetadata GetModuleMetadata(string moduleCodename, Type metadataTermsType)
         {
+            var metadataType = typeof(ModuleMetadata<>).MakeGenericType(metadataTermsType);
             var metadataDirectory = $"{DirectoryHelper.GetExecutingDirectory()}\\{moduleCodename}\\Metadata\\";
 
-            var currentMetadata = DeserializeMetadataFromYamlFile<ModuleMetadata<T>>(
-                metadataDirectory,
-                CurrentCultureName,
-                false
-            );
+            var mergedMetadata = (IModuleMetadata?)Activator.CreateInstance(metadataType)
+                ?? throw new InvalidOperationException($"Type '{metadataType}' could not be created.");
 
             var currentCultureIsDefaultCulture = CurrentCultureName == DefaultCultureName;
 
-            var mergedMetadata = new ModuleMetadata<T>();
+            var currentMetadata = DeserializeMetadataFromYamlFile(
+                metadataType,
+                metadataDirectory,
+                CurrentCultureName,
+                false
+            ) ?? throw new InvalidOperationException($"Metadata of type '{metadataType}' in culture '{CurrentCultureName}' could not be deserialized.");
 
             if (!currentCultureIsDefaultCulture)
             {
-                var defaultMetadata = DeserializeMetadataFromYamlFile<ModuleMetadata<T>>(
+                var defaultMetadata = DeserializeMetadataFromYamlFile(
+                    metadataType,
                     metadataDirectory,
                     DefaultCultureName,
                     true
-                );
+                ) ?? throw new InvalidOperationException($"Metadata of type '{metadataType}' in culture '{DefaultCultureName}' could not be deserialized.");
 
-                mergedMetadata = GetMergedMetadata(defaultMetadata, currentMetadata);
+                mergedMetadata = GetMergedMetadata(mergedMetadata, defaultMetadata, currentMetadata);
             }
-
-            var ModuleMetadata = currentCultureIsDefaultCulture ? currentMetadata : mergedMetadata;
 
             var instanceDetails = instanceService.GetInstanceDetails(instanceService.CurrentInstance);
 
@@ -60,42 +61,42 @@ namespace KenticoInspector.Core.Helpers
                 databaseVersion = instanceDetails.DatabaseVersion
             };
 
-            Term name = ModuleMetadata.Details.Name;
+            var moduleMetadata = currentCultureIsDefaultCulture ? currentMetadata : mergedMetadata;
 
-            ModuleMetadata.Details.Name = name.With(commonData);
+            Term name = moduleMetadata.Details.Name;
+            moduleMetadata.Details.Name = name.With(commonData);
 
-            Term shortDescription = ModuleMetadata.Details.ShortDescription;
+            Term shortDescription = moduleMetadata.Details.ShortDescription;
+            moduleMetadata.Details.ShortDescription = shortDescription.With(commonData);
 
-            ModuleMetadata.Details.ShortDescription = shortDescription.With(commonData);
+            Term longDescription = moduleMetadata.Details.LongDescription;
+            moduleMetadata.Details.LongDescription = longDescription.With(commonData);
 
-            Term longDescription = ModuleMetadata.Details.LongDescription;
-
-            ModuleMetadata.Details.LongDescription = longDescription.With(commonData);
-
-            return ModuleMetadata;
+            return moduleMetadata;
         }
 
-        private static T DeserializeMetadataFromYamlFile<T>(
+        private static IModuleMetadata? DeserializeMetadataFromYamlFile(
+            Type metadataType,
             string metadataDirectory,
             string cultureName,
             bool ignoreUnmatchedProperties)
-            where T : new()
         {
-            var ModuleMetadataPath = $"{metadataDirectory}{cultureName}.yaml";
+            var moduleMetadataPath = $"{metadataDirectory}{cultureName}.yaml";
 
-            var ModuleMetadataPathExists = File.Exists(ModuleMetadataPath);
+            var moduleMetadataPathExists = File.Exists(moduleMetadataPath);
 
-            if (ModuleMetadataPathExists)
+            if (moduleMetadataPathExists)
             {
-                var fileText = File.ReadAllText(ModuleMetadataPath);
+                var fileText = File.ReadAllText(moduleMetadataPath);
 
-                return DeserializeYaml<T>(fileText, ignoreUnmatchedProperties);
+                return DeserializeYaml(metadataType, fileText, ignoreUnmatchedProperties);
             }
 
-            return new T();
+            return null;
         }
 
-        private static T DeserializeYaml<T>(
+        private static IModuleMetadata? DeserializeYaml(
+            Type metadataType,
             string yaml,
             bool ignoreUnmatchedProperties)
         {
@@ -109,16 +110,14 @@ namespace KenticoInspector.Core.Helpers
 
             var deserializer = deserializerBuilder.Build();
 
-            return deserializer.Deserialize<T>(yaml);
+            return deserializer.Deserialize(yaml, metadataType) as IModuleMetadata;
         }
 
-        private static ModuleMetadata<T> GetMergedMetadata<T>(
-            ModuleMetadata<T> defaultMetadata,
-            ModuleMetadata<T> overrideMetadata)
-            where T : new()
+        private static IModuleMetadata GetMergedMetadata(
+            IModuleMetadata mergedMetadata,
+            IModuleMetadata defaultMetadata,
+            IModuleMetadata overrideMetadata)
         {
-            var mergedMetadata = new ModuleMetadata<T>();
-
             mergedMetadata.Details.Name = overrideMetadata.Details.Name ?? defaultMetadata.Details.Name;
             mergedMetadata.Details.ShortDescription =
                 overrideMetadata.Details.ShortDescription ?? defaultMetadata.Details.ShortDescription;
@@ -126,10 +125,10 @@ namespace KenticoInspector.Core.Helpers
                 overrideMetadata.Details.LongDescription ?? defaultMetadata.Details.LongDescription;
 
             RecursivelySetPropertyValues(
-                typeof(T),
-                defaultMetadata.Terms,
-                overrideMetadata.Terms,
-                mergedMetadata.Terms);
+                (mergedMetadata as dynamic).Terms.GetType(),
+                (defaultMetadata as dynamic).Terms,
+                (overrideMetadata as dynamic).Terms,
+                (mergedMetadata as dynamic).Terms);
 
             return mergedMetadata;
         }
@@ -148,7 +147,7 @@ namespace KenticoInspector.Core.Helpers
 
                 var defaultObjectPropertyValue = objectTypeProperty.GetValue(defaultObject);
 
-                object? overrideObjectPropertyValue = overrideObject != null
+                var overrideObjectPropertyValue = overrideObject != null
                     ? objectTypeProperty.GetValue(overrideObject)
                     : defaultObjectPropertyValue;
 

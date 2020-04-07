@@ -23,7 +23,7 @@
         Error = 3,
 
         /// <summary>
-        /// Indicates that the report has not been run
+        /// Indicates that the module has not been run.
         /// </summary>
         NotRun = 4
     }

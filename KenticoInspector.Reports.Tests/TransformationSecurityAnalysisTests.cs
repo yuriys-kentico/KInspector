@@ -19,7 +19,7 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public class TransformationSecurityAnalysisTests : AbstractReportTest<Report, Terms>
+    public class TransformationSecurityAnalysisTests : AbstractReportTests<Report, Terms>
     {
         private readonly Report mockReport;
 
@@ -91,7 +91,7 @@ namespace KenticoInspector.Reports.Tests
 
         public TransformationSecurityAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object, _mockInstanceService.Object);
+            mockReport = ArrangeProperties(new Report(mockDatabaseService.Object, mockInstanceService.Object));
         }
 
         private static XDocument ParseXDocumentFromFile(string path)
@@ -151,9 +151,9 @@ namespace KenticoInspector.Reports.Tests
 
         private void ArrangeDatabaseService(IEnumerable<CmsTransformation> transformation)
         {
-            _mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetTransformations, transformation);
-            _mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetTreeNodes, TreeNodesWithoutIssues);
-            _mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(Scripts.GetPageTemplates, "DocumentPageTemplateIDs", TreeNodesWithoutIssues.Select(treeNode => treeNode.DocumentPageTemplateID), PageTemplateWithoutIssues);
+            mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetTransformations, transformation);
+            mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetTreeNodes, TreeNodesWithoutIssues);
+            mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(Scripts.GetPageTemplates, "DocumentPageTemplateIDs", TreeNodesWithoutIssues.Select(treeNode => treeNode.DocumentPageTemplateID), PageTemplateWithoutIssues);
         }
     }
 }

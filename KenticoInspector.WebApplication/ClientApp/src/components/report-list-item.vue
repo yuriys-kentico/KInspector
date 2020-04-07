@@ -128,7 +128,7 @@
       ...mapGetters('instances', ['connectedInstanceDetails']),
       ...mapGetters('reports', ['getReportResult']),
       results: function () {
-        const reportResults = this.getReportResult(this.report.codename, this.connectedInstanceDetails.guid)
+        const reportResults = this.getReportResult(this.report.codeName, this.connectedInstanceDetails.guid)
         return reportResults.results
       },
       hasResults: function () {
@@ -182,7 +182,7 @@
       },
       runConfiguration: function () {
         return {
-          codename: this.report.codename,
+          codeName: this.report.codeName,
           instanceGuid: this.connectedInstanceDetails.guid
         }
       },

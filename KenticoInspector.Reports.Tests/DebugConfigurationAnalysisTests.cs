@@ -14,9 +14,9 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public class DebugConfigurationAnalysisTests : AbstractReportTest<Report, Terms>
+    public class DebugConfigurationAnalysisTests : AbstractReportTests<Report, Terms>
     {
-        private readonly Report _mockReport;
+        private readonly Report mockReport;
 
         private const string webConfigXml = @"<configuration><system.web><compilation debug=""false"" /></system.web></configuration>";
         private const string webConfigXmlWithCompilationDebug = @"<configuration><system.web><compilation debug=""true"" /></system.web></configuration>";
@@ -24,7 +24,7 @@ namespace KenticoInspector.Reports.Tests
 
         public DebugConfigurationAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockInstanceService.Object, _mockCmsFileService.Object, _mockModuleMetadataService.Object);
+            mockReport = ArrangeProperties(new Report(mockDatabaseService.Object, mockInstanceService.Object, mockCmsFileService.Object));
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace KenticoInspector.Reports.Tests
             ArrangeServices();
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
@@ -47,7 +47,7 @@ namespace KenticoInspector.Reports.Tests
             ArrangeServices(customWebconfigXml: webConfigXmlWithCompilationDebug);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
@@ -60,7 +60,7 @@ namespace KenticoInspector.Reports.Tests
             ArrangeServices(customWebconfigXml: webConfigXmlWithCompilationDebugAndTrace);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
@@ -81,7 +81,7 @@ namespace KenticoInspector.Reports.Tests
             ArrangeServices(customDatabaseSettingsValues: new[] { settingsKey });
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
@@ -96,8 +96,8 @@ namespace KenticoInspector.Reports.Tests
 
         private void ArrangeResourceStringsMethods()
         {
-            _mockCmsFileService
-                .Setup(p => p.GetResourceStringsFromResx(_mockInstance.Path, DefaultKenticoPaths.PrimaryResxFile))
+            mockCmsFileService
+                .Setup(p => p.GetResourceStringsFromResx(mockInstance.Path, DefaultKenticoPaths.PrimaryResxFile))
                 .Returns(new Dictionary<string, string>());
         }
 
@@ -107,8 +107,8 @@ namespace KenticoInspector.Reports.Tests
 
             var webConfig = XDocument.Parse(webconfigXml);
 
-            _mockCmsFileService
-                .Setup(p => p.GetXDocument(_mockInstance.Path, DefaultKenticoPaths.WebConfigFile))
+            mockCmsFileService
+                .Setup(p => p.GetXDocument(mockInstance.Path, DefaultKenticoPaths.WebConfigFile))
                 .Returns(webConfig);
         }
 
@@ -116,7 +116,7 @@ namespace KenticoInspector.Reports.Tests
         {
             var databaseSettingsKeyValuesResults = GetDatabaseSettingsKeyValuesResults(customDatabaseSettingsValues);
 
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsSettingsKey>(Scripts.GetCMSSettingsKeysForDebug))
                 .Returns(databaseSettingsKeyValuesResults);
         }

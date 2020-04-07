@@ -8,16 +8,12 @@ namespace KenticoInspector.Core.Services.Interfaces
 {
     public interface IModuleService : IService
     {
-        IReport GetReport(string codename);
-
         IEnumerable<IReport> GetReports(Guid instanceGuid);
 
         ReportResults GetReportResults(string reportCodename, Guid instanceGuid);
 
-        IAction GetAction(string codename);
-
         IEnumerable<IAction> GetActions(Guid instanceGuid);
 
-        ActionResults ExecuteAction(string actionCodename, Guid instanceGuid, string optionsJson);
+        ActionResults GetActionResults(string actionCodename, Guid instanceGuid, string optionsJson);
     }
 }

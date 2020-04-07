@@ -18,8 +18,7 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public
-    class SecuritySettingsAnalysisTests : AbstractReportTest<Report, Terms>
+    public class SecuritySettingsAnalysisTests : AbstractReportTests<Report, Terms>
     {
         private readonly Report mockReport;
 
@@ -183,12 +182,11 @@ namespace KenticoInspector.Reports.Tests
 
         public SecuritySettingsAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            mockReport = new Report(
-                _mockDatabaseService.Object,
-                _mockInstanceService.Object,
-                _mockCmsFileService.Object,
-                _mockModuleMetadataService.Object
-                );
+            mockReport = ArrangeProperties(new Report(
+                mockDatabaseService.Object,
+                mockInstanceService.Object,
+                mockCmsFileService.Object
+                ));
         }
 
         [TestCase(
@@ -277,7 +275,7 @@ namespace KenticoInspector.Reports.Tests
                 .Analyzers
                 .Select(analyzer => analyzer.Parameters[0].Name);
 
-            _mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(
+            mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(
                 Scripts.GetSecurityCmsSettings,
                 nameof(cmsSettingsKeysNames),
                 cmsSettingsKeysNames,
@@ -286,7 +284,7 @@ namespace KenticoInspector.Reports.Tests
             var cmsSettingsCategoryIdsOnPaths = cmsSettingsCategories
                 .Select(category => category.CategoryID.ToString());
 
-            _mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(
+            mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(
                 Scripts.GetCmsSettingsCategories,
                 nameof(cmsSettingsCategoryIdsOnPaths),
                 cmsSettingsCategoryIdsOnPaths,
@@ -298,12 +296,12 @@ namespace KenticoInspector.Reports.Tests
         {
             var webConfig = XDocument.Load(webConfigPath);
 
-            _mockCmsFileService
-                .Setup(p => p.GetXDocument(_mockInstance.Path, DefaultKenticoPaths.WebConfigFile))
+            mockCmsFileService
+                .Setup(p => p.GetXDocument(mockInstance.Path, DefaultKenticoPaths.WebConfigFile))
                 .Returns(webConfig);
 
-            _mockCmsFileService
-                .Setup(p => p.GetResourceStringsFromResx(_mockInstance.Path, DefaultKenticoPaths.PrimaryResxFile))
+            mockCmsFileService
+                .Setup(p => p.GetResourceStringsFromResx(mockInstance.Path, DefaultKenticoPaths.PrimaryResxFile))
                 .Returns(new Dictionary<string, string>());
         }
     }

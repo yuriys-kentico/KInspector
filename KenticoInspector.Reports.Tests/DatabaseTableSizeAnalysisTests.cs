@@ -14,13 +14,13 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public class DatabaseTableSizeAnalysisTests : AbstractReportTest<Report, Terms>
+    public class DatabaseTableSizeAnalysisTests : AbstractReportTests<Report, Terms>
     {
-        private readonly Report _mockReport;
+        private readonly Report mockReport;
 
         public DatabaseTableSizeAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object);
+            mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
         [Test]
@@ -29,12 +29,12 @@ namespace KenticoInspector.Reports.Tests
             // Arrange
             IEnumerable<DatabaseTableSize> databaseTableSites = GetCleanResults(25);
 
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<DatabaseTableSize>(Scripts.GetTop25LargestTables))
                 .Returns(databaseTableSites);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Data.First<TableResult<DatabaseTableSize>>().Rows.Count(), Is.EqualTo(25));

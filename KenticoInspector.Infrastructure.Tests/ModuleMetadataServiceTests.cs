@@ -45,14 +45,14 @@ namespace KenticoInspector.Infrastructure.Tests
             Thread.CurrentThread.CurrentCulture = new CultureInfo(cultureName);
 
             // Act
-            var metadata = moduleMedatadataService.GetModuleMetadata<TestTerms>(yamlPath);
+            var metadata = moduleMedatadataService.GetModuleMetadata(yamlPath, typeof(TestTerms));
 
             // Assert
             Assert.That(metadata.Details.Name, Is.EqualTo(resolvedMetadata.Details.Name));
             Assert.That(metadata.Details.ShortDescription, Is.EqualTo(resolvedMetadata.Details.ShortDescription));
             Assert.That(metadata.Details.LongDescription, Is.EqualTo(resolvedMetadata.Details.LongDescription));
 
-            Assert.That(metadata.Terms.SingleTerm.ToString(), Is.EqualTo(resolvedMetadata.Terms.SingleTerm.ToString()));
+            Assert.That((metadata as dynamic).Terms.SingleTerm.ToString(), Is.EqualTo(resolvedMetadata.Terms.SingleTerm.ToString()));
         }
 
         [TestCase("en-US", "TestData\\YamlDoesNotMatch", TestName = "Metadata throws exception when YAML does not match the model.")]
@@ -64,8 +64,8 @@ namespace KenticoInspector.Infrastructure.Tests
             Thread.CurrentThread.CurrentCulture = new CultureInfo(cultureName);
 
             // Act
-            ModuleMetadata<TestTerms> getModuleMetadata(string path) => moduleMedatadataService
-                    .GetModuleMetadata<TestTerms>(path);
+            IModuleMetadata getModuleMetadata(string path) => moduleMedatadataService
+                    .GetModuleMetadata(path, typeof(TestTerms));
 
             // Assert
             Assert.That(() => getModuleMetadata(yamlPath), Throws.Exception);

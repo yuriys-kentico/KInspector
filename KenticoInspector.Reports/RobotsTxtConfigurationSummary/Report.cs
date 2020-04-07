@@ -18,7 +18,7 @@ namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
         private readonly IInstanceService instanceService;
         private readonly HttpClient httpClient;
 
-        public Report(IInstanceService instanceService, IModuleMetadataService reportMetadataService, HttpClient? httpClient = null) : base(reportMetadataService)
+        public Report(IInstanceService instanceService, HttpClient? httpClient = null)
         {
             this.instanceService = instanceService;
 

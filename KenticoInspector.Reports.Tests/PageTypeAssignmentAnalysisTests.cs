@@ -14,9 +14,9 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public class PageTypeAssignmentAnalysisTests : AbstractReportTest<Report, Terms>
+    public class PageTypeAssignmentAnalysisTests : AbstractReportTests<Report, Terms>
     {
-        private readonly Report _mockReport;
+        private readonly Report mockReport;
 
         private IEnumerable<CmsPageType> PageTypesWithIssues => new List<CmsPageType>
         {
@@ -63,7 +63,7 @@ namespace KenticoInspector.Reports.Tests
 
         public PageTypeAssignmentAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object);
+            mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace KenticoInspector.Reports.Tests
             ArrangeDatabaseService(PageTypesWithIssues);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Data.First<TableResult<CmsPageType>>().Rows.Count(), Is.GreaterThan(0));
@@ -87,7 +87,7 @@ namespace KenticoInspector.Reports.Tests
             ArrangeDatabaseService(PageTypesWithoutIssues);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
@@ -95,7 +95,7 @@ namespace KenticoInspector.Reports.Tests
 
         private void ArrangeDatabaseService(IEnumerable<CmsPageType> unassignedPageTypes)
         {
-            _mockDatabaseService
+            mockDatabaseService
                .Setup(p => p.ExecuteSqlFromFile<CmsPageType>(Scripts.GetPageTypesNotAssignedToSite))
                .Returns(unassignedPageTypes);
         }

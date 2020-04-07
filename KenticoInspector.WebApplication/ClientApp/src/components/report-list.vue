@@ -1,7 +1,7 @@
 <template>
   <div>
     <report-list-item v-for="report in reports"
-                      :key="report.codename"
+                      :key="report.codeName"
                       :report="report" />
     <div v-if="reports.length === 0">
       No reports

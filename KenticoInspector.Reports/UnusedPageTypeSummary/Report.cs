@@ -16,7 +16,7 @@ namespace KenticoInspector.Reports.UnusedPageTypeSummary
     {
         private readonly IDatabaseService databaseService;
 
-        public Report(IDatabaseService databaseService, IModuleMetadataService reportMetadataService) : base(reportMetadataService)
+        public Report(IDatabaseService databaseService)
         {
             this.databaseService = databaseService;
         }

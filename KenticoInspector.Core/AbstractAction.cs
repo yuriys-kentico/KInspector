@@ -1,21 +1,15 @@
 ﻿using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Modules;
-using KenticoInspector.Core.Services.Interfaces;
 
 using Newtonsoft.Json;
 
 namespace KenticoInspector.Core
 {
-    public abstract class AbstractAction<TTerms, TOptions>
-        : AbstractModule<TTerms>, IAction
+    public abstract class AbstractAction<TTerms, TOptions> : AbstractModule<TTerms>, IAction
         where TTerms : new()
         where TOptions : new()
     {
-        protected AbstractAction(IModuleMetadataService moduleMetadataService) : base(moduleMetadataService)
-        {
-        }
-
-        public ActionResults Execute(string optionsJson)
+        public ActionResults GetResults(string optionsJson)
         {
             TOptions options;
 
@@ -25,14 +19,14 @@ namespace KenticoInspector.Core
             }
             catch
             {
-                return GetInvalidOptionsResult();
+                return GetInvalidOptionsResults();
             }
 
-            return Execute(options);
+            return GetResults(options);
         }
 
-        public abstract ActionResults Execute(TOptions options);
+        public abstract ActionResults GetResults(TOptions options);
 
-        public abstract ActionResults GetInvalidOptionsResult();
+        public abstract ActionResults GetInvalidOptionsResults();
     }
 }

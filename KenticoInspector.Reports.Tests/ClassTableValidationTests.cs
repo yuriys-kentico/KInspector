@@ -14,15 +14,15 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public class ClassTableValidationTests : AbstractReportTest<Report, Terms>
+    public class ClassTableValidationTests : AbstractReportTests<Report, Terms>
     {
-        private readonly Report _mockReport;
+        private readonly Report mockReport;
 
         private List<CmsClass> CmsClassesWithTables => new List<CmsClass>();
 
         public ClassTableValidationTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockInstanceService.Object, _mockModuleMetadataService.Object);
+            mockReport = ArrangeProperties(new Report(mockDatabaseService.Object, mockInstanceService.Object));
         }
 
         [TestCase(Category = "No invalid classes or tables", TestName = "Database without invalid classes or tables produces a good result")]
@@ -31,18 +31,18 @@ namespace KenticoInspector.Reports.Tests
             // Arrange
             var tableResults = GetTableResultsWithoutIssues();
 
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<DatabaseTable>(Scripts.GetTablesWithMissingClass))
                 .Returns(tableResults);
 
             var classResults = CmsClassesWithTables;
 
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClassesWithMissingTable))
                 .Returns(classResults);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
@@ -54,7 +54,7 @@ namespace KenticoInspector.Reports.Tests
             // Arrange
             var tableResults = GetTableResultsWithoutIssues();
 
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<DatabaseTable>(Scripts.GetTablesWithMissingClass))
                 .Returns(tableResults);
 
@@ -67,12 +67,12 @@ namespace KenticoInspector.Reports.Tests
                 ClassTableName = "Custom_HasNoTable"
             });
 
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClassesWithMissingTable))
                 .Returns(classResults);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Data.First<TableResult<CmsClass>>().Rows.Count(), Is.EqualTo(1));
@@ -89,18 +89,18 @@ namespace KenticoInspector.Reports.Tests
                 TableName = "HasNoClass"
             });
 
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<DatabaseTable>(Scripts.GetTablesWithMissingClass))
                 .Returns(tableResults);
 
             var classResults = CmsClassesWithTables;
 
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClassesWithMissingTable))
                 .Returns(classResults);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Data.First<TableResult<DatabaseTable>>().Rows.Count(), Is.EqualTo(1));
@@ -111,7 +111,7 @@ namespace KenticoInspector.Reports.Tests
         {
             var tableResults = new List<DatabaseTable>();
 
-            if (includeWhitelistedTables && _mockInstanceDetails.DatabaseVersion.Major >= 10)
+            if (includeWhitelistedTables && mockInstanceDetails.DatabaseVersion.Major >= 10)
             {
                 tableResults.Add(new DatabaseTable()
                 {

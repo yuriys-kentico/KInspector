@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
+using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Modules;
 using KenticoInspector.Core.Repositories.Interfaces;
@@ -10,59 +12,102 @@ namespace KenticoInspector.Infrastructure.Services
 {
     public class ModuleService : IModuleService
     {
-        private readonly IDatabaseService databaseService;
-        private readonly IInstanceService instanceService;
         private readonly IReportRepository reportRepository;
         private readonly IActionRepository actionRepository;
+        private readonly IInstanceService instanceService;
+        private readonly IDatabaseService databaseService;
+        private readonly IModuleMetadataService moduleMetadataService;
 
         public ModuleService(
             IReportRepository reportRepository,
             IActionRepository actionRepository,
             IInstanceService instanceService,
-            IDatabaseService databaseService
+            IDatabaseService databaseService,
+            IModuleMetadataService moduleMetadataService
             )
         {
             this.reportRepository = reportRepository;
             this.actionRepository = actionRepository;
             this.instanceService = instanceService;
             this.databaseService = databaseService;
+            this.moduleMetadataService = moduleMetadataService;
         }
-
-        public IAction GetAction(string codename) => actionRepository.GetAction(codename);
 
         public IEnumerable<IAction> GetActions(Guid instanceGuid)
         {
             instanceService.SetCurrentInstance(instanceGuid);
-            return actionRepository.GetActions();
+
+            var actions = actionRepository.GetActions();
+
+            foreach (var action in actions)
+            {
+                action.SetModuleProperties(GetCodeName, GetModuleMetadata);
+            }
+
+            return actions;
         }
 
-        public ActionResults ExecuteAction(string codename, Guid instanceGuid, string optionsJson)
+        public ActionResults GetActionResults(string reportCodeName, Guid instanceGuid, string optionsJson)
         {
-            var action = actionRepository.GetAction(codename);
             var instance = instanceService.SetCurrentInstance(instanceGuid);
-
             databaseService.Configure(instance.DatabaseSettings);
 
-            return action.Execute(optionsJson);
-        }
+            var action = actionRepository.GetActions()
+                .Where(action => GetCodeName(action.GetType()) == reportCodeName)
+                .First();
 
-        public IReport GetReport(string codename) => reportRepository.GetReport(codename);
+            action.SetModuleProperties(GetCodeName, GetModuleMetadata);
+
+            return action.GetResults(optionsJson);
+        }
 
         public IEnumerable<IReport> GetReports(Guid instanceGuid)
         {
             instanceService.SetCurrentInstance(instanceGuid);
 
-            return reportRepository.GetReports();
+            var reports = reportRepository.GetReports();
+
+            foreach (var report in reports)
+            {
+                report.SetModuleProperties(GetCodeName, GetModuleMetadata);
+            }
+
+            return reports;
         }
 
-        public ReportResults GetReportResults(string reportCodename, Guid instanceGuid)
+        public ReportResults GetReportResults(string reportCodeName, Guid instanceGuid)
         {
-            var report = reportRepository.GetReport(reportCodename);
             var instance = instanceService.SetCurrentInstance(instanceGuid);
-
             databaseService.Configure(instance.DatabaseSettings);
 
+            var report = reportRepository.GetReports()
+                .Where(report => GetCodeName(report.GetType()) == reportCodeName)
+                .First();
+
+            report.SetModuleProperties(GetCodeName, GetModuleMetadata);
+
             return report.GetResults();
+        }
+
+        private static string GetCodeName(Type moduleType)
+        {
+            var fullNameSpace = moduleType.Namespace
+                ?? throw new InvalidOperationException($"Type '{moduleType}' does not have a namespace.");
+
+            var indexAfterLastPeriod = fullNameSpace.LastIndexOf('.') + 1;
+
+            return fullNameSpace[indexAfterLastPeriod..];
+        }
+
+        private IModuleMetadata GetModuleMetadata(Type moduleType, string moduleCodeName)
+        {
+            var moduleBaseType = moduleType.BaseType
+                ?? throw new InvalidOperationException($"Module of type '{moduleType}' does not have a base type.");
+
+            return moduleMetadataService.GetModuleMetadata(
+                moduleCodeName,
+                moduleBaseType.GetGenericArguments()[0]
+            );
         }
     }
 }

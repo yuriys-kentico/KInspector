@@ -17,7 +17,7 @@ namespace KenticoInspector.Reports.SampleReport
 
         private readonly Random random = new Random();
 
-        public Report(IDatabaseService databaseService, IModuleMetadataService reportMetadataService) : base(reportMetadataService)
+        public Report(IDatabaseService databaseService)
         {
             this.databaseService = databaseService;
         }

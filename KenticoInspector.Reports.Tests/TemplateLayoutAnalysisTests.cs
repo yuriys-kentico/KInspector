@@ -15,9 +15,9 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public class TemplateLayoutAnalysisTests : AbstractReportTest<Report, Terms>
+    public class TemplateLayoutAnalysisTests : AbstractReportTests<Report, Terms>
     {
-        private readonly Report _mockReport;
+        private readonly Report mockReport;
 
         private IList<CmsPageTemplate> PageTemplatesWithoutIssues => new List<CmsPageTemplate>
         {
@@ -49,19 +49,19 @@ namespace KenticoInspector.Reports.Tests
 
         public TemplateLayoutAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object);
+            mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
         [Test]
         public void Should_ReturnGoodResult_When_PageTemplatesWithoutIssues()
         {
             // Arrange
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsPageTemplate>(Scripts.GetCmsPageTemplates))
                 .Returns(PageTemplatesWithoutIssues);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
@@ -71,12 +71,12 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnInformationResult_When_PageTemplatesWithIssues()
         {
             // Arrange
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsPageTemplate>(Scripts.GetCmsPageTemplates))
                 .Returns(PageTemplatesWithIssues);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Data.First<TableResult<IdenticalPageTemplateResult>>().Rows.Count(), Is.EqualTo(1));

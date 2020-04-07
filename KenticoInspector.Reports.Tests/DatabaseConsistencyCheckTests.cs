@@ -11,13 +11,13 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public class DatabaseConsistencyCheckTests : AbstractReportTest<Report, Terms>
+    public class DatabaseConsistencyCheckTests : AbstractReportTests<Report, Terms>
     {
-        private readonly Report _mockReport;
+        private readonly Report mockReport;
 
         public DatabaseConsistencyCheckTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object);
+            mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
         [Test]
@@ -26,12 +26,12 @@ namespace KenticoInspector.Reports.Tests
             // Arrange
             var emptyResult = new DataTable();
 #pragma warning disable 0618 // This is a special exemption as the results of CheckDB are unknown
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFileAsDataTable(Scripts.GetCheckDbResults))
                 .Returns(emptyResult);
 #pragma warning restore 0618
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             //Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
@@ -46,13 +46,13 @@ namespace KenticoInspector.Reports.Tests
             result.Rows.Add("value");
 
 # pragma warning disable 0618 // This is a special exemption as the results of CheckDB are unknown
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFileAsDataTable(Scripts.GetCheckDbResults))
                 .Returns(result);
 # pragma warning restore 0618
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             //Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));

@@ -21,7 +21,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
         private readonly IDatabaseService databaseService;
         private readonly IInstanceService instanceService;
 
-        public Report(IDatabaseService databaseService, IModuleMetadataService reportMetadataService, IInstanceService instanceService) : base(reportMetadataService)
+        public Report(IDatabaseService databaseService, IInstanceService instanceService)
         {
             this.databaseService = databaseService;
             this.instanceService = instanceService;

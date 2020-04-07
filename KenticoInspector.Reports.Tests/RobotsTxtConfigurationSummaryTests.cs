@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Reports.RobotsTxtConfigurationSummary;
 using KenticoInspector.Reports.RobotsTxtConfigurationSummary.Models;
-using KenticoInspector.Reports.Tests.Helpers;
 
 using Moq;
 using Moq.Protected;
@@ -19,9 +18,9 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public class RobotsTxtConfigurationSummaryTests : AbstractReportTest<Report, Terms>
+    public class RobotsTxtConfigurationSummaryTests : AbstractReportTests<Report, Terms>
     {
-        private Report? _mockReport;
+        private Report? mockReport;
 
         public RobotsTxtConfigurationSummaryTests(int majorVersion) : base(majorVersion)
         {
@@ -31,11 +30,11 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnGoodResult_When_RobotsTxtFound()
         {
             // Arrange
-            _mockReport = ArrangeReportAndHandlerWithHttpClientReturning(HttpStatusCode.OK, out Mock<HttpMessageHandler> mockHttpMessageHandler);
-            var mockInstance = _mockInstanceService.Object.CurrentInstance;
+            mockReport = ArrangeReportAndHandlerWithHttpClientReturning(HttpStatusCode.OK, out Mock<HttpMessageHandler> mockHttpMessageHandler);
+            var mockInstance = mockInstanceService.Object.CurrentInstance;
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
@@ -52,14 +51,14 @@ namespace KenticoInspector.Reports.Tests
         {
             // Arrange
 
-            _mockReport = ArrangeReportAndHandlerWithHttpClientReturning(HttpStatusCode.OK, out Mock<HttpMessageHandler> mockHttpMessageHandler);
-            var mockInstance = _mockInstanceService.Object.CurrentInstance;
+            mockReport = ArrangeReportAndHandlerWithHttpClientReturning(HttpStatusCode.OK, out Mock<HttpMessageHandler> mockHttpMessageHandler);
+            var mockInstance = mockInstanceService.Object.CurrentInstance;
 
             var baseUrl = mockInstance.Url;
             mockInstance.Url += "/subdirectory";
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
@@ -73,10 +72,10 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnWarningResult_When_RobotsTxtNotFound()
         {
             // Arrange
-            _mockReport = ArrangeReportAndHandlerWithHttpClientReturning(HttpStatusCode.NotFound, out _);
+            mockReport = ArrangeReportAndHandlerWithHttpClientReturning(HttpStatusCode.NotFound, out _);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
@@ -98,9 +97,7 @@ namespace KenticoInspector.Reports.Tests
 
             var httpClient = new HttpClient(mockHttpMessageHandler.Object);
 
-            var report = new Report(_mockInstanceService.Object, _mockModuleMetadataService.Object, httpClient);
-
-            MockModuleMetadataServiceHelper.SetupModuleMetadataService<Terms>(_mockModuleMetadataService, report);
+            var report = ArrangeProperties(new Report(mockInstanceService.Object, httpClient));
 
             return report;
         }

@@ -3,40 +3,35 @@ using System.Collections.Generic;
 
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Modules;
-using KenticoInspector.Core.Services.Interfaces;
+
+using Newtonsoft.Json;
 
 namespace KenticoInspector.Core
 {
-    public abstract class AbstractModule<T> : IModule, IWithModuleMetadata<T> where T : new()
+    public abstract class AbstractModule<T> : IModule where T : new()
     {
-        protected readonly IModuleMetadataService moduleMetadataService;
-
-        private ModuleMetadata<T>? metadata;
-
-        protected AbstractModule(IModuleMetadataService moduleMetadataService)
-        {
-            this.moduleMetadataService = moduleMetadataService;
-        }
-
-        public string Codename => GetCodename(GetType());
+        public string CodeName { get; private set; } = null!;
 
         public abstract IList<Version> CompatibleVersions { get; }
 
         public virtual IList<Version> IncompatibleVersions => new List<Version>();
 
-        public ModuleMetadata<T> Metadata => metadata ?? (metadata = moduleMetadataService.GetModuleMetadata<T>(Codename));
-
         public abstract IList<string> Tags { get; }
 
-        public static string GetCodename(Type reportType) => GetDirectParentNamespace(reportType);
+        public ModuleMetadata<T> Metadata => (ModuleMetadata<T>)ModuleMetadata;
 
-        private static string GetDirectParentNamespace(Type reportType)
+        [JsonIgnore]
+        public IModuleMetadata ModuleMetadata { get; private set; } = null!;
+
+        public void SetModuleProperties(
+            Func<Type, string> getCodeName,
+            Func<Type, string, IModuleMetadata> getModuleMetadata
+            )
         {
-            var fullNameSpace = reportType.Namespace ?? throw new InvalidOperationException();
+            var moduleType = GetType();
 
-            var indexAfterLastPeriod = fullNameSpace.LastIndexOf('.') + 1;
-
-            return fullNameSpace[indexAfterLastPeriod..];
+            CodeName = getCodeName(moduleType);
+            ModuleMetadata = getModuleMetadata(moduleType, CodeName);
         }
     }
 }

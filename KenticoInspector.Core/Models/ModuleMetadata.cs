@@ -2,7 +2,7 @@
 
 namespace KenticoInspector.Core.Models
 {
-    public class ModuleMetadata<T> where T : new()
+    public class ModuleMetadata<T> : IModuleMetadata where T : new()
     {
         public ModuleDetails Details { get; set; } = new ModuleDetails();
 

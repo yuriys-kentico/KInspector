@@ -4,6 +4,6 @@ namespace KenticoInspector.Core.Modules
 {
     public interface IAction : IModule
     {
-        ActionResults Execute(string optionsJson);
+        ActionResults GetResults(string optionsJson);
     }
 }

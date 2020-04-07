@@ -15,9 +15,9 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public class ApplicationRestartAnalysisTests : AbstractReportTest<Report, Terms>
+    public class ApplicationRestartAnalysisTests : AbstractReportTests<Report, Terms>
     {
-        private readonly Report _mockReport;
+        private readonly Report mockReport;
 
         private IEnumerable<CmsEventLog> CmsEventsWithoutStartAndEndCodes => new List<CmsEventLog>();
 
@@ -40,19 +40,19 @@ namespace KenticoInspector.Reports.Tests
 
         public ApplicationRestartAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object);
+            mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
         [TestCase(Category = "No events", TestName = "Database without events produces a good result")]
         public void Should_ReturnGoodResult_When_DatabaseWithoutEvents()
         {
             // Arrange
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetCmsEventLogsWithStartOrEndCode))
                 .Returns(CmsEventsWithoutStartAndEndCodes);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
@@ -62,12 +62,12 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnResult_When_DatabaseWithRestartEvents()
         {
             // Arrange
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetCmsEventLogsWithStartOrEndCode))
                 .Returns(CmsEventsWithStartAndEndCodes);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Data.First<TableResult<CmsEventLog>>().Rows.Count(), Is.EqualTo(2));

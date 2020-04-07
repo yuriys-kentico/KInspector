@@ -14,9 +14,9 @@ namespace KenticoInspector.Reports.Tests
     [TestFixture(10)]
     [TestFixture(11)]
     [TestFixture(12)]
-    public class UnusedPageTypeSummaryTests : AbstractReportTest<Report, Terms>
+    public class UnusedPageTypeSummaryTests : AbstractReportTests<Report, Terms>
     {
-        private readonly Report _mockReport;
+        private readonly Report mockReport;
 
         public IEnumerable<CmsClass> ClassesWithoutIssues => new List<CmsClass>();
 
@@ -50,19 +50,19 @@ namespace KenticoInspector.Reports.Tests
 
         public UnusedPageTypeSummaryTests(int majorVersion) : base(majorVersion)
         {
-            _mockReport = new Report(_mockDatabaseService.Object, _mockModuleMetadataService.Object);
+            mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
         [Test]
         public void Should_ReturnInformationResult_When_ClassesWithoutIssues()
         {
             // Arrange
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClassNotInViewCmsTreeJoined))
                 .Returns(ClassesWithoutIssues);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
@@ -72,12 +72,12 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnInformationResult_When_ClassesWithIssues()
         {
             // Arrange
-            _mockDatabaseService
+            mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClassNotInViewCmsTreeJoined))
                 .Returns(ClassesWithIssues);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = mockReport.GetResults();
 
             // Assert
             Assert.That(results.Data.First<TableResult<CmsClass>>().Rows.Count(), Is.EqualTo(6));

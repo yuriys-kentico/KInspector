@@ -1,4 +1,6 @@
-﻿using KenticoInspector.Core.Models;
+﻿using System;
+
+using KenticoInspector.Core.Models;
 
 namespace KenticoInspector.Core.Services.Interfaces
 {
@@ -8,6 +10,6 @@ namespace KenticoInspector.Core.Services.Interfaces
 
         string CurrentCultureName { get; }
 
-        ModuleMetadata<T> GetModuleMetadata<T>(string moduleCodename) where T : new();
+        IModuleMetadata GetModuleMetadata(string moduleCodename, Type metadataTermsType);
     }
 }

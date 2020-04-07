@@ -30,7 +30,7 @@ namespace KenticoInspector.WebApplication.Controllers
 
             var optionsJson = await reader.ReadToEndAsync();
 
-            return Ok(moduleService.ExecuteAction(codename, instanceGuid, optionsJson));
+            return Ok(moduleService.GetActionResults(codename, instanceGuid, optionsJson));
         }
     }
 }

@@ -26,9 +26,8 @@ namespace KenticoInspector.Reports.ClassTableValidation
 
         public Report(
             IDatabaseService databaseService,
-            IInstanceService instanceService,
-            IModuleMetadataService reportMetadataService
-            ) : base(reportMetadataService)
+            IInstanceService instanceService
+            )
         {
             this.databaseService = databaseService;
             this.instanceService = instanceService;

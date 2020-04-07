@@ -24,15 +24,14 @@ namespace KenticoInspector.Actions.ResetCmsUserLogin
 
         public Action(
             IDatabaseService databaseService,
-            IInstanceService instanceService,
-            IModuleMetadataService moduleMetadataService
-            ) : base(moduleMetadataService)
+            IInstanceService instanceService
+            )
         {
             this.databaseService = databaseService;
             this.instanceService = instanceService;
         }
 
-        public override ActionResults Execute(Options Options)
+        public override ActionResults GetResults(Options Options)
         {
             return new ActionResults
             {
@@ -41,7 +40,7 @@ namespace KenticoInspector.Actions.ResetCmsUserLogin
             };
         }
 
-        public override ActionResults GetInvalidOptionsResult()
+        public override ActionResults GetInvalidOptionsResults()
         {
             return new ActionResults
             {

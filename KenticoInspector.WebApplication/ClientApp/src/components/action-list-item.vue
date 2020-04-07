@@ -127,7 +127,7 @@
       ...mapGetters('instances', ['connectedInstanceDetails']),
       ...mapGetters('actions', ['getActionResult']),
       results: function () {
-        const actionResults = this.getActionResult(this.action.codename, this.connectedInstanceDetails.guid)
+        const actionResults = this.getActionResult(this.action.codeName, this.connectedInstanceDetails.guid)
         return actionResults.results
       },
       hasResults: function () {
@@ -178,7 +178,7 @@
       },
       runConfiguration: function () {
         return {
-          codename: this.action.codename,
+          codeName: this.action.codeName,
           instanceGuid: this.connectedInstanceDetails.guid,
           options: {
             userId: 53

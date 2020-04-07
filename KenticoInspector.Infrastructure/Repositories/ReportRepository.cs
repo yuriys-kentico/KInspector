@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 using KenticoInspector.Core.Modules;
 using KenticoInspector.Core.Repositories.Interfaces;
@@ -14,8 +13,6 @@ namespace KenticoInspector.Infrastructure.Repositories
         {
             this.reports = reports;
         }
-
-        public IReport GetReport(string codename) => reports.FirstOrDefault(report => report.Codename.ToLower() == codename.ToLower());
 
         public IEnumerable<IReport> GetReports() => reports;
     }
