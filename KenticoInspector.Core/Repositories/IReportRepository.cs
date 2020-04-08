@@ -2,7 +2,7 @@
 
 using KenticoInspector.Core.Modules;
 
-namespace KenticoInspector.Core.Repositories.Interfaces
+namespace KenticoInspector.Core.Repositories
 {
     public interface IReportRepository : IRepository
     {

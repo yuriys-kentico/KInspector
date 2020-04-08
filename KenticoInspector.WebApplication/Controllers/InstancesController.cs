@@ -1,7 +1,7 @@
 ﻿using System;
 
 using KenticoInspector.Core.Models;
-using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Core.Services;
 
 using Microsoft.AspNetCore.Mvc;
 

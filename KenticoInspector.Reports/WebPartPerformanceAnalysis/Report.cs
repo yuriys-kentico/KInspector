@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
 using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Core.Services;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models.Data;
 
@@ -22,14 +20,13 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
             _databaseService = databaseService;
         }
 
-        public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11");
-
         public override IList<string> Tags => new List<string>
         {
             ReportTags.Performance,
             ReportTags.PortalEngine
         };
 
+        [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
             var pageTemplatesWithWebPartsWithColumnsProperty = _databaseService.ExecuteSqlFromFile<CmsPageTemplate>(Scripts.GetCmsPageTemplatesWithWebPartsWithColumnsProperty);

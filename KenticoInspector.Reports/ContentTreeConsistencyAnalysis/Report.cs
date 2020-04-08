@@ -6,9 +6,8 @@ using System.Text.RegularExpressions;
 
 using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Core.Services;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Results;
@@ -24,13 +23,12 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
             this.databaseService = databaseService;
         }
 
-        public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12");
-
         public override IList<string> Tags => new List<string>
         {
             ReportTags.Health
         };
 
+        [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
             return CompileResults(

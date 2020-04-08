@@ -18,7 +18,7 @@
       <v-list-tile>
         <v-list-tile-content>
           <v-list-tile-title>
-            {{currentInstanceDetails.administrationVersion.major}}.{{currentInstanceDetails.administrationVersion.minor}}.{{currentInstanceDetails.administrationVersion.build}}
+            {{currentInstanceDetails.administrationVersion}}
           </v-list-tile-title>
           <v-list-tile-sub-title>Administration Version</v-list-tile-sub-title>
         </v-list-tile-content>
@@ -26,7 +26,7 @@
       <v-list-tile>
         <v-list-tile-content>
           <v-list-tile-title>
-            {{currentInstanceDetails.databaseVersion.major}}.{{currentInstanceDetails.databaseVersion.minor}}.{{currentInstanceDetails.databaseVersion.build}}
+            {{currentInstanceDetails.databaseVersion}}
           </v-list-tile-title>
           <v-list-tile-sub-title>Database Version</v-list-tile-sub-title>
         </v-list-tile-content>

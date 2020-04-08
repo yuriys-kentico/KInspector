@@ -5,7 +5,6 @@ using Autofac.Extensions.DependencyInjection;
 
 using KenticoInspector.Actions;
 using KenticoInspector.Core;
-using KenticoInspector.Core.Converters;
 using KenticoInspector.Infrastructure;
 using KenticoInspector.Reports;
 
@@ -34,7 +33,6 @@ namespace KenticoInspector.WebApplication
             services.AddControllers().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                options.SerializerSettings.Converters.Add(new VersionAsObjectConverter());
             });
 
             services.AddSpaStaticFiles(configuration =>

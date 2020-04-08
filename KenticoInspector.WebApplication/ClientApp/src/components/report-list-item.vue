@@ -108,8 +108,9 @@
 
 <script>
   import { mapActions, mapGetters } from 'vuex'
-
   import ReportResultDetails from "./report-result-details"
+  import semver from 'semver'
+
   export default {
     components: {
       ReportResultDetails
@@ -162,23 +163,17 @@
       statusDark: function () {
         return this.status == 'Error' || this.status == "Information"
       },
-      instanceMajorVersion: function () {
-        return this.connectedInstanceDetails.databaseVersion.major
-      },
-      reportCompatibleMajorVersions: function () {
-        return this.report.compatibleVersions.map(v => v.major)
-      },
-      reportIncompatibleMajorVersions: function () {
-        return this.report.incompatibleVersions.map(v => v.major)
+      instanceVersion: function () {
+        return this.connectedInstanceDetails.databaseVersion
       },
       compatible: function () {
-        return this.reportCompatibleMajorVersions.includes(this.instanceMajorVersion)
+        return semver.satisfies(this.instanceVersion, this.report.compatibleVersions)
+      },
+      incompatible: function () {
+        return !semver.satisfies(this.instanceVersion, this.report.incompatibleVersions)
       },
       untested: function () {
         return !this.compatible && !this.incompatible
-      },
-      incompatible: function () {
-        return this.reportIncompatibleMajorVersions.includes(this.instanceMajorVersion)
       },
       runConfiguration: function () {
         return {

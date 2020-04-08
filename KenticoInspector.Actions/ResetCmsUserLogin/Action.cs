@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using KenticoInspector.Actions.ResetCmsUserLogin.Models;
 using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Core.Services;
 
 namespace KenticoInspector.Actions.ResetCmsUserLogin
 {
@@ -14,8 +12,6 @@ namespace KenticoInspector.Actions.ResetCmsUserLogin
     {
         private readonly IDatabaseService databaseService;
         private readonly IInstanceService instanceService;
-
-        public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12");
 
         public override IList<string> Tags => new List<string> {
             ActionTags.Reset,
@@ -31,7 +27,8 @@ namespace KenticoInspector.Actions.ResetCmsUserLogin
             this.instanceService = instanceService;
         }
 
-        public override ActionResults GetResults(Options Options)
+        [SupportsVersions("10 - 12.0")]
+        public override ActionResults GetResults(Options options)
         {
             return new ActionResults
             {

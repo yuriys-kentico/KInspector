@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Core.Services;
 using KenticoInspector.Reports.RobotsTxtConfigurationSummary.Models;
 
 namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
@@ -30,13 +29,12 @@ namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
             this.httpClient = httpClient ?? new HttpClient(httpClientHandler);
         }
 
-        public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12");
-
         public override IList<string> Tags => new List<string>
         {
             ReportTags.SEO,
         };
 
+        [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
             var instance = instanceService.CurrentInstance;

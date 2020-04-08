@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Core.Services;
 using KenticoInspector.Reports.UserPasswordAnalysis.Models;
 using KenticoInspector.Reports.UserPasswordAnalysis.Models.Data;
 using KenticoInspector.Reports.UserPasswordAnalysis.Models.Data.Results;
@@ -22,8 +20,6 @@ namespace KenticoInspector.Reports.UserPasswordAnalysis
             this.databaseService = databaseService;
         }
 
-        public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12");
-
         public override IList<string> Tags => new List<string>
         {
             ReportTags.Security
@@ -34,6 +30,7 @@ namespace KenticoInspector.Reports.UserPasswordAnalysis
             "public"
         };
 
+        [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
             var users = databaseService.ExecuteSqlFromFile<CmsUser>(

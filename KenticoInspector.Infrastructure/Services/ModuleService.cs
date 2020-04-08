@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
+using KenticoInspector.Core;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Modules;
-using KenticoInspector.Core.Repositories.Interfaces;
-using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Core.Repositories;
+using KenticoInspector.Core.Services;
 
 namespace KenticoInspector.Infrastructure.Services
 {
@@ -41,7 +43,7 @@ namespace KenticoInspector.Infrastructure.Services
 
             foreach (var action in actions)
             {
-                action.SetModuleProperties(GetCodeName, GetModuleMetadata);
+                action.SetModuleProperties(GetModuleCodeName, GetModuleMetadata, GetSupportedVersions);
             }
 
             return actions;
@@ -53,10 +55,10 @@ namespace KenticoInspector.Infrastructure.Services
             databaseService.Configure(instance.DatabaseSettings);
 
             var action = actionRepository.GetActions()
-                .Where(action => GetCodeName(action.GetType()) == reportCodeName)
+                .Where(action => GetModuleCodeName(action.GetType()) == reportCodeName)
                 .First();
 
-            action.SetModuleProperties(GetCodeName, GetModuleMetadata);
+            action.SetModuleProperties(GetModuleCodeName, GetModuleMetadata, GetSupportedVersions);
 
             return action.GetResults(optionsJson);
         }
@@ -69,7 +71,7 @@ namespace KenticoInspector.Infrastructure.Services
 
             foreach (var report in reports)
             {
-                report.SetModuleProperties(GetCodeName, GetModuleMetadata);
+                report.SetModuleProperties(GetModuleCodeName, GetModuleMetadata, GetSupportedVersions);
             }
 
             return reports;
@@ -81,15 +83,15 @@ namespace KenticoInspector.Infrastructure.Services
             databaseService.Configure(instance.DatabaseSettings);
 
             var report = reportRepository.GetReports()
-                .Where(report => GetCodeName(report.GetType()) == reportCodeName)
+                .Where(report => GetModuleCodeName(report.GetType()) == reportCodeName)
                 .First();
 
-            report.SetModuleProperties(GetCodeName, GetModuleMetadata);
+            report.SetModuleProperties(GetModuleCodeName, GetModuleMetadata, GetSupportedVersions);
 
             return report.GetResults();
         }
 
-        private static string GetCodeName(Type moduleType)
+        public string GetModuleCodeName(Type moduleType)
         {
             var fullNameSpace = moduleType.Namespace
                 ?? throw new InvalidOperationException($"Type '{moduleType}' does not have a namespace.");
@@ -99,15 +101,45 @@ namespace KenticoInspector.Infrastructure.Services
             return fullNameSpace[indexAfterLastPeriod..];
         }
 
-        private IModuleMetadata GetModuleMetadata(Type moduleType, string moduleCodeName)
+        public IModuleMetadata GetModuleMetadata(Type moduleType)
         {
             var moduleBaseType = moduleType.BaseType
                 ?? throw new InvalidOperationException($"Module of type '{moduleType}' does not have a base type.");
 
             return moduleMetadataService.GetModuleMetadata(
-                moduleCodeName,
+                GetModuleCodeName(moduleType),
                 moduleBaseType.GetGenericArguments()[0]
             );
+        }
+
+        public (string CompatibleSemver, string IncompatibleSemver) GetSupportedVersions(Type moduleType)
+        {
+            if (typeof(IReport).IsAssignableFrom(moduleType))
+            {
+                var method = moduleType.GetRuntimeMethod(nameof(IReport.GetResults), Array.Empty<Type>())
+                    ?? throw new InvalidOperationException($"Report of type '{moduleType}' does not have '{nameof(IReport.GetResults)}'.");
+
+                var attribute = method.GetCustomAttribute<SupportsVersionsAttribute>()
+                    ?? throw new InvalidOperationException($"Report of type '{moduleType}' does not have a '{nameof(SupportsVersionsAttribute)}' on '{nameof(IReport.GetResults)}'.");
+
+                return (attribute.CompatibleSemver, attribute.IncompatibleSemver);
+            }
+
+            if (typeof(IAction).IsAssignableFrom(moduleType))
+            {
+                var optionsType = moduleType.BaseType?.GetGenericArguments()[1]
+                    ?? throw new InvalidOperationException($"Action of type '{moduleType}' does not have an options type.");
+
+                var method = moduleType.GetRuntimeMethod(nameof(IAction.GetResults), new[] { optionsType })
+                    ?? throw new InvalidOperationException($"Action of type '{moduleType}' does not have '{nameof(IAction.GetResults)}'.");
+
+                var attribute = method.GetCustomAttribute<SupportsVersionsAttribute>()
+                    ?? throw new InvalidOperationException($"Action of type '{moduleType}' does not have a '{nameof(SupportsVersionsAttribute)}' on '{nameof(IAction.GetResults)}'.");
+
+                return (attribute.CompatibleSemver, attribute.IncompatibleSemver);
+            }
+
+            throw new InvalidOperationException($"Module of type '{moduleType}' does not implement '{nameof(IReport)}' or '{nameof(IAction)}'.");
         }
     }
 }

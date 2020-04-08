@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using KenticoInspector.Core.Modules;
-using KenticoInspector.Core.Repositories.Interfaces;
+using KenticoInspector.Core.Repositories;
 
 namespace KenticoInspector.Infrastructure.Repositories
 {

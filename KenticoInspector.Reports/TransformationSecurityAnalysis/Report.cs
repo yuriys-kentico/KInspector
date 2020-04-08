@@ -5,10 +5,9 @@ using System.Reflection;
 
 using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Core.Services;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Analysis;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data;
@@ -27,8 +26,6 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
             this.instanceService = instanceService;
         }
 
-        public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12");
-
         public override IList<string> Tags => new List<string>
         {
             ReportTags.PortalEngine,
@@ -36,6 +33,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
             ReportTags.Security
         };
 
+        [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
             var transformations = databaseService.ExecuteSqlFromFile<CmsTransformation>(Scripts.GetTransformations);

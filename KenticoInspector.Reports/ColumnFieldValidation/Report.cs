@@ -5,9 +5,8 @@ using System.Xml.Linq;
 
 using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Core.Services;
 using KenticoInspector.Reports.ColumnFieldValidation.Models;
 using KenticoInspector.Reports.ColumnFieldValidation.Models.Data;
 using KenticoInspector.Reports.ColumnFieldValidation.Models.Results;
@@ -25,13 +24,12 @@ namespace KenticoInspector.Reports.ColumnFieldValidation
             this.databaseService = databaseService;
         }
 
-        public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12");
-
         public override IList<string> Tags => new List<string>
         {
             ReportTags.Health
         };
 
+        [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
             var cmsClasses = databaseService.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClasses);

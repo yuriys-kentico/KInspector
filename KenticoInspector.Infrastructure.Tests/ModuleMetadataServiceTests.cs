@@ -4,7 +4,7 @@ using System.Threading;
 
 using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
-using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Core.Services;
 using KenticoInspector.Core.Tokens;
 using KenticoInspector.Reports.Tests.Helpers;
 

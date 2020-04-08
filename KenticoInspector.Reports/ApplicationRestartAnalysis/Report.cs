@@ -4,9 +4,8 @@ using System.Linq;
 
 using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Core.Services;
 using KenticoInspector.Reports.ApplicationRestartAnalysis.Models;
 using KenticoInspector.Reports.ApplicationRestartAnalysis.Models.Data;
 
@@ -15,8 +14,6 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
     public class Report : AbstractReport<Terms>
     {
         private readonly IDatabaseService databaseService;
-
-        public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12");
 
         public override IList<string> Tags => new List<string>
         {
@@ -31,6 +28,7 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
             this.databaseService = databaseService;
         }
 
+        [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
             var cmsEventLogs = databaseService.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetCmsEventLogsWithStartOrEndCode);

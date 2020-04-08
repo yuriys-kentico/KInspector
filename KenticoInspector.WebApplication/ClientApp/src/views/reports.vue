@@ -56,7 +56,7 @@
       initPage: function () {
         if (this.isConnected) {
           this.getAllReports(this.connectedInstanceDetails.guid)
-          this.resetFilterSettings({ majorVersion: this.connectedInstanceDetails.databaseVersion.major })
+          this.resetFilterSettings({ version: this.connectedInstanceDetails.databaseVersion })
         }
       }
     },

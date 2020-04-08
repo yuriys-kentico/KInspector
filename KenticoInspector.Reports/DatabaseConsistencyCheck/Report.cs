@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
 using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Core.Services;
 using KenticoInspector.Reports.DatabaseConsistencyCheck.Models;
 
 namespace KenticoInspector.Reports.DatabaseConsistencyCheck
@@ -21,13 +19,12 @@ namespace KenticoInspector.Reports.DatabaseConsistencyCheck
             this.databaseService = databaseService;
         }
 
-        public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12");
-
         public override IList<string> Tags => new List<string>
         {
             ReportTags.Health
         };
 
+        [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
 #pragma warning disable 0618 // This is a special exemption as the results of CheckDB are unknown

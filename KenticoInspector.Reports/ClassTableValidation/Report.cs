@@ -4,9 +4,8 @@ using System.Linq;
 
 using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Core.Services;
 using KenticoInspector.Reports.ClassTableValidation.Models;
 using KenticoInspector.Reports.ClassTableValidation.Models.Data;
 
@@ -16,8 +15,6 @@ namespace KenticoInspector.Reports.ClassTableValidation
     {
         private readonly IDatabaseService databaseService;
         private readonly IInstanceService instanceService;
-
-        public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11");
 
         public override IList<string> Tags => new List<string>
         {
@@ -33,6 +30,7 @@ namespace KenticoInspector.Reports.ClassTableValidation
             this.instanceService = instanceService;
         }
 
+        [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
             var instance = instanceService.CurrentInstance;

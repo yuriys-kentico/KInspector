@@ -4,7 +4,7 @@ using System.Data;
 
 using KenticoInspector.Core.Models;
 
-namespace KenticoInspector.Core.Services.Interfaces
+namespace KenticoInspector.Core.Services
 {
     public interface IDatabaseService : IService
     {

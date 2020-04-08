@@ -4,7 +4,7 @@ using System.Reflection;
 using KenticoInspector.Core;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Modules;
-using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Core.Services;
 using KenticoInspector.Core.Tokens;
 using KenticoInspector.Reports.Tests.Helpers;
 
@@ -44,12 +44,12 @@ namespace KenticoInspector.Reports.Tests
 
             UpdatePropertiesOfObject(fakeMetadata.Terms);
 
-            module.SetModuleProperties(GetCodeName, (moduleType, codeName) => fakeMetadata);
+            module.SetModuleProperties(GetModuleCodeName, (moduleType) => fakeMetadata, (moduleType) => ("*", ""));
 
             return module;
         }
 
-        private static string GetCodeName(Type moduleType)
+        private static string GetModuleCodeName(Type moduleType)
         {
             var fullNameSpace = moduleType.Namespace
                 ?? throw new InvalidOperationException($"Type '{moduleType}' does not have a namespace.");

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Xml.Linq;
 
 using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Core.Services;
 
 namespace KenticoInspector.Core.Helpers
 {

@@ -1,7 +1,7 @@
 ﻿using Autofac;
 
-using KenticoInspector.Core.Repositories.Interfaces;
-using KenticoInspector.Core.Services.Interfaces;
+using KenticoInspector.Core.Repositories;
+using KenticoInspector.Core.Services;
 
 namespace KenticoInspector.Infrastructure
 {

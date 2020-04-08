@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="SampleReport\**" />
+    <EmbeddedResource Remove="SampleReport\**" />
+    <None Remove="SampleReport\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac" Version="5.1.2" />
   </ItemGroup>
 
@@ -36,9 +42,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="UserPasswordAnalysis\Metadata\en-US.yaml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SampleReport\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ApplicationRestartAnalysis\Metadata\en-US.yaml">

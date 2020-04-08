@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 
 using KenticoInspector.Core.Models;
-using KenticoInspector.Core.Repositories.Interfaces;
+using KenticoInspector.Core.Repositories;
 
 using Newtonsoft.Json;
 

@@ -109,6 +109,7 @@
 
 <script>
   import { mapActions, mapGetters } from 'vuex'
+  import semver from 'semver'
 
   export default {
     components: {
@@ -158,23 +159,17 @@
       statusDark: function () {
         return this.status == 'Error' || this.status == "Information"
       },
-      instanceMajorVersion: function () {
-        return this.connectedInstanceDetails.databaseVersion.major
-      },
-      actionCompatibleMajorVersions: function () {
-        return this.action.compatibleVersions.map(v => v.major)
-      },
-      actionIncompatibleMajorVersions: function () {
-        return this.action.incompatibleVersions.map(v => v.major)
+      instanceVersion: function () {
+        return this.connectedInstanceDetails.databaseVersion
       },
       compatible: function () {
-        return this.actionCompatibleMajorVersions.includes(this.instanceMajorVersion)
+        return semver.satisfies(this.instanceVersion, this.action.compatibleVersions)
+      },
+      incompatible: function () {
+        return !semver.satisfies(this.instanceVersion, this.action.incompatibleVersions)
       },
       untested: function () {
         return !this.compatible && !this.incompatible
-      },
-      incompatible: function () {
-        return this.actionIncompatibleMajorVersions.includes(this.instanceMajorVersion)
       },
       runConfiguration: function () {
         return {

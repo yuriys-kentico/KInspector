@@ -1,10 +1,11 @@
 import Vue from 'vue';
 import api from '../../api';
+import semver from 'semver';
 
 const state = {
   items: [],
   filterSettings: {
-    majorVersion: -1,
+    version: '',
     showIncompatible: false,
     showUntested: false,
     taggedWith: [],
@@ -16,13 +17,13 @@ const state = {
 const getters = {
   filtered: (state) => {
     const items = state.items.filter((item) => {
-      const version = state.filterSettings.majorVersion;
+      const version = state.filterSettings.version;
       const showIncompatible = state.filterSettings.showIncompatible;
       const showUntested = state.filterSettings.showUntested;
       const taggedWith = state.filterSettings.taggedWith;
 
-      const isCompatible = version > 0 && item.compatibleVersions.filter((x) => x.major === version).length > 0;
-      const isIncompatible = item.incompatibleVersions.filter((x) => x.major === version).length > 0;
+      const isCompatible = semver.satisfies(version, item.compatibleVersions);
+      const isIncompatible = !semver.satisfies(version, item.incompatibleVersions);
       const isUntested = !isCompatible && !isIncompatible;
 
       const meetsCompatibilityFilters =
@@ -68,14 +69,9 @@ const actions = {
   },
   resetFilterSettings: (
     { commit },
-    { majorVersion = -1, showIncompatible = false, showUntested = false, taggedWith = [] }
+    { version = '', showIncompatible = false, showUntested = false, taggedWith = [] }
   ) => {
-    commit('setFilterSettings', {
-      majorVersion,
-      showIncompatible,
-      showUntested,
-      taggedWith,
-    });
+    commit('setFilterSettings', { version, showIncompatible, showUntested, taggedWith });
   },
 };
 

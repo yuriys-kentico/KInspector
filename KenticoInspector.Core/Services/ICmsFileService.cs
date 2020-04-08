@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 using KenticoInspector.Core.Constants;
 
-namespace KenticoInspector.Core.Services.Interfaces
+namespace KenticoInspector.Core.Services
 {
     public interface ICmsFileService : IService
     {

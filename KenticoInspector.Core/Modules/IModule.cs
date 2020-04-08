@@ -9,14 +9,16 @@ namespace KenticoInspector.Core.Modules
     {
         string CodeName { get; }
 
-        IList<Version> CompatibleVersions { get; }
+        string CompatibleVersions { get; }
 
-        IList<Version> IncompatibleVersions { get; }
+        string IncompatibleVersions { get; }
 
         IList<string> Tags { get; }
 
-        IModuleMetadata ModuleMetadata { get; }
-
-        void SetModuleProperties(Func<Type, string> getCodeName, Func<Type, string, IModuleMetadata> getModuleMetadata);
+        void SetModuleProperties(
+            Func<Type, string> getCodeName,
+            Func<Type, IModuleMetadata> getModuleMetadata,
+            Func<Type, (string, string)> getSupportedVersions
+            );
     }
 }
