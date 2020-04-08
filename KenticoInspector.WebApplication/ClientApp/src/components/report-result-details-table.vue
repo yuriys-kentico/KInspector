@@ -13,7 +13,7 @@
     <v-data-table :headers="headers"
                   :items="rows"
                   :search="search"
-                  :rows-per-page-items="[10, 25, 100, { text: 'All', value:-1}]">
+                  :footer-props="{'items-per-page-options':[10,25,100,{ text: 'All', value:-1}]}">
       <template slot="items" slot-scope="props">
         <td v-for="(header, index) in headers" :key="`header-${index}`">
           <vue-showdown :markdown="`${props.item[header.value]}`" class="cell"></vue-showdown>

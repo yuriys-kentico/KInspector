@@ -23,7 +23,7 @@
       </v-flex>
 
       <v-flex xs12
-              text-xs-center>
+              style="text-align:center">
         <v-btn large
                dark
                color="primary"

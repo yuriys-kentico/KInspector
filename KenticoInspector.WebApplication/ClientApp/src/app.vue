@@ -7,7 +7,7 @@
     </v-content>
     <v-footer class="pa-3" color="rgba(255,255,255,.85)">
       <v-spacer></v-spacer>
-      <v-btn flat
+      <v-btn text
              href="https://github.com/kentico/kinspector"
              target="_blank"
              class="my-0">

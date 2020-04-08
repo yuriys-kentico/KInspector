@@ -3,7 +3,9 @@ import Vuetify from 'vuetify'
 import colors from 'vuetify/es5/util/colors'
 import 'vuetify/dist/vuetify.min.css'
 
-Vue.use(Vuetify, {
+Vue.use(Vuetify)
+
+const opts = {
   iconfont: 'mdi',
   theme: {
     primary: "#f05a22",
@@ -14,4 +16,6 @@ Vue.use(Vuetify, {
     success: colors.green.lighten1,
     warning: colors.amber.lighten1
   },
-})
+}
+
+export default new Vuetify(opts)

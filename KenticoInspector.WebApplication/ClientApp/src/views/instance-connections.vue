@@ -14,7 +14,6 @@
 
           <v-tabs centered
                   color="primary"
-                  dark
                   v-model="tab">
             <v-tabs-slider></v-tabs-slider>
             <v-tab key="recent">

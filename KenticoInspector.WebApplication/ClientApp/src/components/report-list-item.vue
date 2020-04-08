@@ -1,7 +1,7 @@
 <template>
   <v-card class="mt-4">
     <v-toolbar flat
-               dense>
+               dense class="pt-2">
       <v-toolbar-title>
         <vue-showdown :markdown="report.metadata.details.name" />
       </v-toolbar-title>
@@ -22,7 +22,7 @@
       </v-btn>
     </v-toolbar>
 
-    <v-card-text class="pa-0">
+    <v-card-text class="pt-0 pb-0 pr-3">
       <v-layout align-center
                 justify-center
                 row
@@ -66,7 +66,6 @@
     <v-card-text v-if="hasResults" class="pa-0 subheading">
       <v-layout align-center
                 justify-center
-                row
                 fill-height
                 px-3
                 py-2
@@ -102,7 +101,7 @@
   }
 
     .summary p {
-      margin: 0
+      margin: 2px
     }
 </style>
 

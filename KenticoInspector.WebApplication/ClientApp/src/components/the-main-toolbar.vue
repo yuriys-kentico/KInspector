@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar fixed
+  <v-app-bar fixed
              clipped-left
              app
              dark
@@ -11,24 +11,24 @@
              width="38"
              style="background-color: #F05A22" />
     </span>
-    <v-toolbar-title class="headline text-uppercase ml-1 hidden-xs-only">
+    <v-toolbar-title class="headline text-uppercase ml-1 mr-2 hidden-xs-only">
       <span>Kentico</span>
       <span class="font-weight-light">Inspector</span>
     </v-toolbar-title>
 
-    <v-btn flat
+    <v-btn text
            icon
            to="/">
       <v-icon>mdi-home</v-icon>
     </v-btn>
 
-    <v-btn flat
+    <v-btn text
            icon
            to="/reports"
            :disabled="!isConnected">
       <v-icon>mdi-file-chart</v-icon>
     </v-btn>
-    <v-btn flat
+    <v-btn text
            icon
            to="/actions"
            :disabled="!isConnected">
@@ -37,7 +37,7 @@
 
     <v-spacer></v-spacer>
     <connection-status-indicator></connection-status-indicator>
-  </v-toolbar>
+  </v-app-bar>
 </template>
 
 <script>

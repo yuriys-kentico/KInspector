@@ -3,80 +3,80 @@
           two-line
           subheader>
     <v-subheader>Administration Configuration</v-subheader>
-    <v-list-tile>
-      <v-list-tile-content>
-        <v-list-tile-title>
+    <v-list-item>
+      <v-list-item-content>
+        <v-list-item-title>
           <a :href="instance.url"
              target="_blank">
             {{displayName}}
           </a>
-        </v-list-tile-title>
-        <v-list-tile-sub-title>Instance</v-list-tile-sub-title>
-      </v-list-tile-content>
-    </v-list-tile>
+        </v-list-item-title>
+        <v-list-item-subtitle>Instance</v-list-item-subtitle>
+      </v-list-item-content>
+    </v-list-item>
     <template v-if="isConnected && currentInstanceDetails.guid == instance.guid">
-      <v-list-tile>
-        <v-list-tile-content>
-          <v-list-tile-title>
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>
             {{currentInstanceDetails.administrationVersion}}
-          </v-list-tile-title>
-          <v-list-tile-sub-title>Administration Version</v-list-tile-sub-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <v-list-tile>
-        <v-list-tile-content>
-          <v-list-tile-title>
+          </v-list-item-title>
+          <v-list-item-subtitle>Administration Version</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>
             {{currentInstanceDetails.databaseVersion}}
-          </v-list-tile-title>
-          <v-list-tile-sub-title>Database Version</v-list-tile-sub-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <v-list-tile>
-        <v-list-tile-content>
-          <v-list-tile-title>
+          </v-list-item-title>
+          <v-list-item-subtitle>Database Version</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>
             {{currentInstanceDetails.sites.length}}
-          </v-list-tile-title>
-          <v-list-tile-sub-title>Site Count</v-list-tile-sub-title>
-        </v-list-tile-content>
-      </v-list-tile>
+          </v-list-item-title>
+          <v-list-item-subtitle>Site Count</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
     </template>
-    <v-list-tile>
-      <v-list-tile-content>
-        <v-list-tile-title>{{instance.path}}</v-list-tile-title>
-        <v-list-tile-sub-title>Path</v-list-tile-sub-title>
-      </v-list-tile-content>
-    </v-list-tile>
+    <v-list-item>
+      <v-list-item-content>
+        <v-list-item-title>{{instance.path}}</v-list-item-title>
+        <v-list-item-subtitle>Path</v-list-item-subtitle>
+      </v-list-item-content>
+    </v-list-item>
     <v-subheader>Database Configuration</v-subheader>
-    <v-list-tile>
-      <v-list-tile-content>
-        <v-list-tile-title>{{instance.databaseSettings.server}}</v-list-tile-title>
-        <v-list-tile-sub-title>Server</v-list-tile-sub-title>
-      </v-list-tile-content>
-    </v-list-tile>
-    <v-list-tile>
-      <v-list-tile-content>
-        <v-list-tile-title>{{instance.databaseSettings.database}}</v-list-tile-title>
-        <v-list-tile-sub-title>Database</v-list-tile-sub-title>
-      </v-list-tile-content>
-    </v-list-tile>
-    <v-list-tile>
-      <v-list-tile-content>
-        <v-list-tile-title>{{instance.databaseSettings.user}}</v-list-tile-title>
-        <v-list-tile-sub-title>User</v-list-tile-sub-title>
-      </v-list-tile-content>
-    </v-list-tile>
-    <v-list-tile>
-      <v-list-tile-content>
-        <v-list-tile-title>{{instance.databaseSettings.password}}</v-list-tile-title>
-        <v-list-tile-sub-title>Password</v-list-tile-sub-title>
-      </v-list-tile-content>
-    </v-list-tile>
-    <v-list-tile>
-      <v-list-tile-content>
-        <v-list-tile-title>{{instance.databaseSettings.integratedSecurity}}</v-list-tile-title>
-        <v-list-tile-sub-title>Integrated Security</v-list-tile-sub-title>
-      </v-list-tile-content>
-    </v-list-tile>
+    <v-list-item>
+      <v-list-item-content>
+        <v-list-item-title>{{instance.databaseSettings.server}}</v-list-item-title>
+        <v-list-item-subtitle>Server</v-list-item-subtitle>
+      </v-list-item-content>
+    </v-list-item>
+    <v-list-item>
+      <v-list-item-content>
+        <v-list-item-title>{{instance.databaseSettings.database}}</v-list-item-title>
+        <v-list-item-subtitle>Database</v-list-item-subtitle>
+      </v-list-item-content>
+    </v-list-item>
+    <v-list-item>
+      <v-list-item-content>
+        <v-list-item-title>{{instance.databaseSettings.user}}</v-list-item-title>
+        <v-list-item-subtitle>User</v-list-item-subtitle>
+      </v-list-item-content>
+    </v-list-item>
+    <v-list-item>
+      <v-list-item-content>
+        <v-list-item-title>{{instance.databaseSettings.password}}</v-list-item-title>
+        <v-list-item-subtitle>Password</v-list-item-subtitle>
+      </v-list-item-content>
+    </v-list-item>
+    <v-list-item>
+      <v-list-item-content>
+        <v-list-item-title>{{instance.databaseSettings.integratedSecurity}}</v-list-item-title>
+        <v-list-item-subtitle>Integrated Security</v-list-item-subtitle>
+      </v-list-item-content>
+    </v-list-item>
   </v-list>
 </template>
 

@@ -1,19 +1,19 @@
 <template>
-  <v-container fluid
-               grid-list-lg
-               px-0>
+  <v-container fluid>
     <v-data-iterator :items="items"
-                     :rows-per-page-items="[10,20,{ text: 'All', value:-1}]"
-                     content-tag="v-layout"
-                     row
-                     wrap
-                     pa-0>
-      <template slot="item" slot-scope="props">
-        <v-flex sm12
-                md6
-                lg4>
-          <instance-connection-list-item :item="props.item"></instance-connection-list-item>
-        </v-flex>
+                     :footer-props="{'items-per-page-options':[10,20,{ text: 'All', value:-1}]}"
+                     content-tag="v-layout">
+
+      <template v-slot:default="props">
+        <v-row>
+          <v-col v-for="item in props.items"
+                 :key="item.name"
+                 sm="6"
+                 md="4"
+                 lg="3">
+            <instance-connection-list-item :item="item"></instance-connection-list-item>
+          </v-col>
+        </v-row>
       </template>
     </v-data-iterator>
   </v-container>

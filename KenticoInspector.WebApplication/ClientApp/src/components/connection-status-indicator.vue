@@ -1,12 +1,13 @@
 <template>
   <v-menu offset-y>
     <template v-slot:activator="{ on }">
-      <v-btn flat
+      <v-btn text
              v-on="on"
              active-class="ignore"
              :color="color">
         <div v-if="isConnected"
-             class="text-xs-right caption">
+             style="text-align:right"
+             class="caption">
           <span class="grey--text text-lowercase">Server </span>
           <span class="white--text">{{connectedInstance.databaseSettings.server}}</span>
           <br>
