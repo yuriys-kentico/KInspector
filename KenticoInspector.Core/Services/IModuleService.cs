@@ -19,8 +19,8 @@ namespace KenticoInspector.Core.Services
 
         string GetModuleCodeName(Type moduleType);
 
-        IModuleMetadata GetModuleMetadata(Type moduleType);
-
         (string CompatibleSemver, string IncompatibleSemver) GetSupportedVersions(Type moduleType);
+
+        IModuleMetadata GetModuleMetadata(Type moduleType);
     }
 }

@@ -7,12 +7,12 @@
       </v-toolbar-title>
       <v-spacer />
       <div class="d-flex">
-        <v-chip v-for="tag in report.tags"
+        <v-chip v-for="tag in Object.values(report.metadata.tags)"
                 :key="tag"
                 small
                 disabled
                 text-color="black"
-                class="hidden-xs-only">
+                class="hidden-xs-only mr-1">
           {{ tag }}
         </v-chip>
       </div>

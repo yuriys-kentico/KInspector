@@ -8,10 +8,13 @@ using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services;
+using KenticoInspector.Infrastructure;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Analysis;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results;
+
+using static KenticoInspector.Core.Models.Tags;
 
 namespace KenticoInspector.Reports.TransformationSecurityAnalysis
 {
@@ -26,13 +29,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
             this.instanceService = instanceService;
         }
 
-        public override IList<string> Tags => new List<string>
-        {
-            ReportTags.PortalEngine,
-            ReportTags.Health,
-            ReportTags.Security
-        };
-
+        [Tags(PortalEngine, Health, Security)]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {

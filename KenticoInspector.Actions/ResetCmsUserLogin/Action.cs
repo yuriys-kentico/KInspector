@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-
-using KenticoInspector.Actions.ResetCmsUserLogin.Models;
+﻿using KenticoInspector.Actions.ResetCmsUserLogin.Models;
 using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services;
+using KenticoInspector.Infrastructure;
+
+using static KenticoInspector.Core.Models.Tags;
 
 namespace KenticoInspector.Actions.ResetCmsUserLogin
 {
@@ -12,11 +13,6 @@ namespace KenticoInspector.Actions.ResetCmsUserLogin
     {
         private readonly IDatabaseService databaseService;
         private readonly IInstanceService instanceService;
-
-        public override IList<string> Tags => new List<string> {
-            ActionTags.Reset,
-            ActionTags.Users
-        };
 
         public Action(
             IDatabaseService databaseService,
@@ -27,6 +23,7 @@ namespace KenticoInspector.Actions.ResetCmsUserLogin
             this.instanceService = instanceService;
         }
 
+        [Tags(Reset, Users)]
         [SupportsVersions("10 - 12.0")]
         public override ActionResults GetResults(Options options)
         {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -8,7 +7,10 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services;
+using KenticoInspector.Infrastructure;
 using KenticoInspector.Reports.RobotsTxtConfigurationSummary.Models;
+
+using static KenticoInspector.Core.Models.Tags;
 
 namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
 {
@@ -29,11 +31,7 @@ namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
             this.httpClient = httpClient ?? new HttpClient(httpClientHandler);
         }
 
-        public override IList<string> Tags => new List<string>
-        {
-            ReportTags.SEO,
-        };
-
+        [Tags(SEO)]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {

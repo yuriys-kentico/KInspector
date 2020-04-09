@@ -12,6 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Metadata\en-US.yaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\GetCmsSettings.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

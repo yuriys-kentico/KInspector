@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Reflection;
 
-using KenticoInspector.Core;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Modules;
 using KenticoInspector.Core.Services;
 using KenticoInspector.Core.Tokens;
+using KenticoInspector.Infrastructure;
+using KenticoInspector.Infrastructure.Models;
 using KenticoInspector.Reports.Tests.Helpers;
 
 using Moq;
@@ -44,7 +45,11 @@ namespace KenticoInspector.Reports.Tests
 
             UpdatePropertiesOfObject(fakeMetadata.Terms);
 
-            module.SetModuleProperties(GetModuleCodeName, (moduleType) => fakeMetadata, (moduleType) => ("*", ""));
+            module.SetModuleProperties(
+                GetModuleCodeName,
+                (moduleType) => ("*", ""),
+                (moduleType) => fakeMetadata
+                );
 
             return module;
         }

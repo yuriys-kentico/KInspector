@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using KenticoInspector.Core.Models;
 
@@ -10,6 +11,6 @@ namespace KenticoInspector.Core.Services
 
         string CurrentCultureName { get; }
 
-        IModuleMetadata GetModuleMetadata(string moduleCodename, Type metadataTermsType);
+        IModuleMetadata GetModuleMetadata(string moduleCodename, Type metadataTermsType, IEnumerable<Tags> tags);
     }
 }

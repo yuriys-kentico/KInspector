@@ -8,9 +8,12 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services;
+using KenticoInspector.Infrastructure;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Results;
+
+using static KenticoInspector.Core.Models.Tags;
 
 namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
 {
@@ -23,11 +26,7 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
             this.databaseService = databaseService;
         }
 
-        public override IList<string> Tags => new List<string>
-        {
-            ReportTags.Health
-        };
-
+        [Tags(Health)]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {

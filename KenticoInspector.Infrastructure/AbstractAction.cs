@@ -3,7 +3,7 @@ using KenticoInspector.Core.Modules;
 
 using Newtonsoft.Json;
 
-namespace KenticoInspector.Core
+namespace KenticoInspector.Infrastructure
 {
     public abstract class AbstractAction<TTerms, TOptions> : AbstractModule<TTerms>, IAction
         where TTerms : new()

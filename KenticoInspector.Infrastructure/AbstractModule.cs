@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Modules;
+using KenticoInspector.Infrastructure.Models;
 
-namespace KenticoInspector.Core
+namespace KenticoInspector.Infrastructure
 {
     public abstract class AbstractModule<T> : IModule where T : new()
     {
@@ -14,14 +14,12 @@ namespace KenticoInspector.Core
 
         public string IncompatibleVersions { get; private set; } = null!;
 
-        public abstract IList<string> Tags { get; }
-
         public ModuleMetadata<T> Metadata { get; private set; } = null!;
 
         public void SetModuleProperties(
             Func<Type, string> getCodeName,
-            Func<Type, IModuleMetadata> getModuleMetadata,
-            Func<Type, (string, string)> getSupportedVersions
+            Func<Type, (string, string)> getSupportedVersions,
+            Func<Type, IModuleMetadata> getModuleMetadata
             )
         {
             var moduleType = GetType();

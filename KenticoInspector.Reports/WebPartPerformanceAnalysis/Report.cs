@@ -6,8 +6,11 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services;
+using KenticoInspector.Infrastructure;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models.Data;
+
+using static KenticoInspector.Core.Models.Tags;
 
 namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
 {
@@ -20,12 +23,7 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
             _databaseService = databaseService;
         }
 
-        public override IList<string> Tags => new List<string>
-        {
-            ReportTags.Performance,
-            ReportTags.PortalEngine
-        };
-
+        [Tags(Performance, PortalEngine)]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {

@@ -7,10 +7,13 @@ using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services;
+using KenticoInspector.Infrastructure;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Data;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Results;
+
+using static KenticoInspector.Core.Models.Tags;
 
 namespace KenticoInspector.Reports.SecuritySettingsAnalysis
 {
@@ -19,11 +22,6 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
         private readonly IDatabaseService databaseService;
         private readonly IInstanceService instanceService;
         private readonly ICmsFileService cmsFileService;
-
-        public override IList<string> Tags => new List<string>
-        {
-            ReportTags.Security
-        };
 
         public Report(
             IDatabaseService databaseService,
@@ -36,6 +34,7 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
             this.cmsFileService = cmsFileService;
         }
 
+        [Tags(Security)]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {

@@ -6,20 +6,17 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services;
+using KenticoInspector.Infrastructure;
 using KenticoInspector.Reports.ApplicationRestartAnalysis.Models;
 using KenticoInspector.Reports.ApplicationRestartAnalysis.Models.Data;
+
+using static KenticoInspector.Core.Models.Tags;
 
 namespace KenticoInspector.Reports.ApplicationRestartAnalysis
 {
     public class Report : AbstractReport<Terms>
     {
         private readonly IDatabaseService databaseService;
-
-        public override IList<string> Tags => new List<string>
-        {
-            ReportTags.EventLog,
-            ReportTags.Health
-        };
 
         public Report(
             IDatabaseService databaseService
@@ -28,6 +25,7 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
             this.databaseService = databaseService;
         }
 
+        [Tags(EventLog, Health)]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {

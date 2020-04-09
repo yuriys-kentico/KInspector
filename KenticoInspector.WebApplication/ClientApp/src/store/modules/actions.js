@@ -29,7 +29,8 @@ const getters = {
       const meetsCompatibilityFilters =
         isCompatible || (showIncompatible && isIncompatible) || (showUntested && isUntested);
 
-      const meetsTagFilter = taggedWith.length == 0 || item.tags.some((t) => taggedWith.includes(t));
+      const meetsTagFilter =
+        taggedWith.length == 0 || Object.values(item.metadata.tags).some((t) => taggedWith.includes(t));
 
       return meetsCompatibilityFilters && meetsTagFilter;
     });
@@ -99,7 +100,7 @@ export default {
 };
 
 function getTags(allTags, action) {
-  allTags.push(...action.tags);
+  allTags.push(...Object.values(action.metadata.tags));
   return allTags;
 }
 

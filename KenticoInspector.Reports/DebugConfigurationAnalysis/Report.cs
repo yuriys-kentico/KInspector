@@ -6,8 +6,11 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services;
+using KenticoInspector.Infrastructure;
 using KenticoInspector.Reports.DebugConfigurationAnalysis.Models;
 using KenticoInspector.Reports.DebugConfigurationAnalysis.Models.Data;
+
+using static KenticoInspector.Core.Models.Tags;
 
 namespace KenticoInspector.Reports.DebugConfigurationAnalysis
 {
@@ -28,11 +31,7 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
             _cmsFileService = cmsFileService;
         }
 
-        public override IList<string> Tags => new List<string>
-        {
-           ReportTags.Health
-        };
-
+        [Tags(Health)]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {

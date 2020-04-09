@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Linq;
 
 using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services;
+using KenticoInspector.Infrastructure;
 using KenticoInspector.Reports.DatabaseConsistencyCheck.Models;
+
+using static KenticoInspector.Core.Models.Tags;
 
 namespace KenticoInspector.Reports.DatabaseConsistencyCheck
 {
@@ -19,11 +21,7 @@ namespace KenticoInspector.Reports.DatabaseConsistencyCheck
             this.databaseService = databaseService;
         }
 
-        public override IList<string> Tags => new List<string>
-        {
-            ReportTags.Health
-        };
-
+        [Tags(Health)]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {

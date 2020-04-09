@@ -6,8 +6,11 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services;
+using KenticoInspector.Infrastructure;
 using KenticoInspector.Reports.ClassTableValidation.Models;
 using KenticoInspector.Reports.ClassTableValidation.Models.Data;
+
+using static KenticoInspector.Core.Models.Tags;
 
 namespace KenticoInspector.Reports.ClassTableValidation
 {
@@ -15,11 +18,6 @@ namespace KenticoInspector.Reports.ClassTableValidation
     {
         private readonly IDatabaseService databaseService;
         private readonly IInstanceService instanceService;
-
-        public override IList<string> Tags => new List<string>
-        {
-            ReportTags.Health
-        };
 
         public Report(
             IDatabaseService databaseService,
@@ -30,6 +28,7 @@ namespace KenticoInspector.Reports.ClassTableValidation
             this.instanceService = instanceService;
         }
 
+        [Tags(Health)]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {

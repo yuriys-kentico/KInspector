@@ -7,9 +7,12 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services;
+using KenticoInspector.Infrastructure;
 using KenticoInspector.Reports.ColumnFieldValidation.Models;
 using KenticoInspector.Reports.ColumnFieldValidation.Models.Data;
 using KenticoInspector.Reports.ColumnFieldValidation.Models.Results;
+
+using static KenticoInspector.Core.Models.Tags;
 
 namespace KenticoInspector.Reports.ColumnFieldValidation
 {
@@ -24,11 +27,7 @@ namespace KenticoInspector.Reports.ColumnFieldValidation
             this.databaseService = databaseService;
         }
 
-        public override IList<string> Tags => new List<string>
-        {
-            ReportTags.Health
-        };
-
+        [Tags(Health)]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {

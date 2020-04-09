@@ -4,7 +4,7 @@
             width="300">
     <v-card color="primary"
             dark>
-      <v-card-text v-if="!connectionError">
+      <v-card-text v-if="!connectionError" class="pt-3">
         Getting instance details
         <v-progress-linear indeterminate
                            color="white"

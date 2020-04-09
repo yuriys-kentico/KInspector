@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 
@@ -6,6 +7,7 @@ using KenticoInspector.Core.Helpers;
 using KenticoInspector.Core.Models;
 using KenticoInspector.Core.Services;
 using KenticoInspector.Core.Tokens;
+using KenticoInspector.Infrastructure.Models;
 using KenticoInspector.Reports.Tests.Helpers;
 
 using NUnit.Framework;
@@ -45,7 +47,7 @@ namespace KenticoInspector.Infrastructure.Tests
             Thread.CurrentThread.CurrentCulture = new CultureInfo(cultureName);
 
             // Act
-            var metadata = moduleMedatadataService.GetModuleMetadata(yamlPath, typeof(TestTerms));
+            var metadata = moduleMedatadataService.GetModuleMetadata(yamlPath, typeof(TestTerms), Array.Empty<Tags>());
 
             // Assert
             Assert.That(metadata.Details.Name, Is.EqualTo(resolvedMetadata.Details.Name));
@@ -65,7 +67,7 @@ namespace KenticoInspector.Infrastructure.Tests
 
             // Act
             IModuleMetadata getModuleMetadata(string path) => moduleMedatadataService
-                    .GetModuleMetadata(path, typeof(TestTerms));
+                    .GetModuleMetadata(path, typeof(TestTerms), Array.Empty<Tags>());
 
             // Assert
             Assert.That(() => getModuleMetadata(yamlPath), Throws.Exception);

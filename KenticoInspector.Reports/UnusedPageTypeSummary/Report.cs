@@ -5,8 +5,11 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services;
+using KenticoInspector.Infrastructure;
 using KenticoInspector.Reports.UnusedPageTypeSummary.Models;
 using KenticoInspector.Reports.UnusedPageTypeSummary.Models.Data;
+
+using static KenticoInspector.Core.Models.Tags;
 
 namespace KenticoInspector.Reports.UnusedPageTypeSummary
 {
@@ -19,11 +22,7 @@ namespace KenticoInspector.Reports.UnusedPageTypeSummary
             this.databaseService = databaseService;
         }
 
-        public override IList<string> Tags => new List<string>
-        {
-            ReportTags.ContentModeling
-        };
-
+        [Tags(ContentModeling)]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {

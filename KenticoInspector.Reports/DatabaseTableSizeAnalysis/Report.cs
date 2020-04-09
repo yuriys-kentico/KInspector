@@ -4,8 +4,11 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services;
+using KenticoInspector.Infrastructure;
 using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Data;
 using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Models;
+
+using static KenticoInspector.Core.Models.Tags;
 
 namespace KenticoInspector.Reports.DatabaseTableSizeAnalysis
 {
@@ -18,11 +21,7 @@ namespace KenticoInspector.Reports.DatabaseTableSizeAnalysis
             this.databaseService = databaseService;
         }
 
-        public override IList<string> Tags => new List<string>
-        {
-            ReportTags.Health
-        };
-
+        [Tags(Health)]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {

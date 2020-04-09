@@ -5,9 +5,12 @@ using KenticoInspector.Core;
 using KenticoInspector.Core.Constants;
 using KenticoInspector.Core.Models.Results;
 using KenticoInspector.Core.Services;
+using KenticoInspector.Infrastructure;
 using KenticoInspector.Reports.UserPasswordAnalysis.Models;
 using KenticoInspector.Reports.UserPasswordAnalysis.Models.Data;
 using KenticoInspector.Reports.UserPasswordAnalysis.Models.Data.Results;
+
+using static KenticoInspector.Core.Models.Tags;
 
 namespace KenticoInspector.Reports.UserPasswordAnalysis
 {
@@ -20,16 +23,12 @@ namespace KenticoInspector.Reports.UserPasswordAnalysis
             this.databaseService = databaseService;
         }
 
-        public override IList<string> Tags => new List<string>
-        {
-            ReportTags.Security
-        };
-
         public static IEnumerable<string> ExcludedUserNames => new List<string>
         {
             "public"
         };
 
+        [Tags(Security, Users)]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {

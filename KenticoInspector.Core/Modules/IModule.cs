@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using KenticoInspector.Core.Models;
 
@@ -13,12 +12,10 @@ namespace KenticoInspector.Core.Modules
 
         string IncompatibleVersions { get; }
 
-        IList<string> Tags { get; }
-
         void SetModuleProperties(
             Func<Type, string> getCodeName,
-            Func<Type, IModuleMetadata> getModuleMetadata,
-            Func<Type, (string, string)> getSupportedVersions
+            Func<Type, (string, string)> getSupportedVersions,
+            Func<Type, IModuleMetadata> getModuleMetadata
             );
     }
 }
