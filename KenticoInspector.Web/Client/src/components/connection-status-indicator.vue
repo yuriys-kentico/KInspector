@@ -21,9 +21,9 @@
       </v-btn>
     </template>
     <v-card>
-      <instance-details v-if="isConnected"
-                        :instance="connectedInstance">
-      </instance-details>
+      <instance-details-toolbar v-if="isConnected"
+                                :instance="connectedInstance">
+      </instance-details-toolbar>
       <v-card-actions>
         <v-btn v-if="!isConnected"
                to="/connect"
@@ -45,11 +45,11 @@
 <script>
   import { mapActions, mapGetters } from 'vuex'
 
-  import InstanceDetails from './instance-details'
+  import InstanceDetailsToolbar from './instance-details-toolbar'
 
   export default {
     components: {
-      InstanceDetails
+      InstanceDetailsToolbar
     },
     computed: {
       ...mapGetters('instances', [
@@ -58,13 +58,19 @@
         'getInstanceDisplayName',
       ]),
       color() {
-        return this.isConnected ? 'success' : 'error'
+        return this.isConnected 
+          ? 'success' 
+          : 'error'
       },
       status() {
-        return this.isConnected ? `Server: ${this.connectedInstance.databaseConfiguration.serverName}<br>Database: ${this.connectedInstance.databaseConfiguration.databaseName}` : 'Disconnected'
+        return this.isConnected 
+          ? `Server: ${this.connectedInstance.databaseConfiguration.serverName}<br>Database: ${this.connectedInstance.databaseConfiguration.databaseName}` 
+          : 'Disconnected'
       },
       icon() {
-        return this.isConnected ? 'mdi-power-plug' : 'mdi-power-plug-off'
+        return this.isConnected 
+          ? 'mdi-power-plug' 
+          : 'mdi-power-plug-off'
       }
     },
     methods: {

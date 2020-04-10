@@ -14,6 +14,32 @@
         <v-list-item-subtitle>Instance</v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
+    <template v-if="isConnected && currentInstanceDetails.guid == instance.guid">
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{currentInstanceDetails.administrationVersion}}
+          </v-list-item-title>
+          <v-list-item-subtitle>Administration Version</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{currentInstanceDetails.databaseVersion}}
+          </v-list-item-title>
+          <v-list-item-subtitle>Database Version</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{currentInstanceDetails.sites.length}}
+          </v-list-item-title>
+          <v-list-item-subtitle>Site Count</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+    </template>
     <v-list-item>
       <v-list-item-content>
         <v-list-item-title>{{instance.path}}</v-list-item-title>
@@ -55,7 +81,7 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapState } from 'vuex'
   export default {
     props: {
       instance: {
@@ -65,8 +91,10 @@
     },
     computed: {
       ...mapGetters('instances', [
-        'getInstanceDisplayName'
+        'getInstanceDisplayName',
+        'isConnected'
       ]),
+      ...mapState('instances', ['currentInstanceDetails']),
       displayName: function () {
         const name = this.getInstanceDisplayName(this.instance.guid)
         return name
