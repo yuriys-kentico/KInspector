@@ -55,21 +55,15 @@
       ...mapGetters('instances', [
         'isConnected',
         'connectedInstance',
-        'getInstanceDisplayName',
       ]),
       color() {
-        return this.isConnected 
-          ? 'success' 
+        return this.isConnected
+          ? 'success'
           : 'error'
       },
-      status() {
-        return this.isConnected 
-          ? `Server: ${this.connectedInstance.databaseConfiguration.serverName}<br>Database: ${this.connectedInstance.databaseConfiguration.databaseName}` 
-          : 'Disconnected'
-      },
       icon() {
-        return this.isConnected 
-          ? 'mdi-power-plug' 
+        return this.isConnected
+          ? 'mdi-power-plug'
           : 'mdi-power-plug-off'
       }
     },

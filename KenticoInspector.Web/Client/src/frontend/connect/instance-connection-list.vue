@@ -32,7 +32,7 @@
     },
     computed: {
       ...mapState({
-        items: state => Object.values(state.instances.items)
+        items: state => state.instances.items
       }),
     },
     methods: {

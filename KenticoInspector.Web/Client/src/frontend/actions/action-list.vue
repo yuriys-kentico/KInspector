@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  import actionListItem from '../components/action-list-item'
+  import actionListItem from './action-list-item'
 
   export default {
     components: {

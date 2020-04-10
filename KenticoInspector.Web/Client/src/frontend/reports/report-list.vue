@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  import ReportListItem from '../components/report-list-item'
+  import ReportListItem from './report-list-item'
 
   export default {
     components: {

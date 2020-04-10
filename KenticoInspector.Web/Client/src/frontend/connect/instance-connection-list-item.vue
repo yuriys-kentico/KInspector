@@ -30,14 +30,14 @@
       }
     },
     methods: {
-      ...mapActions('instances', {
-        deleteInstance: 'deleteItem',
-        connectInstance: 'connect'
-      }),
+      ...mapActions('instances', [
+        'deleteInstance',
+        'getInstanceDetails'
+      ]),
       connectToInstance(guid) {
-        this.connectInstance(guid)
+        this.getInstanceDetails(guid)
           .then(() => {
-            this.$router.push('/reports')
+            this.$router.push(`/connect/${guid}/reports`)
           })
       }
     }

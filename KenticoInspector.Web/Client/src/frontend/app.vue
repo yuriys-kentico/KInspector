@@ -1,5 +1,5 @@
 <template>
-  <v-app :style="`background: url(${require('./assets/background.png')}) no-repeat bottom fixed; background-size: cover;`">
+  <v-app :style="`background: url(${require('../assets/background.png')}) no-repeat bottom fixed; background-size: cover;`">
     <the-main-toolbar></the-main-toolbar>
 
     <v-content>
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-  import TheMainToolbar from './components/the-main-toolbar'
+  import TheMainToolbar from './the-main-toolbar'
 
   export default {
     name: 'App',

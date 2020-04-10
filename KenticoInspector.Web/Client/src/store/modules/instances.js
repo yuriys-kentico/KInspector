@@ -1,104 +1,104 @@
-import api from '../../api'
+import api from '../../services';
 
 const state = {
-  items: {},
+  items: [],
   currentInstanceDetails: null,
   upserting: false,
   upsertingError: null,
   connecting: false,
   connectionError: null
-}
+};
 
 const getters = {
   isConnected: state => {
-    return !!state.currentInstanceDetails
+    return !!state.currentInstanceDetails;
   },
 
   connectedInstance: (state, getters) => {
-    return getters.isConnected ? state.items[state.currentInstanceDetails.guid] : null
+    return getters.isConnected ? state.items.find(item => item.guid === state.currentInstanceDetails.guid) : null;
   },
 
   connectedInstanceDetails: (state, getters) => {
-    return getters.isConnected ? state.currentInstanceDetails : null
+    return getters.isConnected ? state.currentInstanceDetails : null;
   },
 
-  getInstanceDisplayName: (state) => (guid) => {
-    const name = state.items[guid].name
-    return name ? name : "(UNNAMED)"
+  getInstanceDisplayName: state => guid => {
+    const name = state.items.find(item => item.guid === guid).name;
+    return name ? name : '(UNNAMED)';
   }
-}
+};
 
 const actions = {
-  async getAll({ commit }) {
-    commit('setItems', await api.getInstances())
+  async getInstances({ commit }) {
+    commit('setItems', await api.getInstances());
   },
 
-  async upsertItem({ commit, dispatch }, instance) {
-    commit('setUpserting', true)
+  async upsertInstance({ commit, dispatch }, instance) {
+    commit('setUpserting', true);
     try {
-      const newInstance = await api.upsertInstance(instance)
-      dispatch('getAll')
-      return newInstance
+      const newInstance = await api.upsertInstance(instance);
+      dispatch('getAll');
+      return newInstance;
     } catch (error) {
-      commit('setUpsertingError', error)
+      commit('setUpsertingError', error);
     }
 
-    commit('setUpserting', false)
+    commit('setUpserting', false);
   },
 
-  async deleteItem({ dispatch }, guid) {
-    await api.deleteInstance(guid)
-    await dispatch('getAll')
+  async deleteInstance({ dispatch }, guid) {
+    await api.deleteInstance(guid);
+    await dispatch('getAll');
   },
 
-  async connect({ commit }, guid) {
-    commit('setConnecting', true)
+  async getInstanceDetails({ commit }, guid) {
+    commit('setConnecting', true);
 
     try {
-      const instanceDetails = await api.getInstanceDetails(guid)
-      commit('setCurrentInstanceDetails', instanceDetails)
+      const instanceDetails = await api.getInstanceDetails(guid);
+      commit('setCurrentInstanceDetails', instanceDetails);
     } catch (error) {
-      commit('setConnectionError', error)
+      commit('setConnectionError', error);
     }
 
-    commit('setConnecting', false)
+    commit('setConnecting', false);
   },
 
   cancelConnecting: ({ commit }) => {
-    commit('setConnecting', false)
-    commit('setConnectionError', null)
+    commit('setConnecting', false);
+    commit('setConnectionError', null);
   },
 
   disconnect: ({ commit }) => {
-    commit('setCurrentInstanceDetails', null)
-  },
-}
+    commit('setCurrentInstanceDetails', null);
+  }
+};
 
 const mutations = {
   setConnecting(state, status) {
-    state.connecting = status
+    state.connecting = status;
   },
 
   setConnectionError(state, reason) {
-    state.connectionError = reason
+    state.connectionError = reason;
   },
 
   setUpserting(state, status) {
-    state.upserting = status
+    state.upserting = status;
   },
 
   setUpsertingError(state, reason) {
-    state.upsertingError = reason
+    state.upsertingError = reason;
   },
 
   setCurrentInstanceDetails(state, instanceDetails) {
-    state.currentInstanceDetails = instanceDetails
+    state.currentInstanceDetails = instanceDetails;
   },
 
   setItems(state, items) {
-    state.items = items
-  },
-}
+    state.items = items;
+  }
+};
 
 export default {
   namespaced: true,
@@ -106,4 +106,4 @@ export default {
   getters,
   actions,
   mutations
-}
+};

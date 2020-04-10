@@ -57,10 +57,10 @@
 </template>
 
 <script>
-  import CardComingSoon from '../components/card-coming-soon'
-  import InstanceConnectFormManual from '../components/instance-connect-form-manual'
-  import InstanceConnectionList from '../components/instance-connection-list'
-  import ModalInstanceConnecting from '../components/modal-instance-connecting'
+  import CardComingSoon from './card-coming-soon'
+  import InstanceConnectFormManual from './instance-connect-form-manual'
+  import InstanceConnectionList from './instance-connection-list'
+  import ModalInstanceConnecting from './modal-instance-connecting'
 
   export default {
     components: {

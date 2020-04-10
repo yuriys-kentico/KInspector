@@ -12,7 +12,7 @@
       <template v-if="isConnected">
         <action-filters />
         <v-flex xs12>
-          <action-list :actions="filtered" />
+          <action-list :actions="filteredActions" />
         </v-flex>
       </template>
 
@@ -30,34 +30,46 @@
 
 <script>
   import { mapActions, mapGetters } from 'vuex'
-  import ActionList from '../components/action-list'
-  import ActionFilters from '../components/action-filters'
+  import ActionList from './action-list'
+  import ActionFilters from './action-filters'
 
   export default {
     components: {
       ActionList,
       ActionFilters
     },
+    props: {
+      instanceGuid: {
+        type: String,
+        required: true
+      }
+    },
     computed: {
       ...mapGetters('instances', [
         'connectedInstanceDetails',
         'isConnected'
       ]),
-      ...mapGetters('actions', {
-        tags: 'getTags',
-        filtered: 'filtered'
-      })
+      ...mapGetters('actions', [
+        'filteredActions'
+      ])
     },
     methods: {
-      ...mapActions('actions', {
-        getAll: 'getAll',
-        resetFilterSettings: 'resetFilterSettings'
-      }),
-      initPage: function () {
-        if (this.isConnected) {
-          this.getAll(this.connectedInstanceDetails.guid)
-          this.resetFilterSettings({ version: this.connectedInstanceDetails.databaseVersion })
+      ...mapActions('actions', [
+        'getAllActions',
+        'resetFilterSettings'
+      ]),
+      ...mapActions('instances', [
+        'getInstances',
+        'getInstanceDetails',
+      ]),
+      initPage: async function () {
+        if (!this.isConnected) {
+            await this.getInstances();
+            await this.getInstanceDetails(this.instanceGuid);
         }
+
+        this.getAllActions(this.connectedInstanceDetails.guid)
+        this.resetFilterSettings({ version: this.connectedInstanceDetails.databaseVersion })
       }
     },
     watch: {

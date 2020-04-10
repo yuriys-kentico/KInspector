@@ -30,34 +30,46 @@
 
 <script>
   import { mapActions, mapGetters } from 'vuex'
-  import ReportFilters from '../components/report-filters'
-  import ReportList from '../components/report-list'
+  import ReportFilters from './report-filters'
+  import ReportList from './report-list'
 
   export default {
     components: {
       ReportFilters,
       ReportList
     },
+    props: {
+      instanceGuid: {
+        type: String,
+        required: true
+      }
+    },
     computed: {
       ...mapGetters('instances', [
         'connectedInstanceDetails',
         'isConnected'
       ]),
-      ...mapGetters('reports', {
-        tags: 'getTags',
-        filteredReports: 'filtered'
-      })
+      ...mapGetters('reports', [
+        'filteredReports'
+      ])
     },
     methods: {
-      ...mapActions('reports', {
-        getAllReports: 'getAll',
-        resetFilterSettings: 'resetFilterSettings'
-      }),
-      initPage: function () {
-        if (this.isConnected) {
-          this.getAllReports(this.connectedInstanceDetails.guid)
-          this.resetFilterSettings({ version: this.connectedInstanceDetails.databaseVersion })
+      ...mapActions('reports', [
+        'getAllReports',
+        'resetFilterSettings'
+      ]),
+      ...mapActions('instances', [
+        'getInstances',
+        'getInstanceDetails',
+      ]),
+      initPage: async function () {
+        if (!this.isConnected) {
+          await this.getInstances();
+          await this.getInstanceDetails(this.instanceGuid);
         }
+
+        this.getAllReports(this.connectedInstanceDetails.guid)
+        this.resetFilterSettings({ version: this.connectedInstanceDetails.databaseVersion })
       }
     },
     watch: {

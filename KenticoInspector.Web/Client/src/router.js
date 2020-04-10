@@ -1,8 +1,8 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from './views/home.vue'
+import Vue from 'vue';
+import Router from 'vue-router';
+import Home from './frontend/home/home';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   mode: 'history',
@@ -16,26 +16,19 @@ export default new Router({
     {
       path: '/connect',
       name: 'connect',
-      // route level code-splitting
-      // this generates a separate chunk (instance-connect.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "instance-connect" */ './views/instance-connections.vue')
+      component: () => import('./frontend/connect/connect')
     },
     {
-      path: '/reports',
+      path: '/connect/:instanceGuid/reports',
       name: 'reports',
-      // route level code-splitting
-      // this generates a separate chunk (instance-connect.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "reports" */ './views/reports.vue')
+      component: () => import('./frontend/reports/reports'),
+      props: true
     },
     {
-      path: '/actions',
+      path: '/connect/:instanceGuid/actions',
       name: 'actions',
-      // route level code-splitting
-      // this generates a separate chunk (instance-connect.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "reports" */ './views/actions.vue')
+      component: () => import('./frontend/actions/actions'),
+      props: true
     }
   ]
-})
+});

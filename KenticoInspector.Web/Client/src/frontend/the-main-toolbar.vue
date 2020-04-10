@@ -24,13 +24,13 @@
 
     <v-btn text
            icon
-           to="/reports"
+           :to="`/connect/${this.connectedInstanceDetails.guid}/reports`"
            :disabled="!isConnected">
       <v-icon>mdi-file-chart</v-icon>
     </v-btn>
     <v-btn text
            icon
-           to="/actions"
+           :to="`/connect/${this.connectedInstanceDetails.guid}/actions`"
            :disabled="!isConnected">
       <v-icon>mdi-flash</v-icon>
     </v-btn>
@@ -48,7 +48,11 @@
       ConnectionStatusIndicator
     },
     computed: {
-      ...mapGetters('instances', ['isConnected'])
+      ...mapGetters('instances', [
+        'isConnected',
+        'connectedInstanceDetails',
+
+      ])
     }
   }
 </script>

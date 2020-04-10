@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import api from '../../api';
+import api from '../../services';
 import semver from 'semver';
 
 const state = {
@@ -8,15 +8,15 @@ const state = {
     version: '',
     showIncompatible: false,
     showUntested: false,
-    taggedWith: [],
+    taggedWith: []
   },
   reportResults: {},
-  loadingItems: false,
+  loadingItems: false
 };
 
 const getters = {
-  filtered: (state) => {
-    const items = state.items.filter((item) => {
+  filteredActions: state => {
+    const items = state.items.filter(item => {
       const version = state.filterSettings.version;
       const showIncompatible = state.filterSettings.showIncompatible;
       const showUntested = state.filterSettings.showUntested;
@@ -30,7 +30,7 @@ const getters = {
         isCompatible || (showIncompatible && isIncompatible) || (showUntested && isUntested);
 
       const meetsTagFilter =
-        taggedWith.length == 0 || Object.values(item.metadata.tags).some((t) => taggedWith.includes(t));
+        taggedWith.length == 0 || Object.values(item.metadata.tags).some(t => taggedWith.includes(t));
 
       return meetsCompatibilityFilters && meetsTagFilter;
     });
@@ -38,32 +38,32 @@ const getters = {
     return items;
   },
 
-  getTags: (state) => {
+  getTags: state => {
     const allTags = state.items.reduce(getTags, []);
     return getUniqueTags(allTags);
   },
 
-  getActionResult: (state) => (codeName, instanceGuid) => {
+  getActionResult: state => (codeName, instanceGuid) => {
     const resultId = `${codeName}-${instanceGuid}`;
     const currentResult = state.reportResults[resultId];
     return currentResult
       ? currentResult
       : {
         loading: false,
-        results: null,
+        results: null
       };
-  },
+  }
 };
 
 const actions = {
-  getAll: ({ commit }, instanceGuid) => {
-    api.actionService.getAll(instanceGuid).then((items) => {
+  getAllActions: ({ commit }, instanceGuid) => {
+    api.actionService.getAll(instanceGuid).then(items => {
       commit('setItems', items);
     });
   },
   execute: ({ commit }, { codeName, instanceGuid, options }) => {
     commit('setItemResults', { codeName, loading: true });
-    api.actionService.execute({ codeName, instanceGuid, options }).then((results) => {
+    api.actionService.execute({ codeName, instanceGuid, options }).then(results => {
       const resultId = `${codeName}-${instanceGuid}`;
       commit('setItemResults', { resultId, loading: false, results });
     });
@@ -73,7 +73,7 @@ const actions = {
     { version = '', showIncompatible = false, showUntested = false, taggedWith = [] }
   ) => {
     commit('setFilterSettings', { version, showIncompatible, showUntested, taggedWith });
-  },
+  }
 };
 
 const mutations = {
@@ -88,7 +88,7 @@ const mutations = {
   },
   setFilterSettings(state, filterSettings) {
     state.filterSettings = filterSettings;
-  },
+  }
 };
 
 export default {
@@ -96,7 +96,7 @@ export default {
   state,
   getters,
   actions,
-  mutations,
+  mutations
 };
 
 function getTags(allTags, action) {
