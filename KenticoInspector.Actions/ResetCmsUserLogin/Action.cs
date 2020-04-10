@@ -1,11 +1,10 @@
 ﻿using KenticoInspector.Actions.ResetCmsUserLogin.Models;
-using KenticoInspector.Core;
-using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services;
-using KenticoInspector.Infrastructure;
+using KenticoInspector.Core.Instances.Services;
+using KenticoInspector.Core.Modules;
+using KenticoInspector.Core.Modules.Models.Results;
+using KenticoInspector.Modules;
 
-using static KenticoInspector.Core.Models.Tags;
+using static KenticoInspector.Core.Modules.Models.Tags;
 
 namespace KenticoInspector.Actions.ResetCmsUserLogin
 {

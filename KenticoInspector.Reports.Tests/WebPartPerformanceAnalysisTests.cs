@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Xml.Linq;
 
-using KenticoInspector.Core.Constants;
+using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Reports.Tests.Helpers;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models;

@@ -11,7 +11,7 @@ Kentico Inspector supports two modes: **Console mode** and **IIS mode**. Start b
 ## Console mode
 
 1. Extract package contents in any folder.
-2. Run `KenticoInspector.WebApplication.exe`.
+2. Run `KenticoInspector.Web.exe`.
 3. Browse to [https://localhost:5001](https://localhost:5001) or [http://localhost:5000](http://localhost:5000).
 
 ## IIS mode

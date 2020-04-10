@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-using KenticoInspector.Core.Models;
+using KenticoInspector.Core.TokenExpressions.Models;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models;
 
 namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers

@@ -4,16 +4,16 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using KenticoInspector.Core;
-using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services;
-using KenticoInspector.Infrastructure;
+using KenticoInspector.Core.Instances.Services;
+using KenticoInspector.Core.Modules;
+using KenticoInspector.Core.Modules.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results.Data;
+using KenticoInspector.Modules;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Results;
 
-using static KenticoInspector.Core.Models.Tags;
+using static KenticoInspector.Core.Modules.Models.Tags;
 
 namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
 {

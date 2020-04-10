@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results.Data;
 using KenticoInspector.Reports.DatabaseTableSizeAnalysis;
 using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Data;
 using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Models;

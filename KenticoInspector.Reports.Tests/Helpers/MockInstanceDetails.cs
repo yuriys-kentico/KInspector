@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Instances.Models;
 
 namespace KenticoInspector.Reports.Tests.Helpers
 {

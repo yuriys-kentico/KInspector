@@ -2,15 +2,15 @@
 using System.Linq;
 using System.Xml.Linq;
 
-using KenticoInspector.Core;
-using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services;
-using KenticoInspector.Infrastructure;
+using KenticoInspector.Core.Instances.Services;
+using KenticoInspector.Core.Modules;
+using KenticoInspector.Core.Modules.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results.Data;
+using KenticoInspector.Modules;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models.Data;
 
-using static KenticoInspector.Core.Models.Tags;
+using static KenticoInspector.Core.Modules.Models.Tags;
 
 namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
 {

@@ -1,16 +1,15 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-using KenticoInspector.Core;
-using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services;
-using KenticoInspector.Infrastructure;
+using KenticoInspector.Core.Instances.Services;
+using KenticoInspector.Core.Modules;
+using KenticoInspector.Core.Modules.Models.Results;
+using KenticoInspector.Modules;
 using KenticoInspector.Reports.RobotsTxtConfigurationSummary.Models;
 
-using static KenticoInspector.Core.Models.Tags;
+using static KenticoInspector.Core.Modules.Models.Tags;
 
 namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
 {
@@ -18,6 +17,8 @@ namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
     {
         private readonly IInstanceService instanceService;
         private readonly HttpClient httpClient;
+
+        public const string RobotsTxtRelative = "robots.txt";
 
         public Report(IInstanceService instanceService, HttpClient? httpClient = null)
         {
@@ -39,7 +40,7 @@ namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
 
             var instanceUri = new Uri(instance.Url);
 
-            var testUri = new Uri(instanceUri, DefaultKenticoPaths.RobotsTxtRelative);
+            var testUri = new Uri(instanceUri, RobotsTxtRelative);
 
             var uriStatusCode = GetUriStatusCode(testUri).Result;
 

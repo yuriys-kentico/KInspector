@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 
-using KenticoInspector.Core.Models;
-using KenticoInspector.Core.Tokens;
+using KenticoInspector.Core.TokenExpressions;
+using KenticoInspector.Core.TokenExpressions.Models;
 
 using NUnit.Framework;
 

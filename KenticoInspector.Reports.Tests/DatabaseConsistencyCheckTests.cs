@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-using KenticoInspector.Core.Constants;
+using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Reports.DatabaseConsistencyCheck;
 using KenticoInspector.Reports.DatabaseConsistencyCheck.Models;
 

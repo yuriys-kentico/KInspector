@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Helpers;
-using KenticoInspector.Core.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results.Data;
+using KenticoInspector.Modules;
 using KenticoInspector.Reports.ColumnFieldValidation;
 using KenticoInspector.Reports.ColumnFieldValidation.Models;
 using KenticoInspector.Reports.ColumnFieldValidation.Models.Data;

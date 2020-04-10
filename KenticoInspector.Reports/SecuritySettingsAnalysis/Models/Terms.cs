@@ -1,4 +1,4 @@
-﻿using KenticoInspector.Core.Models;
+﻿using KenticoInspector.Core.TokenExpressions.Models;
 
 namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Models
 {

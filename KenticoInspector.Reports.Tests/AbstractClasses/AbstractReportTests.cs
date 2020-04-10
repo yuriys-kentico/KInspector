@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Reflection;
 
-using KenticoInspector.Core.Models;
-using KenticoInspector.Core.Modules;
-using KenticoInspector.Core.Services;
-using KenticoInspector.Core.Tokens;
-using KenticoInspector.Infrastructure;
-using KenticoInspector.Infrastructure.Models;
+using KenticoInspector.Core.Instances.Models;
+using KenticoInspector.Core.Instances.Services;
+using KenticoInspector.Core.Modules.Models;
+using KenticoInspector.Core.TokenExpressions;
+using KenticoInspector.Core.TokenExpressions.Models;
+using KenticoInspector.Modules;
+using KenticoInspector.Modules.Models;
 using KenticoInspector.Reports.Tests.Helpers;
 
 using Moq;

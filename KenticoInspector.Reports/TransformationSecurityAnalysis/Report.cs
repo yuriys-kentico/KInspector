@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using KenticoInspector.Core;
-using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Models;
-using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services;
-using KenticoInspector.Infrastructure;
+using KenticoInspector.Core.Instances.Models;
+using KenticoInspector.Core.Instances.Services;
+using KenticoInspector.Core.Modules;
+using KenticoInspector.Core.Modules.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results.Data;
+using KenticoInspector.Core.TokenExpressions.Models;
+using KenticoInspector.Modules;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Analysis;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results;
 
-using static KenticoInspector.Core.Models.Tags;
+using static KenticoInspector.Core.Modules.Models.Tags;
 
 namespace KenticoInspector.Reports.TransformationSecurityAnalysis
 {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results.Data;
 using KenticoInspector.Reports.PageTypeAssignmentAnalysis;
 using KenticoInspector.Reports.PageTypeAssignmentAnalysis.Models;
 using KenticoInspector.Reports.PageTypeAssignmentAnalysis.Models.Data;

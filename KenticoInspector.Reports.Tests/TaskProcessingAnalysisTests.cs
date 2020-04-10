@@ -1,6 +1,6 @@
-using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Models;
-using KenticoInspector.Core.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results.Data;
+using KenticoInspector.Core.TokenExpressions.Models;
 using KenticoInspector.Reports.TaskProcessingAnalysis;
 using KenticoInspector.Reports.TaskProcessingAnalysis.Models;
 

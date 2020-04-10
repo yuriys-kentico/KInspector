@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Instances.Models;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data;
 
 namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results

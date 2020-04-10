@@ -2,18 +2,19 @@
 using System.Linq;
 using System.Xml.Linq;
 
-using KenticoInspector.Core;
-using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Models;
-using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services;
-using KenticoInspector.Infrastructure;
+using KenticoInspector.Core.Instances;
+using KenticoInspector.Core.Instances.Models;
+using KenticoInspector.Core.Instances.Services;
+using KenticoInspector.Core.Modules;
+using KenticoInspector.Core.Modules.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results.Data;
+using KenticoInspector.Modules;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Data;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Results;
 
-using static KenticoInspector.Core.Models.Tags;
+using static KenticoInspector.Core.Modules.Models.Tags;
 
 namespace KenticoInspector.Reports.SecuritySettingsAnalysis
 {
@@ -61,7 +62,7 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
             var sites = instanceService
                 .GetInstanceDetails(instanceService.CurrentInstance)
                 .Sites
-                .Append(new CmsSite()
+                .Append(new CmsSite
                 {
                     SiteId = 0,
                     SiteName = Metadata.Terms.GlobalSiteName
@@ -69,7 +70,7 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
 
             var instancePath = instanceService.CurrentInstance.Path;
 
-            var resxValues = cmsFileService.GetResourceStringsFromResx(instancePath);
+            var resxValues = cmsFileService.GetResourceStringsFromResx(instancePath, DefaultKenticoPaths.PrimaryResxFile);
 
             var localizedCmsSettingsKeyResults = cmsSettingsKeyResults
                 .Select(cmsSettingsKeyResult => new CmsSettingsKeyResult(

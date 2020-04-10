@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-using KenticoInspector.Core.Constants;
+using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Reports.RobotsTxtConfigurationSummary;
 using KenticoInspector.Reports.RobotsTxtConfigurationSummary.Models;
 
@@ -41,7 +41,7 @@ namespace KenticoInspector.Reports.Tests
 
             var baseUri = new Uri(mockInstance.Url);
 
-            var expectedUri = new Uri(baseUri, DefaultKenticoPaths.RobotsTxtRelative);
+            var expectedUri = new Uri(baseUri, Report.RobotsTxtRelative);
 
             AssertUrlCalled(mockHttpMessageHandler, expectedUri);
         }
@@ -63,7 +63,7 @@ namespace KenticoInspector.Reports.Tests
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
 
-            var expectedUri = new Uri($"{baseUrl}/{DefaultKenticoPaths.RobotsTxtRelative}");
+            var expectedUri = new Uri($"{baseUrl}/{Report.RobotsTxtRelative}");
 
             AssertUrlCalled(mockHttpMessageHandler, expectedUri);
         }

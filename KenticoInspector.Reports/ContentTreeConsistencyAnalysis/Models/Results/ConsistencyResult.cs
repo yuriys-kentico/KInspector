@@ -1,4 +1,4 @@
-﻿using KenticoInspector.Core.Models.Results;
+﻿using KenticoInspector.Core.Modules.Models.Results.Data;
 
 namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Results
 {

@@ -16,7 +16,7 @@ before_build:
   - cmd: >-
       dotnet restore
 
-      cd KenticoInspector.WebApplication\ClientApp
+      cd KenticoInspector.Web\Client
 
       npm i
 
@@ -28,7 +28,7 @@ before_package:
   - ps: cd $env:APPVEYOR_BUILD_FOLDER
   - ps: .\appveyor-before_package.ps1
 deploy:
-- provider: Environment
-  name: Kentico Inspector Releases
-  on:
+  - provider: Environment
+    name: Kentico Inspector Releases
+    on:
       APPVEYOR_REPO_TAG: true

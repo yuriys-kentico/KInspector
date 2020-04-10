@@ -8,7 +8,7 @@ order: 20
 
 The following steps should get you started with developing the Vue client:
 
-1. Open `.\KenticoInspector.WebApplication\ClientApp` directory in Visual Studio Code or a terminal.
+1. Open `.\KenticoInspector.Web\Client` directory in Visual Studio Code or a terminal.
 1. Run `npm run serve`.
 1. Leave the application running.
 1. Open `.\KInspector.sln` in Visual Studio.

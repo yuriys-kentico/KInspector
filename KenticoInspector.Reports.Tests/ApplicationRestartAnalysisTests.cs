@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results.Data;
 using KenticoInspector.Reports.ApplicationRestartAnalysis;
 using KenticoInspector.Reports.ApplicationRestartAnalysis.Models;
 using KenticoInspector.Reports.ApplicationRestartAnalysis.Models.Data;

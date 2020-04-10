@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
-using KenticoInspector.Core.Models;
-using KenticoInspector.Core.Services;
+using KenticoInspector.Core.Instances.Models;
+using KenticoInspector.Core.Instances.Services;
 
 using Moq;
 

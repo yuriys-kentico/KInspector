@@ -2,7 +2,8 @@
 using System.Linq;
 using System.Xml.Linq;
 
-using KenticoInspector.Core.Constants;
+using KenticoInspector.Core.Instances;
+using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Reports.DebugConfigurationAnalysis;
 using KenticoInspector.Reports.DebugConfigurationAnalysis.Models;
 using KenticoInspector.Reports.DebugConfigurationAnalysis.Models.Data;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using KenticoInspector.Core.Models;
+using KenticoInspector.Core.Instances.Models;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Data;
 
 using Newtonsoft.Json;

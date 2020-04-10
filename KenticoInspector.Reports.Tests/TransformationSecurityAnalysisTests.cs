@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
-using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results.Data;
 using KenticoInspector.Reports.Tests.Helpers;
 using KenticoInspector.Reports.TransformationSecurityAnalysis;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models;

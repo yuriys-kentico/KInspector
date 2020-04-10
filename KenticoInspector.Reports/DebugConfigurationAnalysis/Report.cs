@@ -2,15 +2,16 @@
 using System.Linq;
 using System.Xml.Linq;
 
-using KenticoInspector.Core;
-using KenticoInspector.Core.Constants;
-using KenticoInspector.Core.Models.Results;
-using KenticoInspector.Core.Services;
-using KenticoInspector.Infrastructure;
+using KenticoInspector.Core.Instances;
+using KenticoInspector.Core.Instances.Services;
+using KenticoInspector.Core.Modules;
+using KenticoInspector.Core.Modules.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results.Data;
+using KenticoInspector.Modules;
 using KenticoInspector.Reports.DebugConfigurationAnalysis.Models;
 using KenticoInspector.Reports.DebugConfigurationAnalysis.Models.Data;
 
-using static KenticoInspector.Core.Models.Tags;
+using static KenticoInspector.Core.Modules.Models.Tags;
 
 namespace KenticoInspector.Reports.DebugConfigurationAnalysis
 {
@@ -39,7 +40,7 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
 
             var databaseSettingsValues = _databaseService.ExecuteSqlFromFile<CmsSettingsKey>(Scripts.GetCMSSettingsKeysForDebug);
 
-            var resxValues = _cmsFileService.GetResourceStringsFromResx(instance.Path);
+            var resxValues = _cmsFileService.GetResourceStringsFromResx(instance.Path, DefaultKenticoPaths.PrimaryResxFile);
 
             ResolveSettingsDisplayNames(databaseSettingsValues, resxValues);
 

@@ -1,4 +1,4 @@
-﻿using KenticoInspector.Core.Services;
+﻿using KenticoInspector.Core.Instances.Services;
 
 using Moq;
 
