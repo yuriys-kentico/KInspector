@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -38,7 +38,7 @@ namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
         {
             var instance = instanceService.CurrentInstance;
 
-            var instanceUri = new Uri(instance.Url);
+            var instanceUri = new UriBuilder(instance.Url).Uri;
 
             var testUri = new Uri(instanceUri, RobotsTxtRelative);
 
