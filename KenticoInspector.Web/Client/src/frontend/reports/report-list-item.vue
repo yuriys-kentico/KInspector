@@ -22,11 +22,12 @@
       </v-btn>
     </v-toolbar>
 
-    <v-card-text class="pt-0 pb-0 pr-3">
+    <v-card-text class="pt-0 pb-0 pr-0">
       <v-layout align-center
                 justify-center
                 row
                 fill-height
+                mr-1
                 px-3
                 py-2
                 @click="showDescription = !showDescription">
@@ -36,12 +37,14 @@
         <v-spacer></v-spacer>
         <v-chip v-if="untested"
                 color="amber"
+                class="mr-3"
                 label
                 small>
           Untested
         </v-chip>
         <v-chip v-if="incompatible"
                 color="red darken-1"
+                class="mr-3"
                 dark
                 label
                 small>
@@ -67,7 +70,8 @@
       <v-layout align-center
                 justify-center
                 fill-height
-                px-3
+                pl-3
+                pr-4
                 py-2
                 :class="status"
                 @click="hasData && (showResults = !showResults)"

@@ -12,7 +12,7 @@
              target="_blank"
              class="my-0">
         <span class="mr-2">Source on Github</span>
-        <v-icon>mdi-github-box</v-icon>
+        <v-icon>mdi-github</v-icon>
       </v-btn>
       <div>Version 4.0 Alpha</div>
     </v-footer>

@@ -5,6 +5,7 @@
       <v-spacer></v-spacer>
       <v-text-field v-if="rows.length > 1"
                     v-model="search"
+                    append-icon="mdi-magnify"
                     label="Search"
                     single-line
                     hide-details></v-text-field>
@@ -14,10 +15,12 @@
                   :items="rows"
                   :search="search"
                   :footer-props="{'items-per-page-options':[10,25,100,{ text: 'All', value:-1}]}">
-      <template slot="items" slot-scope="props">
-        <td v-for="(header, index) in headers" :key="`header-${index}`">
-          <vue-showdown :markdown="`${props.item[header.value]}`" class="cell"></vue-showdown>
-        </td>
+      <template slot="item" slot-scope="props">
+        <tr>
+          <td v-for="(header, index) in props.headers" :key="`header-${index}`">
+            <vue-showdown :markdown="`${props.item[header.value]}`" class="cell"></vue-showdown>
+          </td>
+        </tr>
       </template>
     </v-data-table>
   </div>

@@ -1,21 +1,25 @@
-import Vue from 'vue'
-import Vuetify from 'vuetify'
-import colors from 'vuetify/es5/util/colors'
-import 'vuetify/dist/vuetify.min.css'
+import Vue from 'vue';
+import Vuetify from 'vuetify';
+import colors from 'vuetify/lib/util/colors';
+import 'vuetify/dist/vuetify.min.css';
 
-Vue.use(Vuetify)
+Vue.use(Vuetify);
 
 const opts = {
   iconfont: 'mdi',
   theme: {
-    primary: "#f05a22",
-    secondary: colors.grey.darken3,
-    accent: colors.deepOrange.lighten4,
-    error: colors.red.lighten2,
-    info: colors.blue.lighten3,
-    success: colors.green.lighten1,
-    warning: colors.amber.lighten1
-  },
-}
+    themes: {
+      light: {
+        primary: '#f05a22',
+        secondary: colors.grey.darken3,
+        accent: colors.deepOrange.lighten4,
+        error: colors.red.lighten2,
+        info: colors.blue.lighten3,
+        success: colors.green.lighten1,
+        warning: colors.amber.lighten1
+      }
+    }
+  }
+};
 
-export default new Vuetify(opts)
+export default new Vuetify(opts);

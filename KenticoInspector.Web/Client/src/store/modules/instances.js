@@ -37,7 +37,7 @@ const actions = {
     commit('setUpserting', true);
     try {
       const newInstance = await api.upsertInstance(instance);
-      dispatch('getAll');
+      dispatch('getInstances');
       return newInstance;
     } catch (error) {
       commit('setUpsertingError', error);
@@ -48,7 +48,7 @@ const actions = {
 
   async deleteInstance({ dispatch }, guid) {
     await api.deleteInstance(guid);
-    await dispatch('getAll');
+    await dispatch('getInstances');
   },
 
   async getInstanceDetails({ commit }, guid) {

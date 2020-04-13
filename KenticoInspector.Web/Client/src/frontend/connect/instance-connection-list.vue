@@ -28,7 +28,7 @@
       InstanceConnectionListItem
     },
     mounted() {
-      this.getAll()
+      this.getInstances()
     },
     computed: {
       ...mapState({
@@ -36,7 +36,7 @@
       }),
     },
     methods: {
-      ...mapActions('instances', ['getAll']),
+      ...mapActions('instances', ['getInstances']),
     }
   }
 </script>
