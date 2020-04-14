@@ -95,27 +95,27 @@ namespace KenticoInspector.Reports.ColumnFieldValidation
             var tableColumnGroups = tableColumns
                 .GroupBy(tableColumn => tableColumn.Table_Name);
 
-            foreach (var tableColumnNameTypes in tableColumnGroups)
+            foreach (var tableColumnGroup in tableColumnGroups)
             {
                 var matchingCmsClass = cmsClasses
                     .First(cmsClass => cmsClass.ClassTableName != null
                         && cmsClass.ClassTableName.Equals(
-                        tableColumnNameTypes.Key,
+                        tableColumnGroup.Key,
                         StringComparison.InvariantCultureIgnoreCase
                         ));
 
-                var classFieldNameTypes = matchingCmsClass.ClassXmlSchema
+                var classFields = matchingCmsClass.ClassXmlSchema
                     .Descendants()
                     .Where(element => element.Name.LocalName == "element")
                     .Where(element => element.Attribute("name").Value != "NewDataSet")
                     .Where(element => element.Attribute("name").Value != matchingCmsClass.ClassTableName)
                     .Select(GetClassFieldNameType);
 
-                var addedColumns = tableColumnNameTypes
-                    .Where(tableColumnNameType => !classFieldNameTypes
-                        .Any(classFieldNameType => classFieldNameType.Name == tableColumnNameType.Column_Name
-                            && tableColumnNameType.Data_Type != null
-                            && classFieldNameType.Type.StartsWith(tableColumnNameType.Data_Type)))
+                var addedColumns = tableColumnGroup
+                    .Where(tableColumn => !classFields
+                        .Any(classField => classField.Name == tableColumn.Column_Name
+                            && tableColumn.Data_Type != null
+                            && classField.Type.StartsWith(tableColumn.Data_Type)))
                     .Select(column => (column.Column_Name, column.Data_Type));
 
                 if (addedColumns.Any())
@@ -123,7 +123,7 @@ namespace KenticoInspector.Reports.ColumnFieldValidation
                     yield return new TableResult()
                     {
                         TableColumnsNotInClass = string.Join(", ", addedColumns),
-                        TableName = tableColumnNameTypes.Key
+                        TableName = tableColumnGroup.Key
                     };
                 }
             }
@@ -132,7 +132,7 @@ namespace KenticoInspector.Reports.ColumnFieldValidation
         private (string Name, string Type) GetClassFieldNameType(XElement element)
         {
             string name = element.Attribute("name").Value;
-            string type = string.Empty;
+            string type = "(complex type)";
 
             if (element.Attribute("type") != null)
             {
@@ -192,6 +192,7 @@ namespace KenticoInspector.Reports.ColumnFieldValidation
                     type = "varbinary";
                     break;
 
+                case "System.Guid, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089":
                 case "System.Guid, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089":
                     type = "uniqueidentifier";
                     break;
