@@ -4,10 +4,10 @@
     {
         public static string BaseDirectory = $"{nameof(TaskProcessingAnalysis)}/Scripts";
 
-        public static string GetIntegrationTasksCountInPast24Hours = $"{BaseDirectory}/{nameof(GetIntegrationTasksCountInPast24Hours)}.sql";
-        public static string GetCmsScheduledTasksCountInPast24Hours = $"{BaseDirectory}/{nameof(GetCmsScheduledTasksCountInPast24Hours)}.sql";
-        public static string GetCmsSearchTasksCountInPast24Hours = $"{BaseDirectory}/{nameof(GetCmsSearchTasksCountInPast24Hours)}.sql";
-        public static string GetStagingTasksCountInpast24Hours = $"{BaseDirectory}/{nameof(GetStagingTasksCountInpast24Hours)}.sql";
-        public static string GetCmsWebFarmTaskCountInPast24Hours = $"{BaseDirectory}/{nameof(GetCmsWebFarmTaskCountInPast24Hours)}.sql";
+        public static string GetCmsScheduledTasksInPast24Hours = $"{BaseDirectory}/{nameof(GetCmsScheduledTasksInPast24Hours)}.sql";
+        public static string GetCmsSearchTasksInPast24Hours = $"{BaseDirectory}/{nameof(GetCmsSearchTasksInPast24Hours)}.sql";
+        public static string GetCmsIntegrationTasksInPast24Hours = $"{BaseDirectory}/{nameof(GetCmsIntegrationTasksInPast24Hours)}.sql";
+        public static string GetCmsStagingTasksInpast24Hours = $"{BaseDirectory}/{nameof(GetCmsStagingTasksInpast24Hours)}.sql";
+        public static string GetCmsWebFarmTasksInPast24Hours = $"{BaseDirectory}/{nameof(GetCmsWebFarmTasksInPast24Hours)}.sql";
     }
 }

@@ -125,19 +125,19 @@
     <None Update="DebugConfigurationAnalysis\Scripts\GetCMSSettingsKeysForDebug.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TaskProcessingAnalysis\Scripts\GetIntegrationTasksCountInPast24Hours.sql">
+    <None Update="TaskProcessingAnalysis\Scripts\GetCmsIntegrationTasksInPast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TaskProcessingAnalysis\Scripts\GetCmsScheduledTasksCountInPast24Hours.sql">
+    <None Update="TaskProcessingAnalysis\Scripts\GetCmsScheduledTasksInPast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TaskProcessingAnalysis\Scripts\GetCmsSearchTasksCountInPast24Hours.sql">
+    <None Update="TaskProcessingAnalysis\Scripts\GetCmsSearchTasksInPast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TaskProcessingAnalysis\Scripts\GetStagingTasksCountInpast24Hours.sql">
+    <None Update="TaskProcessingAnalysis\Scripts\GetCmsStagingTasksInpast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TaskProcessingAnalysis\Scripts\GetCmsWebFarmTaskCountInPast24Hours.sql">
+    <None Update="TaskProcessingAnalysis\Scripts\GetCmsWebFarmTasksInPast24Hours.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="PageTypeAssignmentAnalysis\Metadata\en-US.yaml">

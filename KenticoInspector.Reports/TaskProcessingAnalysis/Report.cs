@@ -4,9 +4,10 @@ using System.Linq;
 using KenticoInspector.Core.Instances.Services;
 using KenticoInspector.Core.Modules;
 using KenticoInspector.Core.Modules.Models.Results;
+using KenticoInspector.Core.Modules.Models.Results.Data;
 using KenticoInspector.Modules;
 using KenticoInspector.Reports.TaskProcessingAnalysis.Models;
-using KenticoInspector.Reports.TaskProcessingAnalysis.Models.Results;
+using KenticoInspector.Reports.TaskProcessingAnalysis.Models.Data;
 
 using static KenticoInspector.Core.Modules.Models.Tags;
 
@@ -25,51 +26,54 @@ namespace KenticoInspector.Reports.TaskProcessingAnalysis
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
-            var unprocessedIntegrationBusTasks = databaseService.ExecuteSqlFromFileScalar<int>(Scripts.GetIntegrationTasksCountInPast24Hours);
-            var unprocessedScheduledTasks = databaseService.ExecuteSqlFromFileScalar<int>(Scripts.GetCmsScheduledTasksCountInPast24Hours);
-            var unprocessedSearchTasks = databaseService.ExecuteSqlFromFileScalar<int>(Scripts.GetCmsSearchTasksCountInPast24Hours);
-            var unprocessedStagingTasks = databaseService.ExecuteSqlFromFileScalar<int>(Scripts.GetStagingTasksCountInpast24Hours);
-            var unprocessedWebFarmTasks = databaseService.ExecuteSqlFromFileScalar<int>(Scripts.GetCmsWebFarmTaskCountInPast24Hours);
+            var scheduledTasks = databaseService.ExecuteSqlFromFile<CmsScheduledTask>(Scripts.GetCmsScheduledTasksInPast24Hours);
+            var searchTasks = databaseService.ExecuteSqlFromFile<CmsSearchTask>(Scripts.GetCmsSearchTasksInPast24Hours);
+            var integrationTasks = databaseService.ExecuteSqlFromFile<CmsIntegrationTask>(Scripts.GetCmsIntegrationTasksInPast24Hours);
+            var stagingTasks = databaseService.ExecuteSqlFromFile<CmsStagingTask>(Scripts.GetCmsStagingTasksInpast24Hours);
+            var webFarmTasks = databaseService.ExecuteSqlFromFile<CmsWebFarmTask>(Scripts.GetCmsWebFarmTasksInPast24Hours);
 
-            var rawResults = new List<TaskCountResult>
-            {
-                new TaskCountResult(Metadata.Terms.CountIntegrationBusTask, unprocessedIntegrationBusTasks ),
-                new TaskCountResult(Metadata.Terms.CountScheduledTask, unprocessedScheduledTasks ),
-                new TaskCountResult(Metadata.Terms.CountSearchTask, unprocessedSearchTasks ),
-                new TaskCountResult(Metadata.Terms.CountStagingTask, unprocessedStagingTasks ),
-                new TaskCountResult(Metadata.Terms.CountWebFarmTask, unprocessedWebFarmTasks )
-            };
-
-            return CompileResults(rawResults);
+            return CompileResults(
+                scheduledTasks,
+                searchTasks,
+                integrationTasks,
+                stagingTasks,
+                webFarmTasks
+                );
         }
 
-        private ReportResults CompileResults(IEnumerable<TaskCountResult> taskTypesAndCounts)
+        private ReportResults CompileResults(
+            IEnumerable<CmsScheduledTask> scheduledTasks,
+            IEnumerable<CmsSearchTask> searchTasks,
+            IEnumerable<CmsIntegrationTask> integrationTasks,
+            IEnumerable<CmsStagingTask> stagingTasks,
+            IEnumerable<CmsWebFarmTask> webFarmTasks
+            )
         {
-            var count = taskTypesAndCounts.Sum(x => x.Count);
+            var totalCount = scheduledTasks.Count()
+                + searchTasks.Count()
+                + integrationTasks.Count()
+                + stagingTasks.Count()
+                + webFarmTasks.Count();
 
-            if (count == 0)
+            if (totalCount == 0)
             {
                 return new ReportResults(ResultsStatus.Good)
                 {
-                    Summary = Metadata.Terms.GoodSummary
+                    Summary = Metadata.Terms.Summaries.Good
                 };
             }
 
-            var results = new ReportResults(ResultsStatus.Warning)
+            return new ReportResults(ResultsStatus.Warning)
             {
-                Summary = Metadata.Terms.WarningSummary.With(new { count })
+                Summary = Metadata.Terms.Summaries.Warning.With(new { totalCount }),
+                Data = {
+                    scheduledTasks.AsResult().WithLabel(Metadata.Terms.TableTitles.ScheduledTasks),
+                    searchTasks.AsResult().WithLabel(Metadata.Terms.TableTitles.SearchTasks),
+                    integrationTasks.AsResult().WithLabel(Metadata.Terms.TableTitles.IntegrationBusTasks),
+                    stagingTasks.AsResult().WithLabel(Metadata.Terms.TableTitles.StagingTasks),
+                    webFarmTasks.AsResult().WithLabel(Metadata.Terms.TableTitles.WebFarmTasks)
+                }
             };
-
-            var lines = taskTypesAndCounts
-                .Where(taskTypeAndCount => taskTypeAndCount.Count > 0)
-                .Select(taskTypeAndCount => taskTypeAndCount.Term.With(new { count = taskTypeAndCount.Count }));
-
-            foreach (var result in lines)
-            {
-                results.Data.Add(result);
-            }
-
-            return results;
         }
     }
 }
