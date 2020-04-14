@@ -32,9 +32,7 @@ namespace KenticoInspector.Reports.ClassTableValidation
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
-            var instance = instanceService.CurrentInstance;
-
-            var instanceDetails = instanceService.GetInstanceDetails(instance);
+            var instanceDetails = instanceService.GetInstanceDetails();
 
             var tableWhitelist = GetTableWhitelist(instanceDetails.DatabaseVersion);
 

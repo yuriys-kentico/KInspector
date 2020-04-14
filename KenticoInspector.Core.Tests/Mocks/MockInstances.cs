@@ -2,11 +2,11 @@
 
 using KenticoInspector.Core.Instances.Models;
 
-namespace KenticoInspector.Reports.Tests.Helpers
+namespace KenticoInspector.Core.Tests.Mocks
 {
-    public static class MockInstances
+    internal static class MockInstances
     {
-        public static Instance Kentico9 = new Instance
+        internal static Instance Kentico9 = new Instance
         {
             Name = "K9 Test Instance",
             Guid = Guid.NewGuid(),
@@ -15,7 +15,7 @@ namespace KenticoInspector.Reports.Tests.Helpers
             DatabaseSettings = null!
         };
 
-        public static Instance Kentico10 = new Instance
+        internal static Instance Kentico10 = new Instance
         {
             Name = "K10 Test Instance",
             Guid = Guid.NewGuid(),
@@ -24,7 +24,7 @@ namespace KenticoInspector.Reports.Tests.Helpers
             DatabaseSettings = null!
         };
 
-        public static Instance Kentico11 = new Instance
+        internal static Instance Kentico11 = new Instance
         {
             Name = "K11 Test Instance",
             Guid = Guid.NewGuid(),
@@ -33,7 +33,7 @@ namespace KenticoInspector.Reports.Tests.Helpers
             DatabaseSettings = null!
         };
 
-        public static Instance Kentico12 = new Instance
+        internal static Instance Kentico12 = new Instance
         {
             Name = "K11 Test Instance",
             Guid = Guid.NewGuid(),
@@ -42,7 +42,7 @@ namespace KenticoInspector.Reports.Tests.Helpers
             DatabaseSettings = null!
         };
 
-        public static Instance Get(int majorVersion)
+        internal static Instance Get(int majorVersion)
         {
             return majorVersion switch
             {

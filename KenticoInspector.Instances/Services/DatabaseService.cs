@@ -33,7 +33,7 @@ namespace KenticoInspector.Instances.Services
             return ExecuteSqlFromFile<T>(relativeFilePath, null, null);
         }
 
-        public IEnumerable<T> ExecuteSqlFromFile<T>(string relativeFilePath, dynamic parameters)
+        public IEnumerable<T> ExecuteSqlFromFile<T>(string relativeFilePath, object parameters)
         {
             return ExecuteSqlFromFile<T>(relativeFilePath, null, parameters);
         }
@@ -43,11 +43,11 @@ namespace KenticoInspector.Instances.Services
             return ExecuteSqlFromFile<T>(relativeFilePath, literalReplacements, null);
         }
 
-        public IEnumerable<T> ExecuteSqlFromFile<T>(string relativeFilePath, IDictionary<string, string>? literalReplacements, dynamic? parameters)
+        public IEnumerable<T> ExecuteSqlFromFile<T>(string relativeFilePath, IDictionary<string, string>? literalReplacements, object? parameters)
         {
             var query = GetSqlQueryText(relativeFilePath, literalReplacements);
 
-            return Connection.Query<T>(query, (object?)parameters, commandTimeout: CommandTimeout);
+            return Connection.Query<T>(query, parameters, commandTimeout: CommandTimeout);
         }
 
         public DataTable ExecuteSqlFromFileAsDataTable(string relativeFilePath)
@@ -60,26 +60,26 @@ namespace KenticoInspector.Instances.Services
             return result;
         }
 
-        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFileGeneric(string relativeFilePath)
+        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFile(string relativeFilePath)
         {
-            return ExecuteSqlFromFileGeneric(relativeFilePath, null, null);
+            return ExecuteSqlFromFile(relativeFilePath, null, null);
         }
 
-        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFileGeneric(string relativeFilePath, dynamic? parameters = null)
+        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFile(string relativeFilePath, object parameters)
         {
-            return ExecuteSqlFromFileGeneric(relativeFilePath, null, parameters);
+            return ExecuteSqlFromFile(relativeFilePath, null, parameters);
         }
 
-        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFileGeneric(string relativeFilePath, IDictionary<string, string> literalReplacements)
+        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFile(string relativeFilePath, IDictionary<string, string> literalReplacements)
         {
-            return ExecuteSqlFromFileGeneric(relativeFilePath, literalReplacements, null);
+            return ExecuteSqlFromFile(relativeFilePath, literalReplacements, null);
         }
 
-        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFileGeneric(string relativeFilePath, IDictionary<string, string>? literalReplacements, dynamic? parameters)
+        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFile(string relativeFilePath, IDictionary<string, string>? literalReplacements, object? parameters)
         {
             var query = GetSqlQueryText(relativeFilePath, literalReplacements);
 
-            return Connection.Query(query, (object?)parameters, commandTimeout: CommandTimeout)
+            return Connection.Query(query, parameters, commandTimeout: CommandTimeout)
                 .Select(x => (IDictionary<string, object>)x);
         }
 
@@ -88,7 +88,7 @@ namespace KenticoInspector.Instances.Services
             return ExecuteSqlFromFileScalar<T>(relativeFilePath, null, null);
         }
 
-        public T ExecuteSqlFromFileScalar<T>(string relativeFilePath, dynamic parameters)
+        public T ExecuteSqlFromFileScalar<T>(string relativeFilePath, object parameters)
         {
             return ExecuteSqlFromFileScalar<T>(relativeFilePath, null, parameters);
         }
@@ -98,7 +98,7 @@ namespace KenticoInspector.Instances.Services
             return ExecuteSqlFromFileScalar<T>(relativeFilePath, literalReplacements, null);
         }
 
-        public T ExecuteSqlFromFileScalar<T>(string relativeFilePath, IDictionary<string, string>? literalReplacements, dynamic? parameters)
+        public T ExecuteSqlFromFileScalar<T>(string relativeFilePath, IDictionary<string, string>? literalReplacements, object? parameters)
         {
             var query = GetSqlQueryText(relativeFilePath, literalReplacements);
 
@@ -125,12 +125,6 @@ namespace KenticoInspector.Instances.Services
             return sb.ConnectionString;
         }
 
-        /// <summary>
-        /// Reads file located at <paramref name="relativeFilePath"/> using <see cref="CoreHelper.GetExecutingDirectory"/> as the root location.
-        /// </summary>
-        /// <param name="relativeFilePath">Relative file path not starting with a slash (/).</param>
-        /// <param name="literalReplacements">Dictionary of string replacements.</param>
-        /// <returns></returns>
         private static string GetSqlQueryText(string relativeFilePath, IDictionary<string, string>? literalReplacements = null)
         {
             var executingDirectory = CoreHelper.GetExecutingDirectory();

@@ -20,4 +20,13 @@
   <ItemGroup>
     <ProjectReference Include="..\KenticoInspector.Core\KenticoInspector.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>KenticoInspector.Modules.Tests</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>KenticoInspector.Reports.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 </Project>

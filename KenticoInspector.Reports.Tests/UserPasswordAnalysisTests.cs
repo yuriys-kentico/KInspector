@@ -3,7 +3,7 @@ using System.Linq;
 
 using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Core.Modules.Models.Results.Data;
-using KenticoInspector.Reports.Tests.Helpers;
+using KenticoInspector.Core.Tests.Mocks;
 using KenticoInspector.Reports.UserPasswordAnalysis;
 using KenticoInspector.Reports.UserPasswordAnalysis.Models;
 using KenticoInspector.Reports.UserPasswordAnalysis.Models.Data;
@@ -105,7 +105,7 @@ namespace KenticoInspector.Reports.Tests
         private void ArrangeDatabaseService(
             IEnumerable<CmsUser> cmsUserTable)
         {
-            mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(
+            mockDatabaseService.SetupExecuteSqlFromFile(
                 Scripts.GetEnabledAndNotExternalUsers,
                 nameof(Report.ExcludedUserNames),
                 Report.ExcludedUserNames,

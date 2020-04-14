@@ -5,12 +5,12 @@ using System.Xml.Linq;
 using KenticoInspector.Core.Instances;
 using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Core.Modules.Models.Results.Data;
+using KenticoInspector.Core.Tests.Mocks;
 using KenticoInspector.Reports.SecuritySettingsAnalysis;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Data;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Results;
-using KenticoInspector.Reports.Tests.Helpers;
 
 using NUnit.Framework;
 
@@ -276,7 +276,7 @@ namespace KenticoInspector.Reports.Tests
                 .Analyzers
                 .Select(analyzer => analyzer.Parameters[0].Name);
 
-            mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(
+            mockDatabaseService.SetupExecuteSqlFromFile(
                 Scripts.GetSecurityCmsSettings,
                 nameof(cmsSettingsKeysNames),
                 cmsSettingsKeysNames,
@@ -285,7 +285,7 @@ namespace KenticoInspector.Reports.Tests
             var cmsSettingsCategoryIdsOnPaths = cmsSettingsCategories
                 .Select(category => category.CategoryID.ToString());
 
-            mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(
+            mockDatabaseService.SetupExecuteSqlFromFile(
                 Scripts.GetCmsSettingsCategories,
                 nameof(cmsSettingsCategoryIdsOnPaths),
                 cmsSettingsCategoryIdsOnPaths,

@@ -34,15 +34,9 @@ namespace KenticoInspector.Instances.Services
             this.databaseService = databaseService;
         }
 
-        public bool DeleteInstance(Guid instanceGuid)
-        {
-            return instanceRepository.DeleteInstance(instanceGuid);
-        }
+        public bool DeleteInstance(Guid instanceGuid) => instanceRepository.DeleteInstance(instanceGuid);
 
-        public Instance GetInstance(Guid instanceGuid)
-        {
-            return instanceRepository.GetInstance(instanceGuid);
-        }
+        public Instance GetInstance(Guid instanceGuid) => instanceRepository.GetInstance(instanceGuid);
 
         public Instance SetCurrentInstance(Guid instanceGuid)
         {
@@ -58,9 +52,9 @@ namespace KenticoInspector.Instances.Services
             return GetInstanceDetails(instance);
         }
 
-        public InstanceDetails GetInstanceDetails(Instance? instance)
+        public InstanceDetails GetInstanceDetails(Instance? instance = null)
         {
-            instance = instance ?? throw new ArgumentNullException(nameof(instance));
+            instance ??= CurrentInstance ?? throw new ArgumentNullException(nameof(instance));
 
             databaseService.Configure(instance.DatabaseSettings);
 
@@ -73,14 +67,8 @@ namespace KenticoInspector.Instances.Services
             };
         }
 
-        public IList<Instance> GetInstances()
-        {
-            return instanceRepository.GetInstances();
-        }
+        public IList<Instance> GetInstances() => instanceRepository.GetInstances();
 
-        public Instance UpsertInstance(Instance instance)
-        {
-            return instanceRepository.UpsertInstance(instance);
-        }
+        public Instance UpsertInstance(Instance instance) => instanceRepository.UpsertInstance(instance);
     }
 }

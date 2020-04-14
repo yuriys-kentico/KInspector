@@ -60,7 +60,7 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
                 );
 
             var sites = instanceService
-                .GetInstanceDetails(instanceService.CurrentInstance)
+                .GetInstanceDetails()
                 .Sites
                 .Append(new CmsSite
                 {

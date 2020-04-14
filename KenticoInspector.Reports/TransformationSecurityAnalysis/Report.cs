@@ -54,7 +54,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
             var pageTemplatesUsingTransformationsWithIssues = GetPageTemplatesUsingTransformationsWithIssues(pageTemplates, transformationsWithIssues);
 
             var sites = instanceService
-                .GetInstanceDetails(instanceService.CurrentInstance)
+                .GetInstanceDetails()
                 .Sites;
 
             return CompileResults(pageTemplatesUsingTransformationsWithIssues, sites);

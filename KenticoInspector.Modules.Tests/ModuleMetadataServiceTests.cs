@@ -5,11 +5,11 @@ using System.Threading;
 
 using KenticoInspector.Core.Modules.Models;
 using KenticoInspector.Core.Modules.Services;
+using KenticoInspector.Core.Tests.Mocks;
 using KenticoInspector.Core.TokenExpressions;
 using KenticoInspector.Core.TokenExpressions.Models;
 using KenticoInspector.Modules.Models;
 using KenticoInspector.Modules.Services;
-using KenticoInspector.Reports.Tests.Helpers;
 
 using NUnit.Framework;
 
@@ -33,7 +33,9 @@ namespace KenticoInspector.Infrastructure.Tests
 
             var mockInstance = MockInstances.Get(majorVersion);
             var mockInstanceDetails = MockInstanceDetails.Get(majorVersion, mockInstance);
-            var mockInstanceService = MockInstanceServiceHelper.SetupInstanceService(mockInstance, mockInstanceDetails);
+
+            var mockInstanceService = MockIInstanceService.Get();
+            mockInstanceService.SetupCurrentInstance(mockInstance, mockInstanceDetails);
 
             moduleMedatadataService = new ModuleMetadataService(mockInstanceService.Object);
         }

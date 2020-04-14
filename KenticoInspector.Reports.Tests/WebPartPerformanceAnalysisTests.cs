@@ -3,7 +3,7 @@ using System.Linq;
 using System.Xml.Linq;
 
 using KenticoInspector.Core.Modules.Models.Results;
-using KenticoInspector.Reports.Tests.Helpers;
+using KenticoInspector.Core.Tests.Mocks;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models.Data;
@@ -72,7 +72,7 @@ namespace KenticoInspector.Reports.Tests
             var affectedDocuments = affectedTemplateIds
                 .Select(affectedTemplateId => new CmsTreeNode { DocumentPageTemplateID = affectedTemplateId });
 
-            mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(Scripts.GetTreeNodesUsingPageTemplates, "pageTemplatesWithWebPartsWithColumnsPropertyIds", affectedTemplateIds, affectedDocuments);
+            mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetTreeNodesUsingPageTemplates, "pageTemplatesWithWebPartsWithColumnsPropertyIds", affectedTemplateIds, affectedDocuments);
         }
     }
 }

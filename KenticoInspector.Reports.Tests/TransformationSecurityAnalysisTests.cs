@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Core.Modules.Models.Results.Data;
-using KenticoInspector.Reports.Tests.Helpers;
+using KenticoInspector.Core.Tests.Mocks;
 using KenticoInspector.Reports.TransformationSecurityAnalysis;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data;
@@ -153,7 +153,7 @@ namespace KenticoInspector.Reports.Tests
         {
             mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetTransformations, transformation);
             mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetTreeNodes, TreeNodesWithoutIssues);
-            mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(Scripts.GetPageTemplates, "DocumentPageTemplateIDs", TreeNodesWithoutIssues.Select(treeNode => treeNode.DocumentPageTemplateID), PageTemplateWithoutIssues);
+            mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetPageTemplates, "DocumentPageTemplateIDs", TreeNodesWithoutIssues.Select(treeNode => treeNode.DocumentPageTemplateID), PageTemplateWithoutIssues);
         }
     }
 }

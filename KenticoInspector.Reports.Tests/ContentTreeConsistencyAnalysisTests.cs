@@ -5,11 +5,11 @@ using System.Xml.Linq;
 
 using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Core.Modules.Models.Results.Data;
+using KenticoInspector.Core.Tests.Mocks;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data;
 using KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Results;
-using KenticoInspector.Reports.Tests.Helpers;
 
 using NUnit.Framework;
 
@@ -262,7 +262,7 @@ namespace KenticoInspector.Reports.Tests
                         { "IdColumnName", cmsClass.ClassIDColumn }
                     };
 
-                    mockDatabaseService.SetupExecuteSqlFromFileGenericWithListParameter(
+                    mockDatabaseService.SetupExecuteSqlFromFile(
                         Scripts.GetCmsDocumentCoupledDataItems,
                         replacements,
                         "coupledDataIds",
@@ -311,7 +311,7 @@ namespace KenticoInspector.Reports.Tests
 
             if (!string.IsNullOrWhiteSpace(detailsScript) && returnedItems != null)
             {
-                mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(detailsScript, parameterName, idValues, returnedItems);
+                mockDatabaseService.SetupExecuteSqlFromFile(detailsScript, parameterName, idValues, returnedItems);
             }
         }
 

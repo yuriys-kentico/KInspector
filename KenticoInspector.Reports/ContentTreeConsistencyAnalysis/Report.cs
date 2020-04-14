@@ -102,7 +102,7 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
                         { "IdColumnName", cmsClass.ClassIDColumn }
                     };
 
-                    var coupledData = databaseService.ExecuteSqlFromFileGeneric(Scripts.GetCmsDocumentCoupledDataItems, replacements, new { coupledDataIds });
+                    var coupledData = databaseService.ExecuteSqlFromFile(Scripts.GetCmsDocumentCoupledDataItems, replacements, new { coupledDataIds });
 
                     comparisonResults.AddRange(CompareVersionHistoryItemsWithPublishedItems(classVersionHistoryItems, coupledData, cmsClass.ClassFields));
                 }

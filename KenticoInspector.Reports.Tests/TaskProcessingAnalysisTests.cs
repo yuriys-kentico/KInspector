@@ -1,8 +1,12 @@
+using System.Collections.Generic;
+using System.Linq;
+
 using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Core.Modules.Models.Results.Data;
-using KenticoInspector.Core.TokenExpressions.Models;
+using KenticoInspector.Core.Tests.Mocks;
 using KenticoInspector.Reports.TaskProcessingAnalysis;
 using KenticoInspector.Reports.TaskProcessingAnalysis.Models;
+using KenticoInspector.Reports.TaskProcessingAnalysis.Models.Data;
 
 using NUnit.Framework;
 
@@ -19,6 +23,50 @@ namespace KenticoInspector.Reports.Tests
             mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
+        private IEnumerable<CmsWebFarmTask> WebFarmTasksWithIssues => new List<CmsWebFarmTask>
+        {
+            new CmsWebFarmTask()
+            {
+                TaskID = 1
+            }
+        };
+
+        private IEnumerable<CmsIntegrationTask> IntegrationTasksWithIssues => new List<CmsIntegrationTask>
+
+        {
+            new CmsIntegrationTask()
+            {
+                TaskID = 1
+            }
+        };
+
+        private IEnumerable<CmsScheduledTask> ScheduledTasksWithIssues => new List<CmsScheduledTask>
+
+        {
+            new CmsScheduledTask
+            {
+                TaskID = 1
+            }
+        };
+
+        private IEnumerable<CmsSearchTask> SearchTasksWithIssues => new List<CmsSearchTask>
+
+        {
+            new CmsSearchTask
+            {
+                SearchTaskID = 1
+            }
+        };
+
+        private IEnumerable<CmsStagingTask> StagingTasksWithIssues => new List<CmsStagingTask>
+
+        {
+            new CmsStagingTask
+            {
+                TaskID = 1
+            }
+        };
+
         [Test]
         public void Should_ReturnGoodResult_When_TasksWithoutIssues()
         {
@@ -33,30 +81,16 @@ namespace KenticoInspector.Reports.Tests
         }
 
         [Test]
-        public void Should_ReturnWarningResult_When_IntegrationBusTasksWithIssues()
-        {
-            // Arrange
-            ArrangeDatabaseService(unprocessedIntegrationBusTasks: 1);
-
-            // Act
-            var results = mockReport.GetResults();
-
-            // Assert
-            AssertThatResultsDataIncludesTaskTypeDetails(results.Data, mockReport.Metadata.Terms.CountIntegrationBusTask);
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
-        }
-
-        [Test]
         public void Should_ReturnWarningResult_When_ScheduledTasksWithIssues()
         {
             // Arrange
-            ArrangeDatabaseService(unprocessedScheduledTasks: 1);
+            ArrangeDatabaseService(scheduledTasks: true);
 
             // Act
             var results = mockReport.GetResults();
 
             // Assert
-            AssertThatResultsDataIncludesTaskTypeDetails(results.Data, mockReport.Metadata.Terms.CountScheduledTask);
+            Assert.That(results.Data.First<TableResult<CmsScheduledTask>>().Rows.Count(), Is.EqualTo(1));
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
         }
 
@@ -64,13 +98,27 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnWarningResult_When_SearchTasksWithIssues()
         {
             // Arrange
-            ArrangeDatabaseService(unprocessedSearchTasks: 1);
+            ArrangeDatabaseService(searchTasks: true);
 
             // Act
             var results = mockReport.GetResults();
 
             // Assert
-            AssertThatResultsDataIncludesTaskTypeDetails(results.Data, mockReport.Metadata.Terms.CountSearchTask);
+            Assert.That(results.Data.First<TableResult<CmsSearchTask>>().Rows.Count(), Is.EqualTo(1));
+            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
+        }
+
+        [Test]
+        public void Should_ReturnWarningResult_When_IntegrationBusTasksWithIssues()
+        {
+            // Arrange
+            ArrangeDatabaseService(integrationBusTasks: true);
+
+            // Act
+            var results = mockReport.GetResults();
+
+            // Assert
+            Assert.That(results.Data.First<TableResult<CmsIntegrationTask>>().Rows.Count(), Is.EqualTo(1));
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
         }
 
@@ -78,13 +126,13 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnWarningResult_When_StagingTasksWithIssues()
         {
             // Arrange
-            ArrangeDatabaseService(unprocessedStagingTasks: 1);
+            ArrangeDatabaseService(stagingTasks: true);
 
             // Act
             var results = mockReport.GetResults();
 
             // Assert
-            AssertThatResultsDataIncludesTaskTypeDetails(results.Data, mockReport.Metadata.Terms.CountStagingTask);
+            Assert.That(results.Data.First<TableResult<CmsStagingTask>>().Rows.Count(), Is.EqualTo(1));
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
         }
 
@@ -92,54 +140,29 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnWarningResult_When_WebFarmTasksWithIssues()
         {
             // Arrange
-            ArrangeDatabaseService(unprocessedWebFarmTasks: 1);
+            ArrangeDatabaseService(webFarmTasks: true);
 
             // Act
             var results = mockReport.GetResults();
 
             // Assert
-            AssertThatResultsDataIncludesTaskTypeDetails(results.Data, mockReport.Metadata.Terms.CountWebFarmTask);
+            Assert.That(results.Data.First<TableResult<CmsWebFarmTask>>().Rows.Count(), Is.EqualTo(1));
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
         }
 
-        private static void AssertThatResultsDataIncludesTaskTypeDetails(ReportResultsData data, Term term)
-        {
-            foreach (var result in data)
-            {
-                if (result is StringResult stringResult)
-                {
-                    Assert.That(stringResult.String, Does.Contain(term.ToString()));
-                }
-            }
-        }
-
         private void ArrangeDatabaseService(
-            int unprocessedIntegrationBusTasks = 0,
-            int unprocessedScheduledTasks = 0,
-            int unprocessedSearchTasks = 0,
-            int unprocessedStagingTasks = 0,
-            int unprocessedWebFarmTasks = 0
+            bool scheduledTasks = false,
+            bool searchTasks = false,
+            bool integrationBusTasks = false,
+            bool stagingTasks = false,
+            bool webFarmTasks = false
         )
         {
-            mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetIntegrationTasksCountInPast24Hours))
-                .Returns(unprocessedIntegrationBusTasks);
-
-            mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetCmsScheduledTasksCountInPast24Hours))
-                .Returns(unprocessedScheduledTasks);
-
-            mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetCmsSearchTasksCountInPast24Hours))
-                .Returns(unprocessedSearchTasks);
-
-            mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetStagingTasksCountInpast24Hours))
-                .Returns(unprocessedStagingTasks);
-
-            mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetCmsWebFarmTaskCountInPast24Hours))
-                .Returns(unprocessedWebFarmTasks);
+            mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetCmsScheduledTasksInPast24Hours, scheduledTasks ? ScheduledTasksWithIssues : Enumerable.Empty<CmsScheduledTask>());
+            mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetCmsSearchTasksInPast24Hours, searchTasks ? SearchTasksWithIssues : Enumerable.Empty<CmsSearchTask>());
+            mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetCmsIntegrationTasksInPast24Hours, integrationBusTasks ? IntegrationTasksWithIssues : Enumerable.Empty<CmsIntegrationTask>());
+            mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetCmsStagingTasksInpast24Hours, stagingTasks ? StagingTasksWithIssues : Enumerable.Empty<CmsStagingTask>());
+            mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetCmsWebFarmTasksInPast24Hours, webFarmTasks ? WebFarmTasksWithIssues : Enumerable.Empty<CmsWebFarmTask>());
         }
     }
 }

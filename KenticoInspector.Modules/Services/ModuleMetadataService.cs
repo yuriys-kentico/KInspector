@@ -59,7 +59,7 @@ namespace KenticoInspector.Modules.Services
                 mergedMetadata = GetMergedMetadata(mergedMetadata, defaultMetadata, currentMetadata);
             }
 
-            var instanceDetails = instanceService.GetInstanceDetails(instanceService.CurrentInstance);
+            var instanceDetails = instanceService.GetInstanceDetails();
 
             var sharedData = new
             {

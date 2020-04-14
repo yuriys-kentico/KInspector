@@ -3,12 +3,12 @@ using System.Linq;
 
 using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Core.Modules.Models.Results.Data;
+using KenticoInspector.Core.Tests.Mocks;
 using KenticoInspector.Modules;
 using KenticoInspector.Reports.ColumnFieldValidation;
 using KenticoInspector.Reports.ColumnFieldValidation.Models;
 using KenticoInspector.Reports.ColumnFieldValidation.Models.Data;
 using KenticoInspector.Reports.ColumnFieldValidation.Models.Results;
-using KenticoInspector.Reports.Tests.Helpers;
 
 using NUnit.Framework;
 
@@ -23,7 +23,7 @@ namespace KenticoInspector.Reports.Tests
 
         private IEnumerable<CmsClass> ValidCmsClasses => new List<CmsClass>
         {
-            new CmsClass()
+            new CmsClass
             {
                 ClassName = "Class.1",
                 ClassTableName = "Class1",
@@ -33,7 +33,7 @@ namespace KenticoInspector.Reports.Tests
 
         private IEnumerable<CmsClass> InvalidCmsClasses => new List<CmsClass>
         {
-            new CmsClass()
+            new CmsClass
             {
                 ClassName = "Class.1",
                 ClassTableName = "Class1",
@@ -43,55 +43,55 @@ namespace KenticoInspector.Reports.Tests
 
         private IEnumerable<TableColumn> ValidTableColumns => new List<TableColumn>
         {
-            new TableColumn()
+            new TableColumn
             {
                 Table_Name = "Class1",
                 Column_Name = "Class1Column1",
                 Data_Type = "int"
             },
-            new TableColumn()
+            new TableColumn
             {
                 Table_Name = "Class1",
                 Column_Name = "Class1Column2",
                 Data_Type = "bigint"
             },
-            new TableColumn()
+            new TableColumn
             {
                 Table_Name = "Class1",
                 Column_Name = "Class1Column3",
                 Data_Type = "float"
             },
-            new TableColumn()
+            new TableColumn
             {
                 Table_Name = "Class1",
                 Column_Name = "Class1Column4",
                 Data_Type = "decimal"
             },
-            new TableColumn()
+            new TableColumn
             {
                 Table_Name = "Class1",
                 Column_Name = "Class1Column5",
                 Data_Type = "nvarchar"
             },
-            new TableColumn()
+            new TableColumn
             {
                 Table_Name = "Class1",
                 Column_Name = "Class1Column6",
                 Data_Type = "datetime2"
             },
-            new TableColumn()
+            new TableColumn
             {
                 Table_Name = "Class1",
                 Column_Name = "Class1Column7",
                 Data_Type = "bit"
             },
-            new TableColumn()
+            new TableColumn
             {
                 Table_Name = "Class1",
                 Column_Name = "Class1Column8",
                 Data_Type = "varbinary"
             },
-            new TableColumn()
+            new TableColumn
             {
                 Table_Name = "Class1",
                 Column_Name = "Class1Column9",
@@ -101,7 +101,7 @@ namespace KenticoInspector.Reports.Tests
 
         private IEnumerable<TableColumn> InvalidTableColumns => new List<TableColumn>(ValidTableColumns)
         {
-            new TableColumn()
+            new TableColumn
             {
                 Table_Name = "Class1",
                 Column_Name = "Class1Column10",
@@ -163,7 +163,7 @@ namespace KenticoInspector.Reports.Tests
             var classTableNames = cmsClasses
                 .Select(cmsClass => cmsClass.ClassTableName);
 
-            mockDatabaseService.SetupExecuteSqlFromFileWithListParameter(
+            mockDatabaseService.SetupExecuteSqlFromFile(
                 Scripts.GetTableColumns,
                 nameof(classTableNames),
                 classTableNames,

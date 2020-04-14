@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 using KenticoInspector.Core.Instances.Models;
 
-namespace KenticoInspector.Reports.Tests.Helpers
+namespace KenticoInspector.Core.Tests.Mocks
 {
-    public static class MockInstanceDetails
+    internal static class MockInstanceDetails
     {
-        public static InstanceDetails Kentico9 = new InstanceDetails
+        internal static InstanceDetails Kentico9 = new InstanceDetails
         {
             AdministrationVersion = new Version("9.0"),
             DatabaseVersion = new Version("9.0"),
@@ -17,7 +17,7 @@ namespace KenticoInspector.Reports.Tests.Helpers
             }
         };
 
-        public static InstanceDetails Kentico10 = new InstanceDetails
+        internal static InstanceDetails Kentico10 = new InstanceDetails
         {
             AdministrationVersion = new Version("10.0"),
             DatabaseVersion = new Version("10.0"),
@@ -27,7 +27,7 @@ namespace KenticoInspector.Reports.Tests.Helpers
             }
         };
 
-        public static InstanceDetails Kentico11 = new InstanceDetails
+        internal static InstanceDetails Kentico11 = new InstanceDetails
         {
             AdministrationVersion = new Version("11.0"),
             DatabaseVersion = new Version("11.0"),
@@ -37,7 +37,7 @@ namespace KenticoInspector.Reports.Tests.Helpers
             }
         };
 
-        public static InstanceDetails Kentico12 = new InstanceDetails
+        internal static InstanceDetails Kentico12 = new InstanceDetails
         {
             AdministrationVersion = new Version("12.0"),
             DatabaseVersion = new Version("12.0"),
@@ -47,7 +47,7 @@ namespace KenticoInspector.Reports.Tests.Helpers
             }
         };
 
-        public static InstanceDetails Get(int majorVersion, Instance instance)
+        internal static InstanceDetails Get(int majorVersion, Instance instance)
         {
             InstanceDetails? instanceDetails = null;
 
