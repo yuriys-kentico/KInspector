@@ -20,10 +20,17 @@ namespace KenticoInspector.Core.Tests.Mocks
             InstanceDetails instanceDetails
             )
         {
-            mockInstanceService.Setup(mock => mock.CurrentInstance).Returns(instance);
-            mockInstanceService.Setup(mock => mock.GetInstance(instance.Guid)).Returns(instance);
-            mockInstanceService.Setup(mock => mock.GetInstanceDetails(instance)).Returns(instanceDetails);
-            mockInstanceService.Setup(mock => mock.GetInstanceDetails(null)).Returns(instanceDetails);
+            mockInstanceService.Setup(mock => mock.CurrentInstance)
+                .Returns(instance);
+
+            mockInstanceService.Setup(mock => mock.GetInstance(instance.Guid))
+                .Returns(instance);
+
+            mockInstanceService.Setup(mock => mock.GetInstanceDetails(instance))
+                .Returns(instanceDetails);
+
+            mockInstanceService.Setup(mock => mock.GetInstanceDetails(null))
+                .Returns(instanceDetails);
         }
     }
 }

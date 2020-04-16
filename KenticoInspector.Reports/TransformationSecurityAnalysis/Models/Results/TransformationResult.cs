@@ -25,7 +25,11 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
         [JsonProperty]
         public int TransformationUses { get; set; }
 
-        public TransformationResult(CmsTransformation? transformation, int uses, IEnumerable<string> detectedIssueTypes)
+        public TransformationResult(
+            CmsTransformation? transformation,
+            int uses,
+            IEnumerable<string> detectedIssueTypes
+            )
         {
             if (transformation != null)
             {
@@ -34,36 +38,37 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Results
                 TransformationType = transformation.TransformationType;
 
                 foreach (var issueType in detectedIssueTypes)
-                {
-                    dynamicIssueProperties.TryAdd(issueType, string.Empty);
-                }
+                    dynamicIssueProperties.TryAdd(
+                        issueType,
+                        string.Empty
+                        );
 
                 var groupedIssues = transformation.Issues
                     .GroupBy(issue => issue.IssueType);
 
                 foreach (var issueGroup in groupedIssues)
-                {
-                    foreach (var issue in issueGroup)
-                    {
-                        dynamicIssueProperties[issueGroup.Key] += HttpUtility.HtmlEncode($"...{issue.CodeSnippet}...");
-                    }
-                }
+                foreach (var issue in issueGroup)
+                    dynamicIssueProperties[issueGroup.Key] += HttpUtility.HtmlEncode($"...{issue.CodeSnippet}...");
             }
+
             TransformationUses = uses;
         }
 
-        public override bool TryGetMember(GetMemberBinder binder, out object? result)
+        public override bool TryGetMember(
+            GetMemberBinder binder,
+            out object? result
+            )
         {
-            var exists = dynamicIssueProperties.TryGetValue(binder.Name, out string? value);
+            var exists = dynamicIssueProperties.TryGetValue(
+                binder.Name,
+                out var value
+                );
 
             result = value;
 
             return exists;
         }
 
-        public override IEnumerable<string> GetDynamicMemberNames()
-        {
-            return dynamicIssueProperties.Keys;
-        }
+        public override IEnumerable<string> GetDynamicMemberNames() => dynamicIssueProperties.Keys;
     }
 }

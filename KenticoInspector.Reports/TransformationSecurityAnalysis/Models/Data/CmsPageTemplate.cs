@@ -8,9 +8,9 @@ using Newtonsoft.Json;
 namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
 {
     /// <summary>
-    /// The page template contains its web parts configuration in <see cref="PageTemplateWebParts"/>. This configuration contains references to transformation code names.
+    ///     The page template contains its web parts configuration in <see cref="PageTemplateWebParts" />. This configuration
+    ///     contains references to transformation code names.
     /// </summary>
-
     [DebuggerDisplay("{PageTemplateCodeName} {PageTemplateDisplayName}")]
     public class CmsPageTemplate
     {
@@ -33,10 +33,10 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
         {
             get
             {
-                return webParts ?? (webParts = PageTemplateWebParts?
-                   .Descendants("webpart")
-                   .Select(webPartXml => new WebPart(webPartXml))
-                   .ToList());
+                return webParts ??= PageTemplateWebParts?
+                    .Descendants("webpart")
+                    .Select(webPartXml => new WebPart(webPartXml))
+                    .ToList();
             }
 
             private set => webParts = value;
@@ -45,7 +45,8 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
         public void RemoveWebPartsWithNoProperties()
         {
             WebParts = WebParts
-                    .Where(webPart => webPart
+                .Where(
+                    webPart => webPart
                         .Properties
                         .Any()
                     );

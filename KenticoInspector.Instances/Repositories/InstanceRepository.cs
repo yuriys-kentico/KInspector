@@ -14,8 +14,11 @@ namespace KenticoInspector.Instances.Repositories
     {
         private readonly string SavedInstancesFilePath = $"{Directory.GetCurrentDirectory()}\\SavedInstances.json";
 
-        public Instance GetInstance(Guid guid) => GetInstances()
+        public Instance GetInstance(Guid guid)
+        {
+            return GetInstances()
                 .FirstOrDefault(instance => instance.Guid == guid);
+        }
 
         public IList<Instance> GetInstances()
         {
@@ -40,7 +43,7 @@ namespace KenticoInspector.Instances.Repositories
 
             var savedInstances = GetInstances();
 
-            if (!savedInstances.Any(savedInstance => savedInstance.Guid == instance.Guid))
+            if (savedInstances.All(savedInstance => savedInstance.Guid != instance.Guid))
             {
                 savedInstances.Add(instance);
             }
@@ -59,9 +62,15 @@ namespace KenticoInspector.Instances.Repositories
 
         public void SaveInstances(IEnumerable<Instance> instances)
         {
-            var jsonText = JsonConvert.SerializeObject(instances, Formatting.Indented);
+            var jsonText = JsonConvert.SerializeObject(
+                instances,
+                Formatting.Indented
+                );
 
-            File.WriteAllText(SavedInstancesFilePath, jsonText);
+            File.WriteAllText(
+                SavedInstancesFilePath,
+                jsonText
+                );
         }
 
         public bool DeleteInstance(Guid guid)

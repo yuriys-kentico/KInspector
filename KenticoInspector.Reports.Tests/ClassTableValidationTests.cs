@@ -6,6 +6,7 @@ using KenticoInspector.Core.Modules.Models.Results.Data;
 using KenticoInspector.Reports.ClassTableValidation;
 using KenticoInspector.Reports.ClassTableValidation.Models;
 using KenticoInspector.Reports.ClassTableValidation.Models.Data;
+using KenticoInspector.Reports.Tests.AbstractClasses;
 
 using NUnit.Framework;
 
@@ -22,10 +23,18 @@ namespace KenticoInspector.Reports.Tests
 
         public ClassTableValidationTests(int majorVersion) : base(majorVersion)
         {
-            mockReport = ArrangeProperties(new Report(mockDatabaseService.Object, mockInstanceService.Object));
+            mockReport = ArrangeProperties(
+                new Report(
+                    mockDatabaseService.Object,
+                    mockInstanceService.Object
+                    )
+                );
         }
 
-        [TestCase(Category = "No invalid classes or tables", TestName = "Database without invalid classes or tables produces a good result")]
+        [TestCase(
+            Category = "No invalid classes or tables",
+            TestName = "Database without invalid classes or tables produces a good result"
+            )]
         public void Should_ReturnGoodResult_When_DatabaseWithoutIssues()
         {
             // Arrange
@@ -45,10 +54,16 @@ namespace KenticoInspector.Reports.Tests
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Good)
+                );
         }
 
-        [TestCase(Category = "Class with no table", TestName = "Database with a class with no table produces an error result and lists one class")]
+        [TestCase(
+            Category = "Class with no table",
+            TestName = "Database with a class with no table produces an error result and lists one class"
+            )]
         public void Should_ReturnErrorResult_When_DatabaseWithClassWithNoTable()
         {
             // Arrange
@@ -60,12 +75,14 @@ namespace KenticoInspector.Reports.Tests
 
             var classResults = CmsClassesWithTables;
 
-            classResults.Add(new CmsClass
-            {
-                ClassDisplayName = "Has no table",
-                ClassName = "HasNoTable",
-                ClassTableName = "Custom_HasNoTable"
-            });
+            classResults.Add(
+                new CmsClass
+                {
+                    ClassDisplayName = "Has no table",
+                    ClassName = "HasNoTable",
+                    ClassTableName = "Custom_HasNoTable"
+                }
+                );
 
             mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClassesWithMissingTable))
@@ -75,19 +92,33 @@ namespace KenticoInspector.Reports.Tests
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Data.First<TableResult<CmsClass>>().Rows.Count(), Is.EqualTo(1));
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
+            Assert.That(
+                results.Data.First<TableResult<CmsClass>>()
+                    .Rows.Count(),
+                Is.EqualTo(1)
+                );
+
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Error)
+                );
         }
 
-        [TestCase(Category = "Table with no class", TestName = "Database with a table with no class produces an error result and lists one table")]
+        [TestCase(
+            Category = "Table with no class",
+            TestName = "Database with a table with no class produces an error result and lists one table"
+            )]
         public void Should_ReturnErrorResult_When_DatabaseWithTableWithNoClass()
         {
             // Arrange
             var tableResults = GetTableResultsWithoutIssues(false);
-            tableResults.Add(new DatabaseTable
-            {
-                TableName = "HasNoClass"
-            });
+
+            tableResults.Add(
+                new DatabaseTable
+                {
+                    TableName = "HasNoClass"
+                }
+                );
 
             mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<DatabaseTable>(Scripts.GetTablesWithMissingClass))
@@ -103,8 +134,16 @@ namespace KenticoInspector.Reports.Tests
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Data.First<TableResult<DatabaseTable>>().Rows.Count(), Is.EqualTo(1));
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
+            Assert.That(
+                results.Data.First<TableResult<DatabaseTable>>()
+                    .Rows.Count(),
+                Is.EqualTo(1)
+                );
+
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Error)
+                );
         }
 
         private List<DatabaseTable> GetTableResultsWithoutIssues(bool includeWhitelistedTables = true)
@@ -112,12 +151,12 @@ namespace KenticoInspector.Reports.Tests
             var tableResults = new List<DatabaseTable>();
 
             if (includeWhitelistedTables && mockInstanceDetails.DatabaseVersion.Major >= 10)
-            {
-                tableResults.Add(new DatabaseTable()
-                {
-                    TableName = "CI_Migration"
-                });
-            }
+                tableResults.Add(
+                    new DatabaseTable
+                    {
+                        TableName = "CI_Migration"
+                    }
+                    );
 
             return tableResults;
         }

@@ -24,22 +24,16 @@ namespace KenticoInspector.Actions.ResetCmsUserLogin
 
         [Tags(Reset, Users)]
         [SupportsVersions("10 - 12.0")]
-        public override ActionResults GetResults(Options options)
+        protected override ActionResults GetResults(Options options) => new ActionResults
         {
-            return new ActionResults
-            {
-                Status = ResultsStatus.NotRun,
-                Summary = "Not implemented yet"
-            };
-        }
+            Status = ResultsStatus.NotRun,
+            Summary = "Not implemented yet"
+        };
 
-        public override ActionResults GetInvalidOptionsResults()
+        protected override ActionResults GetInvalidOptionsResults() => new ActionResults
         {
-            return new ActionResults
-            {
-                Status = ResultsStatus.Error,
-                Summary = Metadata.Terms.InvalidOptions
-            };
-        }
+            Status = ResultsStatus.Error,
+            Summary = Metadata.Terms.InvalidOptions
+        };
     }
 }

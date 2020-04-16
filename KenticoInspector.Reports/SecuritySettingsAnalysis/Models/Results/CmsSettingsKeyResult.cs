@@ -52,14 +52,26 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Results
 
             var categoryDisplayNames = cmsSettingsKeyResult
                 .GetCategoryIdsOnPath()
-                .Select(idString => cmsSettingsCategories
-                    .First(cmsSettingsCategory => cmsSettingsCategory
-                        .CategoryID.ToString()
-                        .Equals(idString))
-                    .CategoryDisplayName)
-                .Select(categoryDisplayName => TryReplaceDisplayName(resxValues, categoryDisplayName));
+                .Select(
+                    idString => cmsSettingsCategories
+                        .First(
+                            cmsSettingsCategory => cmsSettingsCategory
+                                .CategoryID.ToString()
+                                .Equals(idString)
+                            )
+                        .CategoryDisplayName
+                    )
+                .Select(
+                    categoryDisplayName => TryReplaceDisplayName(
+                        resxValues,
+                        categoryDisplayName
+                        )
+                    );
 
-            KeyPath = string.Join(" > ", categoryDisplayNames);
+            KeyPath = string.Join(
+                " > ",
+                categoryDisplayNames
+                );
 
             KeyDisplayName = TryReplaceDisplayName(
                 resxValues,
@@ -75,21 +87,33 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Results
         public IEnumerable<string>? GetCategoryIdsOnPath()
         {
             return categoryIdPath?
-                .Split('/', StringSplitOptions.RemoveEmptyEntries)
+                .Split(
+                    '/',
+                    StringSplitOptions.RemoveEmptyEntries
+                    )
                 .Select(pathSegment => pathSegment.TrimStart('0'));
         }
 
-        private static string TryReplaceDisplayName(IDictionary<string, string> resxValues, string displayName)
+        private static string TryReplaceDisplayName(
+            IDictionary<string, string> resxValues,
+            string displayName
+            )
         {
             displayName = displayName
-                .Replace("{$", string.Empty)
-                .Replace("$}", string.Empty)
+                .Replace(
+                    "{$",
+                    string.Empty
+                    )
+                .Replace(
+                    "$}",
+                    string.Empty
+                    )
                 .ToLowerInvariant();
 
-            if (resxValues.TryGetValue(displayName, out string? keyName))
-            {
-                displayName = keyName;
-            }
+            if (resxValues.TryGetValue(
+                displayName,
+                out var keyName
+                )) displayName = keyName;
 
             return displayName;
         }

@@ -6,10 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Client\dist\**" />
-    <Content Remove="Client\dist\**" />
-    <EmbeddedResource Remove="Client\dist\**" />
-    <None Remove="Client\dist\**" />
+    <Compile Remove="Client\**" />
+    <Content Remove="Client\**" />
+    <EmbeddedResource Remove="Client\**" />
+    <None Remove="Client\**" />
   </ItemGroup>
 
   <ItemGroup>

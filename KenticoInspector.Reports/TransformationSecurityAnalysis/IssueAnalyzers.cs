@@ -9,8 +9,10 @@ using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data;
 namespace KenticoInspector.Reports.TransformationSecurityAnalysis
 {
     /// <summary>
-    /// Contains instance methods returning <see cref="void"/> that are called by the report to analyze a single <see cref="CmsTransformation"/>.
-    /// Each method adds issues using <see cref="CmsTransformation.AddIssue(int, int, string, int)"/>. If there are any issues found, it also adds itself to <see cref="DetectedIssueTypes"/>.
+    ///     Contains instance methods returning <see cref="void" /> that are called by the report to analyze a single
+    ///     <see cref="CmsTransformation" />.
+    ///     Each method adds issues using <see cref="CmsTransformation.AddIssue(int, int, string, int)" />. If there are any
+    ///     issues found, it also adds itself to <see cref="DetectedIssueTypes" />.
     /// </summary>
     public class IssueAnalyzers
     {
@@ -23,29 +25,107 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
             ReportTerms = reportTerms;
         }
 
-        public void XssQueryHelper(CmsTransformation transformation) => UseRegexAnalysis(transformation, "queryhelper\\.", ReportTerms.IssueDescriptions.XssQueryHelper);
-
-        public void XssQueryString(CmsTransformation transformation) => UseRegexAnalysis(transformation, "[ (.]querystring", ReportTerms.IssueDescriptions.XssQueryString);
-
-        public void XssHttpContext(CmsTransformation transformation) => UseRegexAnalysis(transformation, "[ (.]httpcontext\\.", ReportTerms.IssueDescriptions.XssHttpContext);
-
-        public void XssServer(CmsTransformation transformation) => UseRegexAnalysis(transformation, "[ (.]server\\.", ReportTerms.IssueDescriptions.XssServer);
-
-        public void XssRequest(CmsTransformation transformation) => UseRegexAnalysis(transformation, "[ (.]request\\.", ReportTerms.IssueDescriptions.XssRequest);
-
-        public void XssDocument(CmsTransformation transformation) => UseRegexAnalysis(transformation, "<script .*?document\\.", ReportTerms.IssueDescriptions.XssDocument);
-
-        public void XssWindow(CmsTransformation transformation) => UseRegexAnalysis(transformation, "window\\.", ReportTerms.IssueDescriptions.XssWindow);
-
-        public void ServerSideScript(CmsTransformation transformation) => UseRegexAnalysis(transformation, "<script runat=\"?server\"?", ReportTerms.IssueDescriptions.ServerSideScript);
-
-        public void DocumentsMacro(CmsTransformation transformation) => UseRegexAnalysis(transformation, "{%.*?documents[[.]", ReportTerms.IssueDescriptions.DocumentsMacro);
-
-        public void QueryMacro(CmsTransformation transformation) => UseRegexAnalysis(transformation, "{\\?.*|{%.*querystring", ReportTerms.IssueDescriptions.QueryMacro);
-
-        private static void UseRegexAnalysis(CmsTransformation transformation, string pattern, Term issueDescription, [CallerMemberName]string? issueType = null)
+        public void XssQueryHelper(CmsTransformation transformation)
         {
-            var regex = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            UseRegexAnalysis(
+                transformation,
+                "queryhelper\\.",
+                ReportTerms.IssueDescriptions.XssQueryHelper
+                );
+        }
+
+        public void XssQueryString(CmsTransformation transformation)
+        {
+            UseRegexAnalysis(
+                transformation,
+                "[ (.]querystring",
+                ReportTerms.IssueDescriptions.XssQueryString
+                );
+        }
+
+        public void XssHttpContext(CmsTransformation transformation)
+        {
+            UseRegexAnalysis(
+                transformation,
+                "[ (.]httpcontext\\.",
+                ReportTerms.IssueDescriptions.XssHttpContext
+                );
+        }
+
+        public void XssServer(CmsTransformation transformation)
+        {
+            UseRegexAnalysis(
+                transformation,
+                "[ (.]server\\.",
+                ReportTerms.IssueDescriptions.XssServer
+                );
+        }
+
+        public void XssRequest(CmsTransformation transformation)
+        {
+            UseRegexAnalysis(
+                transformation,
+                "[ (.]request\\.",
+                ReportTerms.IssueDescriptions.XssRequest
+                );
+        }
+
+        public void XssDocument(CmsTransformation transformation)
+        {
+            UseRegexAnalysis(
+                transformation,
+                "<script .*?document\\.",
+                ReportTerms.IssueDescriptions.XssDocument
+                );
+        }
+
+        public void XssWindow(CmsTransformation transformation)
+        {
+            UseRegexAnalysis(
+                transformation,
+                "window\\.",
+                ReportTerms.IssueDescriptions.XssWindow
+                );
+        }
+
+        public void ServerSideScript(CmsTransformation transformation)
+        {
+            UseRegexAnalysis(
+                transformation,
+                "<script runat=\"?server\"?",
+                ReportTerms.IssueDescriptions.ServerSideScript
+                );
+        }
+
+        public void DocumentsMacro(CmsTransformation transformation)
+        {
+            UseRegexAnalysis(
+                transformation,
+                "{%.*?documents[[.]",
+                ReportTerms.IssueDescriptions.DocumentsMacro
+                );
+        }
+
+        public void QueryMacro(CmsTransformation transformation)
+        {
+            UseRegexAnalysis(
+                transformation,
+                "{\\?.*|{%.*querystring",
+                ReportTerms.IssueDescriptions.QueryMacro
+                );
+        }
+
+        private static void UseRegexAnalysis(
+            CmsTransformation transformation,
+            string pattern,
+            Term issueDescription,
+            [CallerMemberName] string? issueType = null
+            )
+        {
+            var regex = new Regex(
+                pattern,
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant
+                );
 
             var regexMatches = regex.Matches(transformation.TransformationCode);
 
@@ -53,15 +133,18 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
 
             if (!string.IsNullOrEmpty(issueType))
             {
-                DetectedIssueTypes.TryAdd(issueType, issueDescription);
+                DetectedIssueTypes.TryAdd(
+                    issueType,
+                    issueDescription
+                    );
 
                 foreach (Match? match in regex.Matches(transformation.TransformationCode))
-                {
                     if (match != null)
-                    {
-                        transformation.AddIssue(match.Index, match.Length, issueType);
-                    }
-                }
+                        transformation.AddIssue(
+                            match.Index,
+                            match.Length,
+                            issueType
+                            );
             }
         }
     }

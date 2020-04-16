@@ -7,6 +7,7 @@ using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Core.Modules.Models.Results.Data;
 using KenticoInspector.Modules;
 using KenticoInspector.Reports.PageTypeFieldAnalysis.Models;
+using KenticoInspector.Reports.PageTypeFieldAnalysis.Models.Data;
 
 using static KenticoInspector.Core.Modules.Models.Tags;
 
@@ -22,7 +23,10 @@ namespace KenticoInspector.Reports.PageTypeFieldAnalysis
             this.databaseService = databaseService;
         }
 
-        [Tags(ContentModeling, Health)]
+        [Tags(
+            ContentModeling,
+            Health
+            )]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
@@ -37,19 +41,23 @@ namespace KenticoInspector.Reports.PageTypeFieldAnalysis
         private ReportResults CompileResults(IEnumerable<CmsPageTypeField> fieldsWithMismatchedTypes)
         {
             if (!fieldsWithMismatchedTypes.Any())
-            {
                 return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.Summaries.Good
                 };
-            }
 
             var fieldResultCount = fieldsWithMismatchedTypes.Count();
 
-            var results = new ReportResults(ResultsStatus.Information)
+            var results = new ReportResults
             {
-                Summary = Metadata.Terms.Summaries.Information.With(new { fieldResultCount }),
-                Data = fieldsWithMismatchedTypes.AsResult().WithLabel(Metadata.Terms.TableTitles.MatchingPageTypeFieldsWithDifferentDataTypes)
+                Summary = Metadata.Terms.Summaries.Information.With(
+                    new
+                    {
+                        fieldResultCount
+                    }
+                    ),
+                Data = fieldsWithMismatchedTypes.AsResult()
+                    .WithLabel(Metadata.Terms.TableTitles.MatchingPageTypeFieldsWithDifferentDataTypes)
             };
 
             return results;

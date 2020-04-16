@@ -2,8 +2,9 @@
 {
     public static class Scripts
     {
-        public static string BaseDirectory = $"{nameof(UnusedPageTypeSummary)}/Scripts";
+        private static readonly string baseDirectory = $"{nameof(UnusedPageTypeSummary)}/Scripts";
 
-        public static string GetCmsClassNotInViewCmsTreeJoined = $"{BaseDirectory}/{nameof(GetCmsClassNotInViewCmsTreeJoined)}.sql";
+        public static string GetCmsClassNotInViewCmsTreeJoined =
+            $"{baseDirectory}/{nameof(GetCmsClassNotInViewCmsTreeJoined)}.sql";
     }
 }

@@ -7,6 +7,7 @@ using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Reports.DebugConfigurationAnalysis;
 using KenticoInspector.Reports.DebugConfigurationAnalysis.Models;
 using KenticoInspector.Reports.DebugConfigurationAnalysis.Models.Data;
+using KenticoInspector.Reports.Tests.AbstractClasses;
 
 using NUnit.Framework;
 
@@ -19,76 +20,30 @@ namespace KenticoInspector.Reports.Tests
     {
         private readonly Report mockReport;
 
-        private const string webConfigXml = @"<configuration><system.web><compilation debug=""false"" /></system.web></configuration>";
-        private const string webConfigXmlWithCompilationDebug = @"<configuration><system.web><compilation debug=""true"" /></system.web></configuration>";
-        private const string webConfigXmlWithCompilationDebugAndTrace = @"<configuration><system.web><compilation debug=""falue"" /><trace enabled=""true"" /></system.web></configuration>";
+        private const string webConfigXml =
+            @"<configuration><system.web><compilation debug=""false"" /></system.web></configuration>";
+
+        private const string webConfigXmlWithCompilationDebug =
+            @"<configuration><system.web><compilation debug=""true"" /></system.web></configuration>";
+
+        private const string webConfigXmlWithCompilationDebugAndTrace =
+            @"<configuration><system.web><compilation debug=""falue"" /><trace enabled=""true"" /></system.web></configuration>";
 
         public DebugConfigurationAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            mockReport = ArrangeProperties(new Report(mockDatabaseService.Object, mockInstanceService.Object, mockCmsFileService.Object));
+            mockReport = ArrangeProperties(
+                new Report(
+                    mockDatabaseService.Object,
+                    mockInstanceService.Object,
+                    mockCmsFileService.Object
+                    )
+                );
         }
 
-        [Test]
-        public void Should_ReturnInformationResult_When_DebugConfigurationWithoutIssues()
-        {
-            // Arrange
-            ArrangeServices();
-
-            // Act
-            var results = mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
-        }
-
-        [Test]
-        public void Should_ReturnErrorResult_When_DebugEnabledInWebConfig()
-        {
-            // Arrange
-            ArrangeServices(customWebconfigXml: webConfigXmlWithCompilationDebug);
-
-            // Act
-            var results = mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
-        }
-
-        [Test]
-        public void Should_ReturnErrorResult_When_TraceEnabledInWebConfig()
-        {
-            // Arrange
-            ArrangeServices(customWebconfigXml: webConfigXmlWithCompilationDebugAndTrace);
-
-            // Act
-            var results = mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
-        }
-
-        [Test]
-        public void Should_ReturnWarningResult_When_AnyDebugConfigurationIsTrueAndNotTheDefaultValue()
-        {
-            // Arrange
-            var settingsKey = new CmsSettingsKey
-            {
-                KeyName = "CMSDebugEverything",
-                KeyDisplayName = "Enable all debugs",
-                KeyValue = true,
-                KeyDefaultValue = false
-            };
-
-            ArrangeServices(customDatabaseSettingsValues: new[] { settingsKey });
-
-            // Act
-            var results = mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
-        }
-
-        private void ArrangeServices(IEnumerable<CmsSettingsKey>? customDatabaseSettingsValues = null, string? customWebconfigXml = null)
+        private void ArrangeServices(
+            IEnumerable<CmsSettingsKey>? customDatabaseSettingsValues = null,
+            string? customWebconfigXml = null
+            )
         {
             ArrangeResourceStringsMethods();
             ArrangeWebConfigMethods(customWebconfigXml);
@@ -98,18 +53,27 @@ namespace KenticoInspector.Reports.Tests
         private void ArrangeResourceStringsMethods()
         {
             mockCmsFileService
-                .Setup(p => p.GetResourceStringsFromResx(mockInstance.Path, DefaultKenticoPaths.PrimaryResxFile))
+                .Setup(
+                    p => p.GetResourceStringsFromResx(
+                        mockInstance.Path,
+                        DefaultKenticoPaths.PrimaryResxFile
+                        )
+                    )
                 .Returns(new Dictionary<string, string>());
         }
 
         private void ArrangeWebConfigMethods(string? customWebconfigXml)
         {
             var webconfigXml = !string.IsNullOrWhiteSpace(customWebconfigXml) ? customWebconfigXml : webConfigXml;
-
             var webConfig = XDocument.Parse(webconfigXml);
 
             mockCmsFileService
-                .Setup(p => p.GetXDocument(mockInstance.Path, DefaultKenticoPaths.WebConfigFile))
+                .Setup(
+                    p => p.GetXDocument(
+                        mockInstance.Path,
+                        DefaultKenticoPaths.WebConfigFile
+                        )
+                    )
                 .Returns(webConfig);
         }
 
@@ -122,15 +86,12 @@ namespace KenticoInspector.Reports.Tests
                 .Returns(databaseSettingsKeyValuesResults);
         }
 
-        private List<CmsSettingsKey> GetDatabaseSettingsKeyValuesResults(IEnumerable<CmsSettingsKey>? customSettingsKeyValues = null)
+        private List<CmsSettingsKey> GetDatabaseSettingsKeyValuesResults(
+            IEnumerable<CmsSettingsKey>? customSettingsKeyValues = null
+            )
         {
             var results = new List<CmsSettingsKey>();
-
-            if (customSettingsKeyValues != null)
-            {
-                results.AddRange(customSettingsKeyValues);
-            }
-
+            if (customSettingsKeyValues != null) results.AddRange(customSettingsKeyValues);
             AddDefaultDatabaseSettingsKeyValues(results);
 
             return results;
@@ -273,11 +234,85 @@ namespace KenticoInspector.Reports.Tests
                 var keyNameMatchCount = results
                     .Count(x => x.KeyName == settingsKey.KeyName);
 
-                if (keyNameMatchCount == 0)
-                {
-                    results.Add(settingsKey);
-                }
+                if (keyNameMatchCount == 0) results.Add(settingsKey);
             }
+        }
+
+        [Test]
+        public void Should_ReturnErrorResult_When_DebugEnabledInWebConfig()
+        {
+            // Arrange
+            ArrangeServices(customWebconfigXml: webConfigXmlWithCompilationDebug);
+
+            // Act
+            var results = mockReport.GetResults();
+
+            // Assert
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Error)
+                );
+        }
+
+        [Test]
+        public void Should_ReturnErrorResult_When_TraceEnabledInWebConfig()
+        {
+            // Arrange
+            ArrangeServices(customWebconfigXml: webConfigXmlWithCompilationDebugAndTrace);
+
+            // Act
+            var results = mockReport.GetResults();
+
+            // Assert
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Error)
+                );
+        }
+
+        [Test]
+        public void Should_ReturnInformationResult_When_DebugConfigurationWithoutIssues()
+        {
+            // Arrange
+            ArrangeServices();
+
+            // Act
+            var results = mockReport.GetResults();
+
+            // Assert
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Good)
+                );
+        }
+
+        [Test]
+        public void Should_ReturnWarningResult_When_AnyDebugConfigurationIsTrueAndNotTheDefaultValue()
+        {
+            // Arrange
+            var settingsKey = new CmsSettingsKey
+            {
+                KeyName = "CMSDebugEverything",
+                KeyDisplayName = "Enable all debugs",
+                KeyValue = true,
+                KeyDefaultValue = false
+            };
+
+            ArrangeServices(
+                new[]
+                {
+                    settingsKey
+                }
+                );
+
+            // Act
+            var results = mockReport.GetResults();
+
+            // Assert
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Warning)
+                );
         }
     }
 }

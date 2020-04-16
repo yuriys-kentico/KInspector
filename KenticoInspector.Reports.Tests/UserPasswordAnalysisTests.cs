@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using KenticoInspector.Core.Tests.Mocks;
 using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Core.Modules.Models.Results.Data;
-using KenticoInspector.Core.Tests.Mocks;
+using KenticoInspector.Reports.Tests.AbstractClasses;
 using KenticoInspector.Reports.UserPasswordAnalysis;
 using KenticoInspector.Reports.UserPasswordAnalysis.Models;
 using KenticoInspector.Reports.UserPasswordAnalysis.Models.Data;
-using KenticoInspector.Reports.UserPasswordAnalysis.Models.Data.Results;
+using KenticoInspector.Reports.UserPasswordAnalysis.Models.Results;
 
 using NUnit.Framework;
 
@@ -57,34 +58,16 @@ namespace KenticoInspector.Reports.Tests
             mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
-        [Test]
-        public void Should_ReturnGoodStatusAndGoodSummary_When_UserPasswordsHaveNoIssues()
+        private void ArrangeDatabaseService(
+            IEnumerable<CmsUser> cmsUserTable
+            )
         {
-            // Arrange
-            ArrangeDatabaseService(CmsUserWithoutIssues);
-
-            // Act
-            var results = mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
-            Assert.That(results.Summary, Is.EqualTo(mockReport.Metadata.Terms.GoodSummary.ToString()));
-        }
-
-        [Test]
-        public void Should_ReturnErrorStatusAndErrorSummary_When_UserPasswordsHaveTwoIssues()
-        {
-            // Arrange
-            ArrangeDatabaseService(CmsUserWithTwoIssues);
-
-            // Act
-            var results = mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
-            Assert.That(results.Summary, Is.EqualTo(mockReport.Metadata.Terms.ErrorSummary.ToString()));
-            Assert.That(results.Data.First<TableResult<CmsUserResultWithPasswordFormat>>().Rows.Count(), Is.EqualTo(1));
-            Assert.That(results.Data.First<TableResult<CmsUserResult>>().Rows.Count(), Is.EqualTo(1));
+            mockDatabaseService.SetupExecuteSqlFromFile(
+                Scripts.GetEnabledAndNotExternalUsers,
+                nameof(Report.ExcludedUserNames),
+                Report.ExcludedUserNames,
+                cmsUserTable
+                );
         }
 
         [Test]
@@ -97,19 +80,74 @@ namespace KenticoInspector.Reports.Tests
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
-            Assert.That(results.Summary, Is.EqualTo(mockReport.Metadata.Terms.ErrorSummary.ToString()));
-            Assert.That(results.Data.First<TableResult<CmsUserResultWithPasswordFormat>>().Rows.Count(), Is.EqualTo(1));
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Error)
+                );
+
+            Assert.That(
+                results.Summary,
+                Is.EqualTo(mockReport.Metadata.Terms.ErrorSummary.ToString())
+                );
+
+            Assert.That(
+                results.Data.First<TableResult<CmsUserResultWithPasswordFormat>>()
+                    .Rows.Count(),
+                Is.EqualTo(1)
+                );
         }
 
-        private void ArrangeDatabaseService(
-            IEnumerable<CmsUser> cmsUserTable)
+        [Test]
+        public void Should_ReturnErrorStatusAndErrorSummary_When_UserPasswordsHaveTwoIssues()
         {
-            mockDatabaseService.SetupExecuteSqlFromFile(
-                Scripts.GetEnabledAndNotExternalUsers,
-                nameof(Report.ExcludedUserNames),
-                Report.ExcludedUserNames,
-                cmsUserTable
+            // Arrange
+            ArrangeDatabaseService(CmsUserWithTwoIssues);
+
+            // Act
+            var results = mockReport.GetResults();
+
+            // Assert
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Error)
+                );
+
+            Assert.That(
+                results.Summary,
+                Is.EqualTo(mockReport.Metadata.Terms.ErrorSummary.ToString())
+                );
+
+            Assert.That(
+                results.Data.First<TableResult<CmsUserResultWithPasswordFormat>>()
+                    .Rows.Count(),
+                Is.EqualTo(1)
+                );
+
+            Assert.That(
+                results.Data.First<TableResult<CmsUserResult>>()
+                    .Rows.Count(),
+                Is.EqualTo(1)
+                );
+        }
+
+        [Test]
+        public void Should_ReturnGoodStatusAndGoodSummary_When_UserPasswordsHaveNoIssues()
+        {
+            // Arrange
+            ArrangeDatabaseService(CmsUserWithoutIssues);
+
+            // Act
+            var results = mockReport.GetResults();
+
+            // Assert
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Good)
+                );
+
+            Assert.That(
+                results.Summary,
+                Is.EqualTo(mockReport.Metadata.Terms.GoodSummary.ToString())
                 );
         }
     }

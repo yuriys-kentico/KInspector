@@ -7,10 +7,30 @@
         public const char Equality = '=';
         public const char LessThan = '<';
         public const char MoreThan = '>';
-        public static readonly char[] OperationChars = new[] { LessThan, MoreThan };
 
         public const char Space = ' ';
-        public static readonly char[] LeadingChars = new[] { Space, '`', '(' };
-        public static readonly char[] TrailingChars = new[] { Space, '`', Colon, '.', ',', ')' };
+
+        public static readonly char[] OperationChars =
+        {
+            LessThan,
+            MoreThan
+        };
+
+        public static readonly char[] LeadingChars =
+        {
+            Space,
+            '`',
+            '('
+        };
+
+        public static readonly char[] TrailingChars =
+        {
+            Space,
+            '`',
+            Colon,
+            '.',
+            ',',
+            ')'
+        };
     }
 }

@@ -13,32 +13,38 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
     {
         public override IEnumerable<Expression<Func<XElement, WebConfigSettingResult?>>> Analyzers
             => new List<Expression<Func<XElement, WebConfigSettingResult?>>>
-        {
-            CMSEnableCsrfProtection => AnalyzeUsingExpression(
-                CMSEnableCsrfProtection,
-                value => Equals(value, "true"),
-                "true",
-                ReportTerms.RecommendationReasons.AppSettings.CMSEnableCsrfProtection
-                ),
-            CMSHashStringSalt => AnalyzeUsingExpression(
-                CMSHashStringSalt,
-                value => !string.IsNullOrEmpty(value),
-                ReportTerms.RecommendedValues.NotEmpty,
-                ReportTerms.RecommendationReasons.AppSettings.CMSHashStringSalt
-                ),
-            CMSRenewSessionAuthChange => AnalyzeUsingExpression(
-                CMSRenewSessionAuthChange,
-                value => Equals(value, "true"),
-                "true",
-                ReportTerms.RecommendationReasons.AppSettings.CMSRenewSessionAuthChange
-                ),
-             CMSXFrameOptionsExcluded => AnalyzeUsingExpression(
-                CMSXFrameOptionsExcluded,
-                value => string.IsNullOrEmpty(value),
-                ReportTerms.RecommendedValues.Empty,
-                ReportTerms.RecommendationReasons.AppSettings.CMSXFrameOptionsExcluded
-                )
-        };
+            {
+                CMSEnableCsrfProtection => AnalyzeUsingExpression(
+                    CMSEnableCsrfProtection,
+                    value => Equals(
+                        value,
+                        "true"
+                        ),
+                    "true",
+                    ReportTerms.RecommendationReasons.AppSettings.CMSEnableCsrfProtection
+                    ),
+                CMSHashStringSalt => AnalyzeUsingExpression(
+                    CMSHashStringSalt,
+                    value => !string.IsNullOrEmpty(value),
+                    ReportTerms.RecommendedValues.NotEmpty,
+                    ReportTerms.RecommendationReasons.AppSettings.CMSHashStringSalt
+                    ),
+                CMSRenewSessionAuthChange => AnalyzeUsingExpression(
+                    CMSRenewSessionAuthChange,
+                    value => Equals(
+                        value,
+                        "true"
+                        ),
+                    "true",
+                    ReportTerms.RecommendationReasons.AppSettings.CMSRenewSessionAuthChange
+                    ),
+                CMSXFrameOptionsExcluded => AnalyzeUsingExpression(
+                    CMSXFrameOptionsExcluded,
+                    value => string.IsNullOrEmpty(value),
+                    ReportTerms.RecommendedValues.Empty,
+                    ReportTerms.RecommendationReasons.AppSettings.CMSXFrameOptionsExcluded
+                    )
+            };
 
         public AppSettingAnalyzers(Terms reportTerms) : base(reportTerms)
         {
@@ -51,13 +57,16 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
             Term recommendationReason
             )
         {
-            var attributeName = valueIsRecommended.Parameters[0].Name;
+            var attributeName = valueIsRecommended.Parameters[0]
+                .Name;
 
-            var keyValue = appSetting.Attribute(attributeName)?.Value;
+            var keyValue = appSetting.Attribute(attributeName)
+                ?.Value;
 
             if (valueIsRecommended.Compile()(keyValue)) return null;
 
-            var keyName = appSetting.Attribute("key").Value;
+            var keyName = appSetting.Attribute("key")
+                .Value;
 
             return new WebConfigSettingResult(appSetting)
             {

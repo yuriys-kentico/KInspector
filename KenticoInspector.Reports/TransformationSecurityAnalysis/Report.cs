@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -8,7 +7,6 @@ using KenticoInspector.Core.Instances.Services;
 using KenticoInspector.Core.Modules;
 using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Core.Modules.Models.Results.Data;
-using KenticoInspector.Core.TokenExpressions.Models;
 using KenticoInspector.Modules;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models;
 using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Analysis;
@@ -24,54 +22,71 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
         private readonly IDatabaseService databaseService;
         private readonly IInstanceService instanceService;
 
-        public Report(IDatabaseService databaseService, IInstanceService instanceService)
+        public Report(
+            IDatabaseService databaseService,
+            IInstanceService instanceService
+            )
         {
             this.databaseService = databaseService;
             this.instanceService = instanceService;
         }
 
-        [Tags(PortalEngine, Health, Security)]
+        [Tags(
+            PortalEngine,
+            Health,
+            Security
+            )]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
             var transformations = databaseService.ExecuteSqlFromFile<CmsTransformation>(Scripts.GetTransformations);
-
             var transformationsWithIssues = GetTransformationsWithIssues(transformations);
-
             var treeNodes = databaseService.ExecuteSqlFromFile<CmsTreeNode>(Scripts.GetTreeNodes);
 
             var DocumentPageTemplateIDs = treeNodes
                 .Select(treeNode => treeNode.DocumentPageTemplateID);
 
-            var pageTemplates = databaseService.ExecuteSqlFromFile<CmsPageTemplate>(Scripts.GetPageTemplates, new { DocumentPageTemplateIDs });
+            var pageTemplates =
+                databaseService.ExecuteSqlFromFile<CmsPageTemplate>(
+                    Scripts.GetPageTemplates,
+                    new
+                    {
+                        DocumentPageTemplateIDs
+                    }
+                    );
 
             foreach (var pageTemplate in pageTemplates)
-            {
                 pageTemplate.TreeNodes = treeNodes
                     .Where(page => page.DocumentPageTemplateID == pageTemplate.PageTemplateID);
-            }
 
-            var pageTemplatesUsingTransformationsWithIssues = GetPageTemplatesUsingTransformationsWithIssues(pageTemplates, transformationsWithIssues);
+            var pageTemplatesUsingTransformationsWithIssues =
+                GetPageTemplatesUsingTransformationsWithIssues(
+                    pageTemplates,
+                    transformationsWithIssues
+                    );
 
             var sites = instanceService
                 .GetInstanceDetails()
                 .Sites;
 
-            return CompileResults(pageTemplatesUsingTransformationsWithIssues, sites);
+            return CompileResults(
+                pageTemplatesUsingTransformationsWithIssues,
+                sites
+                );
         }
 
-        private IEnumerable<CmsTransformation> GetTransformationsWithIssues(IEnumerable<CmsTransformation> transformations)
+        private IEnumerable<CmsTransformation> GetTransformationsWithIssues(
+            IEnumerable<CmsTransformation> transformations
+            )
         {
-            foreach (var transformation in transformations)
-            {
-                AnalyzeTransformation(transformation);
-            }
+            foreach (var transformation in transformations) AnalyzeTransformation(transformation);
 
             return transformations
-                .Where(transformation => transformation
-                    .Issues
-                    .Any()
-                );
+                .Where(
+                    transformation => transformation
+                        .Issues
+                        .Any()
+                    );
         }
 
         private void AnalyzeTransformation(CmsTransformation transformation)
@@ -84,45 +99,54 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
                 .Where(method => method.ReturnType == typeof(void));
 
             foreach (var issueAnalyzerPublicInstanceMethod in issueAnalyzerPublicInstanceMethods)
-            {
-                issueAnalyzerPublicInstanceMethod.Invoke(issueAnalyzersObject, new object[] { transformation });
-            }
+                issueAnalyzerPublicInstanceMethod.Invoke(
+                    issueAnalyzersObject,
+                    new object[]
+                    {
+                        transformation
+                    }
+                    );
         }
 
-        private static IEnumerable<CmsPageTemplate> GetPageTemplatesUsingTransformationsWithIssues(IEnumerable<CmsPageTemplate> pageTemplates, IEnumerable<CmsTransformation> transformationsWithIssues)
+        private static IEnumerable<CmsPageTemplate> GetPageTemplatesUsingTransformationsWithIssues(
+            IEnumerable<CmsPageTemplate> pageTemplates,
+            IEnumerable<CmsTransformation> transformationsWithIssues
+            )
         {
             foreach (var pageTemplate in pageTemplates)
             {
                 if (pageTemplate.WebParts != null)
-                {
                     foreach (var webPart in pageTemplate.WebParts)
                     {
                         foreach (var webPartProperty in webPart.Properties)
                         {
                             var matchingTransformation = transformationsWithIssues
-                                .SingleOrDefault(transformation => transformation.FullName == webPartProperty.TransformationFullName);
+                                .SingleOrDefault(
+                                    transformation =>
+                                        transformation.FullName == webPartProperty.TransformationFullName
+                                    );
 
-                            if (matchingTransformation != null)
-                            {
-                                webPartProperty.Transformation = matchingTransformation;
-                            }
+                            if (matchingTransformation != null) webPartProperty.Transformation = matchingTransformation;
                         }
 
                         webPart.RemovePropertiesWithoutTransformations();
                     }
-                }
 
                 pageTemplate.RemoveWebPartsWithNoProperties();
             }
 
             return pageTemplates
-                .Where(pageTemplate => pageTemplate
-                    .WebParts
-                    .Any()
-                );
+                .Where(
+                    pageTemplate => pageTemplate
+                        .WebParts
+                        .Any()
+                    );
         }
 
-        private ReportResults CompileResults(IEnumerable<CmsPageTemplate> pageTemplates, IEnumerable<CmsSite> sites)
+        private ReportResults CompileResults(
+            IEnumerable<CmsPageTemplate> pageTemplates,
+            IEnumerable<CmsSite> sites
+            )
         {
             var allIssues = pageTemplates
                 .SelectMany(pageTemplate => pageTemplate.WebParts)
@@ -130,12 +154,10 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
                 .SelectMany(webPartProperty => webPartProperty.Transformation?.Issues);
 
             if (!allIssues.Any())
-            {
                 return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.GoodSummary
                 };
-            }
 
             var oneIssueOfEachType = allIssues
                 .GroupBy(transformationIssue => transformationIssue.IssueType)
@@ -144,14 +166,16 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
             var issueTypes = oneIssueOfEachType
                 .Select(AsIssueTypeResult);
 
-            var issueTypesResult = issueTypes.AsResult().WithLabel(Metadata.Terms.TableNames.IssueTypes);
+            var issueTypesResult = issueTypes.AsResult()
+                .WithLabel(Metadata.Terms.TableNames.IssueTypes);
 
             var usedIssueTypes = IssueAnalyzers.DetectedIssueTypes
                 .Keys
-                .Where(issueType => oneIssueOfEachType
-                    .Select(issue => issue.IssueType)
-                    .Contains(issueType)
-                );
+                .Where(
+                    issueType => oneIssueOfEachType
+                        .Select(issue => issue.IssueType)
+                        .Contains(issueType)
+                    );
 
             var allTransformations = pageTemplates
                 .SelectMany(pageTemplate => pageTemplate.WebParts)
@@ -161,31 +185,65 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
                 .Select(g => g.First());
 
             var transformationsResultRows = allTransformations
-                .Select(transformation => new TransformationResult(transformation, CountTransformationUses(transformation, pageTemplates), usedIssueTypes));
+                .Select(
+                    transformation => new TransformationResult(
+                        transformation,
+                        CountTransformationUses(
+                            transformation,
+                            pageTemplates
+                            ),
+                        usedIssueTypes
+                        )
+                    );
 
-            var transformationsResult = transformationsResultRows.AsResult().WithLabel(Metadata.Terms.TableNames.TransformationsWithIssues);
+            var transformationsResult = transformationsResultRows.AsResult()
+                .WithLabel(Metadata.Terms.TableNames.TransformationsWithIssues);
 
             var transformationUsageResultRows = pageTemplates
                 .SelectMany(AsTransformationUsageResults);
 
-            var transformationUsageResult = transformationUsageResultRows.AsResult().WithLabel(Metadata.Terms.TableNames.TransformationUsage);
+            var transformationUsageResult = transformationUsageResultRows.AsResult()
+                .WithLabel(Metadata.Terms.TableNames.TransformationUsage);
 
             var templateUsageResultRows = pageTemplates
                 .SelectMany(pageTemplate => pageTemplate.TreeNodes)
-                .Select(page => new TemplateUsageResult(page, sites));
+                .Select(
+                    page => new TemplateUsageResult(
+                        page,
+                        sites
+                        )
+                    );
 
-            var templateUsageResult = templateUsageResultRows.AsResult().WithLabel(Metadata.Terms.TableNames.TemplateUsage);
+            var templateUsageResult =
+                templateUsageResultRows.AsResult()
+                    .WithLabel(Metadata.Terms.TableNames.TemplateUsage);
 
             var summaryCount = allTransformations
                 .Select(transformation => transformation?.Issues)
                 .Count();
 
-            var issueTypesAsCsv = string.Join(',', usedIssueTypes
-                .Select(issueType => Metadata.Terms.IssueTypes.With(new { issueType })));
+            var issueTypesAsCsv = string.Join(
+                ',',
+                usedIssueTypes
+                    .Select(
+                        issueType => Metadata.Terms.IssueTypes.With(
+                            new
+                            {
+                                issueType
+                            }
+                            )
+                        )
+                );
 
             return new ReportResults(ResultsStatus.Warning)
             {
-                Summary = Metadata.Terms.WarningSummary.With(new { summaryCount, issueTypesAsCsv }),
+                Summary = Metadata.Terms.WarningSummary.With(
+                    new
+                    {
+                        summaryCount,
+                        issueTypesAsCsv
+                    }
+                    ),
                 Data =
                 {
                     issueTypesResult,
@@ -199,22 +257,29 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
         private IssueTypeResult AsIssueTypeResult(TransformationIssue transformationIssue)
         {
             var issueType = transformationIssue.IssueType;
-
             string? description = null;
 
-            if (IssueAnalyzers.DetectedIssueTypes.TryGetValue(issueType, out Term? descriptionTerm))
-            {
-                description = descriptionTerm;
-            }
+            if (IssueAnalyzers.DetectedIssueTypes.TryGetValue(
+                issueType,
+                out var descriptionTerm
+                )) description = descriptionTerm;
 
-            return new IssueTypeResult()
+            return new IssueTypeResult
             {
-                Name = Metadata.Terms.IssueTypes.With(new { issueType }),
+                Name = Metadata.Terms.IssueTypes.With(
+                    new
+                    {
+                        issueType
+                    }
+                    ),
                 Description = description
             };
         }
 
-        private static int CountTransformationUses(CmsTransformation? transformation, IEnumerable<CmsPageTemplate> pageTemplates)
+        private static int CountTransformationUses(
+            CmsTransformation? transformation,
+            IEnumerable<CmsPageTemplate> pageTemplates
+            )
         {
             var totalCount = 0;
 
@@ -223,24 +288,12 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
                 var templateCount = 0;
 
                 if (pageTemplate.WebParts != null)
-                {
                     foreach (var webPart in pageTemplate.WebParts)
-                    {
-                        foreach (var property in webPart.Properties)
-                        {
-                            if (property.Transformation?.FullName == transformation?.FullName)
-                            {
-                                templateCount++;
-                            }
-                        }
-                    }
-                }
+                    foreach (var property in webPart.Properties)
+                        if (property.Transformation?.FullName == transformation?.FullName)
+                            templateCount++;
 
-                if (templateCount > 0)
-                {
-                    templateCount *= pageTemplate.TreeNodes.Count();
-                }
-
+                if (templateCount > 0) templateCount *= pageTemplate.TreeNodes.Count();
                 totalCount += templateCount;
             }
 
@@ -250,30 +303,20 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
         private static IEnumerable<TransformationUsageResult> AsTransformationUsageResults(CmsPageTemplate pageTemplate)
         {
             if (pageTemplate.WebParts != null)
-            {
                 foreach (var webPart in pageTemplate.WebParts)
-                {
-                    foreach (var property in webPart.Properties)
-                    {
-                        if (property.Transformation != null)
+                foreach (var property in webPart.Properties)
+                    if (property.Transformation != null)
+                        yield return new TransformationUsageResult
                         {
-                            yield return new TransformationUsageResult
-                            {
-                                PageTemplateID = pageTemplate.PageTemplateID,
-                                PageTemplateCodeName = pageTemplate.PageTemplateCodeName,
-                                PageTemplateDisplayName = pageTemplate.PageTemplateDisplayName,
-                                PageTemplateWebParts = pageTemplate.PageTemplateWebParts,
-
-                                WebPartControlId = webPart.ControlId,
-                                WebPartPropertyName = property.Name,
-
-                                TransformationID = property.Transformation.TransformationID,
-                                TransformationFullName = property.Transformation.FullName
-                            };
-                        }
-                    }
-                }
-            }
+                            PageTemplateID = pageTemplate.PageTemplateID,
+                            PageTemplateCodeName = pageTemplate.PageTemplateCodeName,
+                            PageTemplateDisplayName = pageTemplate.PageTemplateDisplayName,
+                            PageTemplateWebParts = pageTemplate.PageTemplateWebParts,
+                            WebPartControlId = webPart.ControlId,
+                            WebPartPropertyName = property.Name,
+                            TransformationID = property.Transformation.TransformationID,
+                            TransformationFullName = property.Transformation.FullName
+                        };
         }
     }
 }

@@ -5,7 +5,7 @@ using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models.Data;
 
 using Newtonsoft.Json;
 
-namespace KenticoInspector.Reports.WebPartPerformanceAnalysis.Models
+namespace KenticoInspector.Reports.WebPartPerformanceAnalysis.Models.Results
 {
     public class TemplateAnalysisResult : CmsPageTemplate
     {

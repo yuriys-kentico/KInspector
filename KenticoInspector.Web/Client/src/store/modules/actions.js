@@ -1,11 +1,11 @@
-import Vue from 'vue';
-import api from '../../services';
-import semver from 'semver';
+import Vue from "vue";
+import api from "../../services";
+import semver from "semver";
 
 const state = {
   items: [],
   filterSettings: {
-    version: '',
+    version: "",
     showIncompatible: false,
     showUntested: false,
     taggedWith: []
@@ -58,22 +58,22 @@ const getters = {
 const actions = {
   getAllActions: ({ commit }, instanceGuid) => {
     api.actionService.getAll(instanceGuid).then(items => {
-      commit('setItems', items);
+      commit("setItems", items);
     });
   },
   execute: ({ commit }, { codeName, instanceGuid, options }) => {
-    commit('setItemResults', { codeName, loading: true });
+    commit("setItemResults", { codeName, loading: true });
     api.actionService.execute({ codeName, instanceGuid, options }).then(results => {
       const resultId = `${codeName}-${instanceGuid}`;
-      commit('setItemResults', { resultId, loading: false, results });
+      commit("setItemResults", { resultId, loading: false, results });
     });
   },
   resetFilterSettings: (
     { commit },
-    { version = '', showIncompatible = false, showUntested = false, taggedWith = [] }
-  ) => {
-    commit('setFilterSettings', { version, showIncompatible, showUntested, taggedWith });
-  }
+    { version = "", showIncompatible = false, showUntested = false, taggedWith = [] }
+    ) => {
+      commit("setFilterSettings", { version, showIncompatible, showUntested, taggedWith });
+    }
 };
 
 const mutations = {

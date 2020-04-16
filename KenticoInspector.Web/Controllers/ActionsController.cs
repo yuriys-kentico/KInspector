@@ -24,13 +24,25 @@ namespace KenticoInspector.Web.Controllers
         public IActionResult GetActions(Guid instanceGuid) => Ok(moduleService.GetActions(instanceGuid));
 
         [HttpPost("{codename}/execute/{instanceGuid}")]
-        public async Task<IActionResult> ExecuteAsync(string codename, Guid instanceGuid)
+        public async Task<IActionResult> ExecuteAsync(
+            string codename,
+            Guid instanceGuid
+            )
         {
-            using var reader = new StreamReader(Request.Body, Encoding.UTF8);
+            using var reader = new StreamReader(
+                Request.Body,
+                Encoding.UTF8
+                );
 
             var optionsJson = await reader.ReadToEndAsync();
 
-            return Ok(moduleService.GetActionResults(codename, instanceGuid, optionsJson));
+            return Ok(
+                moduleService.GetActionResults(
+                    codename,
+                    instanceGuid,
+                    optionsJson
+                    )
+                );
         }
     }
 }

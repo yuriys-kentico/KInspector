@@ -21,25 +21,20 @@ namespace KenticoInspector.Web
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddNewtonsoftJson(options =>
-            {
-                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            });
+            services.AddControllers()
+                .AddNewtonsoftJson(options => { options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver(); });
 
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "Client/dist";
-            });
+            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "Client/dist"; });
 
             return ConfigureAutofac(services);
         }
@@ -47,7 +42,6 @@ namespace KenticoInspector.Web
         private static IServiceProvider ConfigureAutofac(IServiceCollection services)
         {
             var containerBuilder = new ContainerBuilder();
-
             containerBuilder.Populate(services);
 
             containerBuilder
@@ -61,40 +55,32 @@ namespace KenticoInspector.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env
+            )
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseHsts();
-            }
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+            else app.UseHsts();
 
-            app.UseStaticFiles().UseSpaStaticFiles();
+            app.UseStaticFiles()
+                .UseSpaStaticFiles();
 
             app.UseRouting();
-
             app.UseAuthorization();
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "Client/dist";
-
-                if (env.IsDevelopment())
+            app.UseSpa(
+                spa =>
                 {
-                    if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("ASPNETCORE_USE_EXTERNAL_CLIENT")))
-                    {
-                        spa.UseProxyToSpaDevelopmentServer("http://localhost:8080");
-                    }
+                    spa.Options.SourcePath = "Client/dist";
+
+                    if (env.IsDevelopment())
+                        if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("ASPNETCORE_USE_EXTERNAL_CLIENT"))
+                            )
+                            spa.UseProxyToSpaDevelopmentServer("http://localhost:8080");
                 }
-            });
+                );
         }
     }
 }

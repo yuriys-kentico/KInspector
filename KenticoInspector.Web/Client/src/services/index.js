@@ -1,6 +1,6 @@
-import axios from 'axios';
-import { actionService } from './action-service';
-import { reportService } from './report-service';
+import axios from "axios";
+import { actionService } from "./action-service";
+import { reportService } from "./report-service";
 
 export default {
   actionService,
@@ -8,7 +8,7 @@ export default {
   getInstances() {
     return new Promise(resolve => {
       axios
-        .get('/api/instances')
+        .get("/api/instances")
         .then(r => r.data)
         .then(instances => {
           resolve(instances);
@@ -19,7 +19,7 @@ export default {
   upsertInstance(instance) {
     return new Promise((resolve, reject) => {
       axios
-        .post('/api/instances', instance)
+        .post("/api/instances", instance)
         .then(r => r.data)
         .catch(reject)
         .then(instance => {
@@ -45,7 +45,7 @@ export default {
         .get(`/api/instances/details/${guid}`)
         .then(r => r.data)
         .catch(reason => {
-          reject({ message: 'Error Connecting', response: reason.response });
+          reject({ message: "Error Connecting", response: reason.response });
         })
         .then(result => {
           resolve(result);

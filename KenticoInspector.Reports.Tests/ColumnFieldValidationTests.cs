@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using KenticoInspector.Core.Tests.Mocks;
 using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Core.Modules.Models.Results.Data;
-using KenticoInspector.Core.Tests.Mocks;
 using KenticoInspector.Modules;
 using KenticoInspector.Reports.ColumnFieldValidation;
 using KenticoInspector.Reports.ColumnFieldValidation.Models;
 using KenticoInspector.Reports.ColumnFieldValidation.Models.Data;
 using KenticoInspector.Reports.ColumnFieldValidation.Models.Results;
+using KenticoInspector.Reports.Tests.AbstractClasses;
 
 using NUnit.Framework;
 
@@ -37,7 +38,8 @@ namespace KenticoInspector.Reports.Tests
             {
                 ClassName = "Class.1",
                 ClassTableName = "Class1",
-                ClassXmlSchema = FileHelper.GetXDocumentFromFile(@"TestData\CMS_Class\Class1\ClassXmlSchemaWithAddedField.xml")
+                ClassXmlSchema =
+                    FileHelper.GetXDocumentFromFile(@"TestData\CMS_Class\Class1\ClassXmlSchemaWithAddedField.xml")
             }
         };
 
@@ -114,51 +116,98 @@ namespace KenticoInspector.Reports.Tests
             mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
-        [TestCase(Category = "Class and table match", TestName = "Matching class and table produce a good result")]
+        [TestCase(
+            Category = "Class and table match",
+            TestName = "Matching class and table produce a good result"
+            )]
         public void Should_ReturnGoodResult_When_ClassAndTableMatch()
         {
             // Arrange
-            ArrangeDatabaseService(ValidCmsClasses, ValidTableColumns);
+            ArrangeDatabaseService(
+                ValidCmsClasses,
+                ValidTableColumns
+                );
 
             // Act
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
-            Assert.That(results.Summary, Is.EqualTo(mockReport.Metadata.Terms.Summaries.Good.ToString()));
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Good)
+                );
+
+            Assert.That(
+                results.Summary,
+                Is.EqualTo(mockReport.Metadata.Terms.Summaries.Good.ToString())
+                );
         }
 
-        [TestCase(Category = "Class has added field", TestName = "Class with added field produces an error result")]
+        [TestCase(
+            Category = "Class has added field",
+            TestName = "Class with added field produces an error result"
+            )]
         public void Should_ReturnErrorResult_When_ClassHasAddedField()
         {
             // Arrange
-            ArrangeDatabaseService(InvalidCmsClasses, ValidTableColumns);
+            ArrangeDatabaseService(
+                InvalidCmsClasses,
+                ValidTableColumns
+                );
 
             // Act
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
-            Assert.That(results.Data.First<TableResult<CmsClassResult>>().Rows.Count(), Is.EqualTo(1));
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Error)
+                );
+
+            Assert.That(
+                results.Data.First<TableResult<CmsClassResult>>()
+                    .Rows.Count(),
+                Is.EqualTo(1)
+                );
         }
 
-        [TestCase(Category = "Table has added column", TestName = "Table with added column produces an error result")]
+        [TestCase(
+            Category = "Table has added column",
+            TestName = "Table with added column produces an error result"
+            )]
         public void Should_ReturnErrorResult_When_TableHasAddedColumn()
         {
             // Arrange
-            ArrangeDatabaseService(ValidCmsClasses, InvalidTableColumns);
+            ArrangeDatabaseService(
+                ValidCmsClasses,
+                InvalidTableColumns
+                );
 
             // Act
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Error));
-            Assert.That(results.Data.First<TableResult<TableResult>>().Rows.Count(), Is.EqualTo(1));
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Error)
+                );
+
+            Assert.That(
+                results.Data.First<TableResult<TableResult>>()
+                    .Rows.Count(),
+                Is.EqualTo(1)
+                );
         }
 
-        private void ArrangeDatabaseService(IEnumerable<CmsClass> cmsClasses, IEnumerable<TableColumn> tableColumns)
+        private void ArrangeDatabaseService(
+            IEnumerable<CmsClass> cmsClasses,
+            IEnumerable<TableColumn> tableColumns
+            )
         {
-            mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetCmsClasses, cmsClasses);
+            mockDatabaseService.SetupExecuteSqlFromFile(
+                Scripts.GetCmsClasses,
+                cmsClasses
+                );
 
             var classTableNames = cmsClasses
                 .Select(cmsClass => cmsClass.ClassTableName);

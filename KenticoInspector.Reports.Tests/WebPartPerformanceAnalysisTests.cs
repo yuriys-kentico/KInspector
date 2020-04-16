@@ -2,8 +2,9 @@
 using System.Linq;
 using System.Xml.Linq;
 
-using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Core.Tests.Mocks;
+using KenticoInspector.Core.Modules.Models.Results;
+using KenticoInspector.Reports.Tests.AbstractClasses;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models.Data;
@@ -20,7 +21,7 @@ namespace KenticoInspector.Reports.Tests
 
         private IEnumerable<CmsPageTemplate> PageTemplatesWithIssues => new List<CmsPageTemplate>
         {
-            new CmsPageTemplate()
+            new CmsPageTemplate
             {
                 PageTemplateCodeName = "cms.blog",
                 PageTemplateDisplayName = "Blog",
@@ -34,6 +35,34 @@ namespace KenticoInspector.Reports.Tests
             mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
+        private void ArrangeDatabaseService(IEnumerable<CmsPageTemplate>? affectedTemplates = null)
+        {
+            affectedTemplates ??= new List<CmsPageTemplate>();
+
+            mockDatabaseService.SetupExecuteSqlFromFile(
+                Scripts.GetCmsPageTemplatesWithWebPartsWithColumnsProperty,
+                affectedTemplates
+                );
+
+            var affectedTemplateIds = affectedTemplates
+                .Select(x => x.PageTemplateID);
+
+            var affectedDocuments = affectedTemplateIds
+                .Select(
+                    affectedTemplateId => new CmsTreeNode
+                    {
+                        DocumentPageTemplateID = affectedTemplateId
+                    }
+                    );
+
+            mockDatabaseService.SetupExecuteSqlFromFile(
+                Scripts.GetTreeNodesUsingPageTemplates,
+                "pageTemplatesWithWebPartsWithColumnsPropertyIds",
+                affectedTemplateIds,
+                affectedDocuments
+                );
+        }
+
         [Test]
         public void Should_ReturnGoodResult_When_WebPartsWithoutIssues()
         {
@@ -44,7 +73,10 @@ namespace KenticoInspector.Reports.Tests
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Good)
+                );
         }
 
         [Test]
@@ -57,22 +89,10 @@ namespace KenticoInspector.Reports.Tests
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
-        }
-
-        private void ArrangeDatabaseService(IEnumerable<CmsPageTemplate>? affectedTemplates = null)
-        {
-            affectedTemplates ??= new List<CmsPageTemplate>();
-
-            mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetCmsPageTemplatesWithWebPartsWithColumnsProperty, affectedTemplates);
-
-            var affectedTemplateIds = affectedTemplates
-                .Select(x => x.PageTemplateID);
-
-            var affectedDocuments = affectedTemplateIds
-                .Select(affectedTemplateId => new CmsTreeNode { DocumentPageTemplateID = affectedTemplateId });
-
-            mockDatabaseService.SetupExecuteSqlFromFile(Scripts.GetTreeNodesUsingPageTemplates, "pageTemplatesWithWebPartsWithColumnsPropertyIds", affectedTemplateIds, affectedDocuments);
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Warning)
+                );
         }
     }
 }

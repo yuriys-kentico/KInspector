@@ -34,13 +34,18 @@ namespace KenticoInspector.Core.Tests.Mocks
             )
         {
             mockDatabaseService
-                .Setup(mock => mock.ExecuteSqlFromFile<T>(
+                .Setup(
+                    mock => mock.ExecuteSqlFromFile<T>(
                         script,
                         It.Is<object>(
-                            objectToCheck => ObjectHasPropertyWithExpectedValue(objectToCheck, parameterPropertyName, parameterPropertyValue)
+                            objectToCheck => ObjectHasPropertyWithExpectedValue(
+                                objectToCheck,
+                                parameterPropertyName,
+                                parameterPropertyValue
+                                )
+                            )
                         )
                     )
-                )
                 .Returns(returnValue);
         }
 
@@ -50,36 +55,51 @@ namespace KenticoInspector.Core.Tests.Mocks
             IDictionary<string, string> literalReplacements,
             string parameterPropertyName,
             IEnumerable<T> parameterPropertyValue,
-            IEnumerable<IDictionary<string, object?>> returnValue)
+            IEnumerable<IDictionary<string, object?>> returnValue
+            )
         {
             mockDatabaseService
-                .Setup(mock => mock.ExecuteSqlFromFile(
+                .Setup(
+                    mock => mock.ExecuteSqlFromFile(
                         script,
                         literalReplacements,
                         It.Is<object>(
-                            objectToCheck => ObjectHasPropertyWithExpectedValue(objectToCheck, parameterPropertyName, parameterPropertyValue)
+                            objectToCheck => ObjectHasPropertyWithExpectedValue(
+                                objectToCheck,
+                                parameterPropertyName,
+                                parameterPropertyValue
+                                )
+                            )
                         )
                     )
-                )
                 .Returns(returnValue as IEnumerable<IDictionary<string, object>>);
         }
 
         internal static void SetupExecuteSqlFromFile<T>(
             this Mock<IDatabaseService> mockDatabaseService,
             string script,
-            IEnumerable<T> returnValue)
+            IEnumerable<T> returnValue
+            )
         {
             mockDatabaseService
                 .Setup(mock => mock.ExecuteSqlFromFile<T>(script))
                 .Returns(returnValue);
         }
 
-        private static bool ObjectHasPropertyWithExpectedValue<T>(object objectToCheck, string propertyName, IEnumerable<T> expectedValue)
+        private static bool ObjectHasPropertyWithExpectedValue<T>(
+            object objectToCheck,
+            string propertyName,
+            IEnumerable<T> expectedValue
+            )
         {
             var objectPropertyValue = objectToCheck
                 .GetType()
-                .GetProperty(propertyName)?
-                .GetValue(objectToCheck, null) as IEnumerable<T>;
+                .GetProperty(propertyName)
+                ?
+                .GetValue(
+                    objectToCheck,
+                    null
+                    ) as IEnumerable<T>;
 
             return objectPropertyValue.SequenceEqual(expectedValue);
         }

@@ -2,9 +2,9 @@
 {
     public static class Scripts
     {
-        public static string BaseDirectory = $"{nameof(TransformationSecurityAnalysis)}/Scripts";
-        public static string GetTransformations = $"{BaseDirectory}/{nameof(GetTransformations)}.sql";
-        public static string GetPageTemplates = $"{BaseDirectory}/{nameof(GetPageTemplates)}.sql";
-        public static string GetTreeNodes = $"{BaseDirectory}/{nameof(GetTreeNodes)}.sql";
+        private static readonly string baseDirectory = $"{nameof(TransformationSecurityAnalysis)}/Scripts";
+        public static string GetTransformations = $"{baseDirectory}/{nameof(GetTransformations)}.sql";
+        public static string GetPageTemplates = $"{baseDirectory}/{nameof(GetPageTemplates)}.sql";
+        public static string GetTreeNodes = $"{baseDirectory}/{nameof(GetTreeNodes)}.sql";
     }
 }

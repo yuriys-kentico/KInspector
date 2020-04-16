@@ -22,11 +22,15 @@ namespace KenticoInspector.Reports.PageTypeAssignmentAnalysis
             this.databaseService = databaseService;
         }
 
-        [Tags(ContentModeling, Health)]
+        [Tags(
+            ContentModeling,
+            Health
+            )]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
-            var pageTypesNotAssignedToSite = databaseService.ExecuteSqlFromFile<CmsPageType>(Scripts.GetPageTypesNotAssignedToSite);
+            var pageTypesNotAssignedToSite =
+                databaseService.ExecuteSqlFromFile<CmsPageType>(Scripts.GetPageTypesNotAssignedToSite);
 
             return CompileResults(pageTypesNotAssignedToSite);
         }
@@ -34,19 +38,23 @@ namespace KenticoInspector.Reports.PageTypeAssignmentAnalysis
         private ReportResults CompileResults(IEnumerable<CmsPageType> pageTypesNotAssignedToSite)
         {
             if (!pageTypesNotAssignedToSite.Any())
-            {
                 return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.GoodSummary
                 };
-            }
 
             var unassignedPageTypeCount = pageTypesNotAssignedToSite.Count();
 
             return new ReportResults(ResultsStatus.Warning)
             {
-                Summary = Metadata.Terms.WarningSummary.With(new { unassignedPageTypeCount }),
-                Data = pageTypesNotAssignedToSite.AsResult().WithLabel(Metadata.Terms.TableNames.UnassignedPageTypes)
+                Summary = Metadata.Terms.WarningSummary.With(
+                    new
+                    {
+                        unassignedPageTypeCount
+                    }
+                    ),
+                Data = pageTypesNotAssignedToSite.AsResult()
+                    .WithLabel(Metadata.Terms.TableNames.UnassignedPageTypes)
             };
         }
     }

@@ -13,7 +13,7 @@ using KenticoInspector.Modules.Services;
 
 using NUnit.Framework;
 
-namespace KenticoInspector.Infrastructure.Tests
+namespace KenticoInspector.Modules.Tests
 {
     public class TestTerms
     {
@@ -30,50 +30,91 @@ namespace KenticoInspector.Infrastructure.Tests
         public ModuleMetadataServiceTests(int majorVersion)
         {
             TokenExpressionResolver.RegisterTokenExpressions(typeof(Term).Assembly);
-
             var mockInstance = MockInstances.Get(majorVersion);
-            var mockInstanceDetails = MockInstanceDetails.Get(majorVersion, mockInstance);
+
+            var mockInstanceDetails = MockInstanceDetails.Get(
+                majorVersion,
+                mockInstance
+                );
 
             var mockInstanceService = MockIInstanceService.Get();
-            mockInstanceService.SetupCurrentInstance(mockInstance, mockInstanceDetails);
+
+            mockInstanceService.SetupCurrentInstance(
+                mockInstance,
+                mockInstanceDetails
+                );
 
             moduleMedatadataService = new ModuleMetadataService(mockInstanceService.Object);
         }
 
-        [TestCaseSource(typeof(YamlTestCases), nameof(YamlTestCases.YamlMatchesModel))]
+        [TestCaseSource(
+            typeof(YamlTestCases),
+            nameof(YamlTestCases.YamlMatchesModel)
+            )]
         public void Should_Resolve_When_YamlMatchesModel(
             string cultureName,
             string yamlPath,
-            ModuleMetadata<TestTerms> resolvedMetadata)
+            ModuleMetadata<TestTerms> resolvedMetadata
+            )
         {
             // Arrange
             Thread.CurrentThread.CurrentCulture = new CultureInfo(cultureName);
 
             // Act
-            var metadata = moduleMedatadataService.GetModuleMetadata(yamlPath, typeof(TestTerms), Array.Empty<Tags>());
+            var metadata = moduleMedatadataService.GetModuleMetadata(
+                yamlPath,
+                typeof(TestTerms),
+                Array.Empty<Tags>()
+                );
 
             // Assert
-            Assert.That(metadata.Details.Name, Is.EqualTo(resolvedMetadata.Details.Name));
-            Assert.That(metadata.Details.ShortDescription, Is.EqualTo(resolvedMetadata.Details.ShortDescription));
-            Assert.That(metadata.Details.LongDescription, Is.EqualTo(resolvedMetadata.Details.LongDescription));
+            Assert.That(
+                metadata.Details.Name,
+                Is.EqualTo(resolvedMetadata.Details.Name)
+                );
 
-            Assert.That((metadata as dynamic).Terms.SingleTerm.ToString(), Is.EqualTo(resolvedMetadata.Terms.SingleTerm.ToString()));
+            Assert.That(
+                metadata.Details.ShortDescription,
+                Is.EqualTo(resolvedMetadata.Details.ShortDescription)
+                );
+
+            Assert.That(
+                metadata.Details.LongDescription,
+                Is.EqualTo(resolvedMetadata.Details.LongDescription)
+                );
+
+            Assert.That(
+                (metadata as dynamic).Terms.SingleTerm.ToString(),
+                Is.EqualTo(resolvedMetadata.Terms.SingleTerm.ToString())
+                );
         }
 
-        [TestCase("en-US", "TestData\\YamlDoesNotMatch", TestName = "Metadata throws exception when YAML does not match the model.")]
+        [TestCase(
+            "en-US",
+            "TestData\\YamlDoesNotMatch",
+            TestName = "Metadata throws exception when YAML does not match the model."
+            )]
         public void Should_Throw_When_YamlDoesNotMatchModel(
             string cultureName,
-            string yamlPath)
+            string yamlPath
+            )
         {
             // Arrange
             Thread.CurrentThread.CurrentCulture = new CultureInfo(cultureName);
 
             // Act
             IModuleMetadata getModuleMetadata(string path) => moduleMedatadataService
-                    .GetModuleMetadata(path, typeof(TestTerms), Array.Empty<Tags>());
+                .GetModuleMetadata(
+                    path,
+                    typeof(TestTerms),
+                    Array.Empty<Tags>()
+                    );
 
             // Assert
-            Assert.That(() => getModuleMetadata(yamlPath), Throws.Exception);
+            Assert.That(
+                () => getModuleMetadata(yamlPath),
+                Throws.Exception
+                );
         }
     }
 
@@ -83,42 +124,54 @@ namespace KenticoInspector.Infrastructure.Tests
         {
             get
             {
-                yield return GetTestCaseData("en-US", "TestData\\YamlMatches", new ModuleMetadata<TestTerms>
-                {
-                    Details = new ModuleDetails
+                yield return GetTestCaseData(
+                    "en-US",
+                    "TestData\\YamlMatches",
+                    new ModuleMetadata<TestTerms>
                     {
-                        Name = "Details name",
-                        ShortDescription = "Details shortDescription",
-                        LongDescription = "Details longDescription\n"
-                    },
-                    Terms = new TestTerms
-                    {
-                        SingleTerm = "Term value"
+                        Details = new ModuleDetails
+                        {
+                            Name = "Details name",
+                            ShortDescription = "Details shortDescription",
+                            LongDescription = "Details longDescription\n"
+                        },
+                        Terms = new TestTerms
+                        {
+                            SingleTerm = "Term value"
+                        }
                     }
-                });
-                yield return GetTestCaseData("en-GB", "TestData\\YamlMatches", new ModuleMetadata<TestTerms>
-                {
-                    Details = new ModuleDetails
+                    );
+
+                yield return GetTestCaseData(
+                    "en-GB",
+                    "TestData\\YamlMatches",
+                    new ModuleMetadata<TestTerms>
                     {
-                        Name = "British details name",
-                        ShortDescription = "Details shortDescription",
-                        LongDescription = "Details longDescription\n"
-                    },
-                    Terms = new TestTerms
-                    {
-                        SingleTerm = "British term value"
+                        Details = new ModuleDetails
+                        {
+                            Name = "British details name",
+                            ShortDescription = "Details shortDescription",
+                            LongDescription = "Details longDescription\n"
+                        },
+                        Terms = new TestTerms
+                        {
+                            SingleTerm = "British term value"
+                        }
                     }
-                });
+                    );
             }
         }
 
         private static TestCaseData GetTestCaseData(
             string cultureCode,
             string yamlPath,
-            ModuleMetadata<TestTerms> resolvedMetadata)
-        {
-            return new TestCaseData(cultureCode, yamlPath, resolvedMetadata);
-            //TODO: add .SetName($"Metadata in culture \"{cultureCode}\" resolves."); once NUnit fixes https://github.com/nunit/nunit3-vs-adapter/issues/607
-        }
+            ModuleMetadata<TestTerms> resolvedMetadata
+            ) => new TestCaseData(
+            cultureCode,
+            yamlPath,
+            resolvedMetadata
+            );
+
+        //TODO: add .SetName($"Metadata in culture \"{cultureCode}\" resolves."); once NUnit fixes https://github.com/nunit/nunit3-vs-adapter/issues/607
     }
 }

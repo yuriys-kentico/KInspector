@@ -22,7 +22,10 @@ namespace KenticoInspector.Web.Controllers
         public IActionResult Details(Guid instanceGuid) => Ok(instanceService.GetInstanceDetails(instanceGuid));
 
         [HttpDelete("{instanceGuid}")]
-        public void Delete(Guid instanceGuid) => instanceService.DeleteInstance(instanceGuid);
+        public void Delete(Guid instanceGuid)
+        {
+            instanceService.DeleteInstance(instanceGuid);
+        }
 
         [HttpGet]
         public IActionResult GetInstances() => Ok(instanceService.GetInstances());

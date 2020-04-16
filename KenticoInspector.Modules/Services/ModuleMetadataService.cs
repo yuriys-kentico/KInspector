@@ -20,22 +20,26 @@ namespace KenticoInspector.Modules.Services
     {
         private readonly IInstanceService instanceService;
 
-        public string DefaultCultureName => "en-US";
-
-        public string CurrentCultureName => Thread.CurrentThread.CurrentCulture.Name;
-
         public ModuleMetadataService(IInstanceService instanceService)
         {
             this.instanceService = instanceService;
         }
 
-        public IModuleMetadata GetModuleMetadata(string moduleCodename, Type metadataTermsType, IEnumerable<Tags> tags)
+        public string DefaultCultureName => "en-US";
+
+        public string CurrentCultureName => Thread.CurrentThread.CurrentCulture.Name;
+
+        public IModuleMetadata GetModuleMetadata(
+            string moduleCodename,
+            Type metadataTermsType,
+            IEnumerable<Tags> tags
+            )
         {
             var metadataType = typeof(ModuleMetadata<>).MakeGenericType(metadataTermsType);
             var metadataDirectory = $@"{CoreHelper.GetExecutingDirectory()}\{moduleCodename}\Metadata\";
             var sharedMetadataDirectory = $@"{CoreHelper.GetExecutingDirectory()}\Metadata\";
 
-            var mergedMetadata = (IModuleMetadata?)Activator.CreateInstance(metadataType)
+            var mergedMetadata = (IModuleMetadata?) Activator.CreateInstance(metadataType)
                 ?? throw new InvalidOperationException($"Type '{metadataType}' could not be created.");
 
             var currentCultureIsDefaultCulture = CurrentCultureName == DefaultCultureName;
@@ -45,7 +49,7 @@ namespace KenticoInspector.Modules.Services
                 $"{metadataDirectory}{CurrentCultureName}.yaml",
                 $"{sharedMetadataDirectory}{CurrentCultureName}.yaml",
                 false
-            ) ?? throw new InvalidOperationException($"Metadata of type '{metadataType}' in culture '{CurrentCultureName}' could not be deserialized.");
+                ) ?? throw new InvalidOperationException($"Metadata of type '{metadataType}' in culture '{CurrentCultureName}' could not be deserialized.");
 
             if (!currentCultureIsDefaultCulture)
             {
@@ -54,9 +58,13 @@ namespace KenticoInspector.Modules.Services
                     $"{metadataDirectory}{DefaultCultureName}.yaml",
                     $"{sharedMetadataDirectory}{DefaultCultureName}.yaml",
                     true
-                ) ?? throw new InvalidOperationException($"Metadata of type '{metadataType}' in culture '{DefaultCultureName}' could not be deserialized.");
+                    ) ?? throw new InvalidOperationException($"Metadata of type '{metadataType}' in culture '{DefaultCultureName}' could not be deserialized.");
 
-                mergedMetadata = GetMergedMetadata(mergedMetadata, defaultMetadata, currentMetadata);
+                mergedMetadata = GetMergedMetadata(
+                    mergedMetadata,
+                    defaultMetadata,
+                    currentMetadata
+                    );
             }
 
             var instanceDetails = instanceService.GetInstanceDetails();
@@ -69,19 +77,19 @@ namespace KenticoInspector.Modules.Services
             };
 
             var moduleMetadata = currentCultureIsDefaultCulture ? currentMetadata : mergedMetadata;
-
             Term name = moduleMetadata.Details.Name;
             moduleMetadata.Details.Name = name.With(sharedData);
-
             Term shortDescription = moduleMetadata.Details.ShortDescription;
             moduleMetadata.Details.ShortDescription = shortDescription.With(sharedData);
-
             Term longDescription = moduleMetadata.Details.LongDescription;
             moduleMetadata.Details.LongDescription = longDescription.With(sharedData);
 
             moduleMetadata.Tags = moduleMetadata.Tags
                 .Where(tag => tags.Contains(Enum.Parse<Tags>(tag.Key)))
-                .ToDictionary(tag => tag.Key, tag => tag.Value);
+                .ToDictionary(
+                    tag => tag.Key,
+                    tag => tag.Value
+                    );
 
             return moduleMetadata;
         }
@@ -90,7 +98,8 @@ namespace KenticoInspector.Modules.Services
             Type type,
             string path,
             string sharedPath,
-            bool ignoreUnmatchedProperties)
+            bool ignoreUnmatchedProperties
+            )
             where T : class
         {
             if (File.Exists(path) && File.Exists(sharedPath))
@@ -98,7 +107,11 @@ namespace KenticoInspector.Modules.Services
                 var sharedFileText = File.ReadAllText(sharedPath);
                 var fileText = File.ReadAllText(path);
 
-                return DeserializeYaml<T>(type, $"{sharedFileText}{Environment.NewLine}{fileText}", ignoreUnmatchedProperties);
+                return DeserializeYaml<T>(
+                    type,
+                    $"{sharedFileText}{Environment.NewLine}{fileText}",
+                    ignoreUnmatchedProperties
+                    );
             }
 
             return default;
@@ -107,30 +120,33 @@ namespace KenticoInspector.Modules.Services
         private static T? DeserializeYaml<T>(
             Type type,
             string yaml,
-            bool ignoreUnmatchedProperties)
+            bool ignoreUnmatchedProperties
+            )
             where T : class
         {
             var deserializerBuilder = new DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance);
 
-            if (ignoreUnmatchedProperties)
-            {
-                deserializerBuilder.IgnoreUnmatchedProperties();
-            }
-
+            if (ignoreUnmatchedProperties) deserializerBuilder.IgnoreUnmatchedProperties();
             var deserializer = deserializerBuilder.Build();
 
-            return deserializer.Deserialize(yaml, type) as T;
+            return deserializer.Deserialize(
+                yaml,
+                type
+                ) as T;
         }
 
         private static IModuleMetadata GetMergedMetadata(
             IModuleMetadata mergedMetadata,
             IModuleMetadata defaultMetadata,
-            IModuleMetadata overrideMetadata)
+            IModuleMetadata overrideMetadata
+            )
         {
             mergedMetadata.Details.Name = overrideMetadata.Details.Name ?? defaultMetadata.Details.Name;
+
             mergedMetadata.Details.ShortDescription =
                 overrideMetadata.Details.ShortDescription ?? defaultMetadata.Details.ShortDescription;
+
             mergedMetadata.Details.LongDescription =
                 overrideMetadata.Details.LongDescription ?? defaultMetadata.Details.LongDescription;
 
@@ -138,7 +154,8 @@ namespace KenticoInspector.Modules.Services
                 (mergedMetadata as dynamic).Terms.GetType(),
                 (defaultMetadata as dynamic).Terms,
                 (overrideMetadata as dynamic).Terms,
-                (mergedMetadata as dynamic).Terms);
+                (mergedMetadata as dynamic).Terms
+                );
 
             return mergedMetadata;
         }
@@ -147,14 +164,14 @@ namespace KenticoInspector.Modules.Services
             Type objectType,
             object? defaultObject,
             object? overrideObject,
-            object? targetObject)
+            object? targetObject
+            )
         {
             var objectTypeProperties = objectType.GetProperties();
 
             foreach (var objectTypeProperty in objectTypeProperties)
             {
                 var objectTypePropertyType = objectTypeProperty.PropertyType;
-
                 var defaultObjectPropertyValue = objectTypeProperty.GetValue(defaultObject);
 
                 var overrideObjectPropertyValue = overrideObject != null
@@ -165,17 +182,24 @@ namespace KenticoInspector.Modules.Services
                 {
                     var targetObjectPropertyValue = Activator.CreateInstance(objectTypePropertyType);
 
-                    objectTypeProperty.SetValue(targetObject, targetObjectPropertyValue);
+                    objectTypeProperty.SetValue(
+                        targetObject,
+                        targetObjectPropertyValue
+                        );
 
                     RecursivelySetPropertyValues(
                         objectTypePropertyType,
                         defaultObjectPropertyValue,
                         overrideObjectPropertyValue,
-                        targetObjectPropertyValue);
+                        targetObjectPropertyValue
+                        );
                 }
                 else
                 {
-                    objectTypeProperty.SetValue(targetObject, overrideObjectPropertyValue);
+                    objectTypeProperty.SetValue(
+                        targetObject,
+                        overrideObjectPropertyValue
+                        );
                 }
             }
         }

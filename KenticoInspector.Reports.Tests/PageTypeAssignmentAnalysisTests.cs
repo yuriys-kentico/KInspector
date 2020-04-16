@@ -6,6 +6,7 @@ using KenticoInspector.Core.Modules.Models.Results.Data;
 using KenticoInspector.Reports.PageTypeAssignmentAnalysis;
 using KenticoInspector.Reports.PageTypeAssignmentAnalysis.Models;
 using KenticoInspector.Reports.PageTypeAssignmentAnalysis.Models.Data;
+using KenticoInspector.Reports.Tests.AbstractClasses;
 
 using NUnit.Framework;
 
@@ -54,30 +55,21 @@ namespace KenticoInspector.Reports.Tests
                 ClassDisplayName = "Custom Type",
                 NodeSiteID = 2,
                 NodeClassID = 5497
-            },
+            }
         };
 
-        private IEnumerable<CmsPageType> PageTypesWithoutIssues => new List<CmsPageType>
-        {
-        };
+        private IEnumerable<CmsPageType> PageTypesWithoutIssues => new List<CmsPageType>();
 
         public PageTypeAssignmentAnalysisTests(int majorVersion) : base(majorVersion)
         {
             mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
-        [Test]
-        public void Should_ReturnWarningResult_When_PageTypesWithIssues()
+        private void ArrangeDatabaseService(IEnumerable<CmsPageType> unassignedPageTypes)
         {
-            // Arrange
-            ArrangeDatabaseService(PageTypesWithIssues);
-
-            // Act
-            var results = mockReport.GetResults();
-
-            // Assert
-            Assert.That(results.Data.First<TableResult<CmsPageType>>().Rows.Count(), Is.GreaterThan(0));
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
+            mockDatabaseService
+                .Setup(p => p.ExecuteSqlFromFile<CmsPageType>(Scripts.GetPageTypesNotAssignedToSite))
+                .Returns(unassignedPageTypes);
         }
 
         [Test]
@@ -90,14 +82,32 @@ namespace KenticoInspector.Reports.Tests
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Good)
+                );
         }
 
-        private void ArrangeDatabaseService(IEnumerable<CmsPageType> unassignedPageTypes)
+        [Test]
+        public void Should_ReturnWarningResult_When_PageTypesWithIssues()
         {
-            mockDatabaseService
-               .Setup(p => p.ExecuteSqlFromFile<CmsPageType>(Scripts.GetPageTypesNotAssignedToSite))
-               .Returns(unassignedPageTypes);
+            // Arrange
+            ArrangeDatabaseService(PageTypesWithIssues);
+
+            // Act
+            var results = mockReport.GetResults();
+
+            // Assert
+            Assert.That(
+                results.Data.First<TableResult<CmsPageType>>()
+                    .Rows.Count(),
+                Is.GreaterThan(0)
+                );
+
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Warning)
+                );
         }
     }
 }

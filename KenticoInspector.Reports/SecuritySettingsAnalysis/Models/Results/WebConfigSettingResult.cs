@@ -25,15 +25,24 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Results
         {
             var elementsOnPath = element.AncestorsAndSelf()
                 .Reverse()
-                .Select(elementOnPath =>
-                {
-                    var trimmedElement = new XElement(elementOnPath);
-                    trimmedElement.RemoveNodes();
+                .Select(
+                    elementOnPath =>
+                    {
+                        var trimmedElement = new XElement(elementOnPath);
+                        trimmedElement.RemoveNodes();
 
-                    return trimmedElement.ToString().Replace(" />", ">");
-                });
+                        return trimmedElement.ToString()
+                            .Replace(
+                                " />",
+                                ">"
+                                );
+                    }
+                    );
 
-            var path = string.Join("/", elementsOnPath);
+            var path = string.Join(
+                "/",
+                elementsOnPath
+                );
 
             return HttpUtility.HtmlEncode(path);
         }

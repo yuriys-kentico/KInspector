@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using KenticoInspector.Reports.UserPasswordAnalysis.Models.Data;
 
-namespace KenticoInspector.Reports.UserPasswordAnalysis.Models.Data.Results
+using Newtonsoft.Json;
+
+namespace KenticoInspector.Reports.UserPasswordAnalysis.Models.Results
 {
     public class CmsUserResultWithPasswordFormat : CmsUserResult
     {

@@ -37,17 +37,16 @@ namespace KenticoInspector.Reports.DatabaseConsistencyCheck
             var hasNoIssues = checkDbResults.Rows.Count == 0;
 
             if (hasNoIssues)
-            {
                 return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.GoodSummary
                 };
-            }
 
             return new ReportResults(ResultsStatus.Error)
             {
                 Summary = Metadata.Terms.ErrorSummary,
-                Data = checkDbResults.Rows.OfType<DataRow>().AsResult()
+                Data = checkDbResults.Rows.OfType<DataRow>()
+                    .AsResult()
             };
         }
     }

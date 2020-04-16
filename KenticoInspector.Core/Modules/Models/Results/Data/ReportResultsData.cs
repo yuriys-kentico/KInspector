@@ -6,38 +6,32 @@ namespace KenticoInspector.Core.Modules.Models.Results.Data
 {
     public class ReportResultsData : IEnumerable
     {
-        protected IList<Result> results;
+        private readonly IList<Result> results;
 
         internal ReportResultsData()
         {
             results = new List<Result>();
         }
 
-        public static implicit operator ReportResultsData(Result result)
-        {
-            return new ReportResultsData
-            {
-                result
-            };
-        }
-
         public IEnumerator GetEnumerator() => results.GetEnumerator();
 
-        public T First<T>() where T : Result
+        public static implicit operator ReportResultsData(Result result) => new ReportResultsData
         {
-            return results
-                .OfType<T>()
-                .First();
-        }
+            result
+        };
 
-        public bool Add(Result result, bool addIfNoData = false)
+        public T First<T>()
+            where T : Result => results
+            .OfType<T>()
+            .First();
+
+        public bool Add(
+            Result result,
+            bool addIfNoData = false
+            )
         {
             var added = addIfNoData || result.HasData;
-
-            if (added)
-            {
-                results.Add(result);
-            }
+            if (added) results.Add(result);
 
             return added;
         }

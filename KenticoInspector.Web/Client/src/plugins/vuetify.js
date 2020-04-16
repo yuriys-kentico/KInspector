@@ -1,16 +1,16 @@
-import Vue from 'vue';
-import Vuetify from 'vuetify';
-import colors from 'vuetify/lib/util/colors';
-import 'vuetify/dist/vuetify.min.css';
+import Vue from "vue";
+import Vuetify from "vuetify";
+import colors from "vuetify/lib/util/colors";
+import "vuetify/dist/vuetify.min.css";
 
 Vue.use(Vuetify);
 
 const opts = {
-  iconfont: 'mdi',
+  iconfont: "mdi",
   theme: {
     themes: {
       light: {
-        primary: '#f05a22',
+        primary: "#f05a22",
         secondary: colors.grey.darken3,
         accent: colors.deepOrange.lighten4,
         error: colors.red.lighten2,

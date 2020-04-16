@@ -26,11 +26,19 @@ namespace KenticoInspector.Reports.TaskProcessingAnalysis
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
-            var scheduledTasks = databaseService.ExecuteSqlFromFile<CmsScheduledTask>(Scripts.GetCmsScheduledTasksInPast24Hours);
+            var scheduledTasks =
+                databaseService.ExecuteSqlFromFile<CmsScheduledTask>(Scripts.GetCmsScheduledTasksInPast24Hours);
+
             var searchTasks = databaseService.ExecuteSqlFromFile<CmsSearchTask>(Scripts.GetCmsSearchTasksInPast24Hours);
-            var integrationTasks = databaseService.ExecuteSqlFromFile<CmsIntegrationTask>(Scripts.GetCmsIntegrationTasksInPast24Hours);
-            var stagingTasks = databaseService.ExecuteSqlFromFile<CmsStagingTask>(Scripts.GetCmsStagingTasksInpast24Hours);
-            var webFarmTasks = databaseService.ExecuteSqlFromFile<CmsWebFarmTask>(Scripts.GetCmsWebFarmTasksInPast24Hours);
+
+            var integrationTasks =
+                databaseService.ExecuteSqlFromFile<CmsIntegrationTask>(Scripts.GetCmsIntegrationTasksInPast24Hours);
+
+            var stagingTasks =
+                databaseService.ExecuteSqlFromFile<CmsStagingTask>(Scripts.GetCmsStagingTasksInpast24Hours);
+
+            var webFarmTasks =
+                databaseService.ExecuteSqlFromFile<CmsWebFarmTask>(Scripts.GetCmsWebFarmTasksInPast24Hours);
 
             return CompileResults(
                 scheduledTasks,
@@ -56,22 +64,31 @@ namespace KenticoInspector.Reports.TaskProcessingAnalysis
                 + webFarmTasks.Count();
 
             if (totalCount == 0)
-            {
                 return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.Summaries.Good
                 };
-            }
 
             return new ReportResults(ResultsStatus.Warning)
             {
-                Summary = Metadata.Terms.Summaries.Warning.With(new { totalCount }),
-                Data = {
-                    scheduledTasks.AsResult().WithLabel(Metadata.Terms.TableTitles.ScheduledTasks),
-                    searchTasks.AsResult().WithLabel(Metadata.Terms.TableTitles.SearchTasks),
-                    integrationTasks.AsResult().WithLabel(Metadata.Terms.TableTitles.IntegrationBusTasks),
-                    stagingTasks.AsResult().WithLabel(Metadata.Terms.TableTitles.StagingTasks),
-                    webFarmTasks.AsResult().WithLabel(Metadata.Terms.TableTitles.WebFarmTasks)
+                Summary = Metadata.Terms.Summaries.Warning.With(
+                    new
+                    {
+                        totalCount
+                    }
+                    ),
+                Data =
+                {
+                    scheduledTasks.AsResult()
+                        .WithLabel(Metadata.Terms.TableTitles.ScheduledTasks),
+                    searchTasks.AsResult()
+                        .WithLabel(Metadata.Terms.TableTitles.SearchTasks),
+                    integrationTasks.AsResult()
+                        .WithLabel(Metadata.Terms.TableTitles.IntegrationBusTasks),
+                    stagingTasks.AsResult()
+                        .WithLabel(Metadata.Terms.TableTitles.StagingTasks),
+                    webFarmTasks.AsResult()
+                        .WithLabel(Metadata.Terms.TableTitles.WebFarmTasks)
                 }
             };
         }

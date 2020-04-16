@@ -13,7 +13,10 @@ namespace KenticoInspector.Core.Tests.Mocks
             DatabaseVersion = new Version("9.0"),
             Sites = new List<CmsSite>
             {
-                new CmsSite { SiteDomainName = "kentico9.com" }
+                new CmsSite
+                {
+                    SiteDomainName = "kentico9.com"
+                }
             }
         };
 
@@ -23,7 +26,10 @@ namespace KenticoInspector.Core.Tests.Mocks
             DatabaseVersion = new Version("10.0"),
             Sites = new List<CmsSite>
             {
-                new CmsSite { SiteDomainName = "kentico10.com" }
+                new CmsSite
+                {
+                    SiteDomainName = "kentico10.com"
+                }
             }
         };
 
@@ -33,7 +39,10 @@ namespace KenticoInspector.Core.Tests.Mocks
             DatabaseVersion = new Version("11.0"),
             Sites = new List<CmsSite>
             {
-                new CmsSite { SiteDomainName = "kentico11.com" }
+                new CmsSite
+                {
+                    SiteDomainName = "kentico11.com"
+                }
             }
         };
 
@@ -43,11 +52,17 @@ namespace KenticoInspector.Core.Tests.Mocks
             DatabaseVersion = new Version("12.0"),
             Sites = new List<CmsSite>
             {
-                new CmsSite { SiteDomainName = "kentico12.com" }
+                new CmsSite
+                {
+                    SiteDomainName = "kentico12.com"
+                }
             }
         };
 
-        internal static InstanceDetails Get(int majorVersion, Instance instance)
+        internal static InstanceDetails Get(
+            int majorVersion,
+            Instance instance
+            )
         {
             InstanceDetails? instanceDetails = null;
 
@@ -55,25 +70,26 @@ namespace KenticoInspector.Core.Tests.Mocks
             {
                 case 9:
                     instanceDetails = Kentico9;
+
                     break;
 
                 case 10:
                     instanceDetails = Kentico10;
+
                     break;
 
                 case 11:
                     instanceDetails = Kentico11;
+
                     break;
 
                 case 12:
                     instanceDetails = Kentico12;
+
                     break;
             }
 
-            if (instanceDetails != null)
-            {
-                instanceDetails.Guid = instance.Guid;
-            }
+            if (instanceDetails != null) instanceDetails.Guid = instance.Guid;
 
             return instanceDetails ?? throw new Exception($"Version '{majorVersion}' not supported.");
         }

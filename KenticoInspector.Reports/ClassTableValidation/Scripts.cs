@@ -2,9 +2,11 @@
 {
     public static class Scripts
     {
-        public static string BaseDirectory = $"{nameof(ClassTableValidation)}/Scripts";
+        private static readonly string baseDirectory = $"{nameof(ClassTableValidation)}/Scripts";
 
-        public static string GetCmsClassesWithMissingTable = $"{BaseDirectory}/{nameof(GetCmsClassesWithMissingTable)}.sql";
-        public static string GetTablesWithMissingClass = $"{BaseDirectory}/{nameof(GetTablesWithMissingClass)}.sql";
+        public static string GetCmsClassesWithMissingTable =
+            $"{baseDirectory}/{nameof(GetCmsClassesWithMissingTable)}.sql";
+
+        public static string GetTablesWithMissingClass = $"{baseDirectory}/{nameof(GetTablesWithMissingClass)}.sql";
     }
 }

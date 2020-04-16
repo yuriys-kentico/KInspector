@@ -25,11 +25,15 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
             this.databaseService = databaseService;
         }
 
-        [Tags(EventLog, Health)]
+        [Tags(
+            EventLog,
+            Health
+            )]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
-            var cmsEventLogs = databaseService.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetCmsEventLogsWithStartOrEndCode);
+            var cmsEventLogs =
+                databaseService.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetCmsEventLogsWithStartOrEndCode);
 
             return CompileResults(cmsEventLogs);
         }
@@ -37,22 +41,18 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
         private ReportResults CompileResults(IEnumerable<CmsEventLog> cmsEventLogs)
         {
             if (!cmsEventLogs.Any())
-            {
                 return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.Summaries.Good
                 };
-            }
 
             var totalEvents = cmsEventLogs.Count();
 
             var totalStartEvents = cmsEventLogs
-                .Where(e => e.EventCode == "STARTAPP")
-                .Count();
+                .Count(e => e.EventCode == "STARTAPP");
 
             var totalEndEvents = cmsEventLogs
-                .Where(e => e.EventCode == "ENDAPP")
-                .Count();
+                .Count(e => e.EventCode == "ENDAPP");
 
             var earliestTime = totalEvents > 0
                 ? cmsEventLogs.Min(e => e.EventTime)
@@ -62,19 +62,22 @@ namespace KenticoInspector.Reports.ApplicationRestartAnalysis
                 ? cmsEventLogs.Max(e => e.EventTime)
                 : new DateTime();
 
-            var summary = Metadata.Terms.Summaries.Information.With(new
-            {
-                earliestTime,
-                latestTime,
-                totalEndEvents,
-                totalEvents,
-                totalStartEvents
-            });
+            var summary = Metadata.Terms.Summaries.Information.With(
+                new
+                {
+                    earliestTime,
+                    latestTime,
+                    totalEndEvents,
+                    totalEvents,
+                    totalStartEvents
+                }
+                );
 
-            return new ReportResults(ResultsStatus.Information)
+            return new ReportResults
             {
                 Summary = summary,
-                Data = cmsEventLogs.AsResult().WithLabel(Metadata.Terms.TableTitles.ApplicationRestartEvents)
+                Data = cmsEventLogs.AsResult()
+                    .WithLabel(Metadata.Terms.TableTitles.ApplicationRestartEvents)
             };
         }
     }

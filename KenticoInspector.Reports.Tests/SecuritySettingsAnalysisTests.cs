@@ -2,15 +2,16 @@
 using System.Linq;
 using System.Xml.Linq;
 
+using KenticoInspector.Core.Tests.Mocks;
 using KenticoInspector.Core.Instances;
 using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Core.Modules.Models.Results.Data;
-using KenticoInspector.Core.Tests.Mocks;
 using KenticoInspector.Reports.SecuritySettingsAnalysis;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Data;
 using KenticoInspector.Reports.SecuritySettingsAnalysis.Models.Results;
+using KenticoInspector.Reports.Tests.AbstractClasses;
 
 using NUnit.Framework;
 
@@ -156,38 +157,43 @@ namespace KenticoInspector.Reports.Tests
             }
         };
 
-        private IEnumerable<CmsSettingsCategory> CmsSettingsCategoriesWithRecommendedValues => new List<CmsSettingsCategory>();
+        private IEnumerable<CmsSettingsCategory> CmsSettingsCategoriesWithRecommendedValues =>
+            new List<CmsSettingsCategory>();
 
-        private IEnumerable<CmsSettingsCategory> CmsSettingsCategoriesWithoutRecommendedValues => new List<CmsSettingsCategory>
-        {
-            new CmsSettingsCategory
+        private IEnumerable<CmsSettingsCategory> CmsSettingsCategoriesWithoutRecommendedValues =>
+            new List<CmsSettingsCategory>
             {
-                CategoryID = 1,
-                CategoryDisplayName = "category1"
-            },
-            new CmsSettingsCategory
-            {
-                CategoryID = 2,
-                CategoryDisplayName = "category2"
-            },
-            new CmsSettingsCategory
-            {
-                CategoryID = 3,
-                CategoryDisplayName = "category3"
-            }
-        };
+                new CmsSettingsCategory
+                {
+                    CategoryID = 1,
+                    CategoryDisplayName = "category1"
+                },
+                new CmsSettingsCategory
+                {
+                    CategoryID = 2,
+                    CategoryDisplayName = "category2"
+                },
+                new CmsSettingsCategory
+                {
+                    CategoryID = 3,
+                    CategoryDisplayName = "category3"
+                }
+            };
 
         public string WebConfigWithRecommendedValues => @"TestData\CMS\WebConfig\webConfigWithRecommendedValues.xml";
 
-        public string WebConfigWithoutRecommendedValues => @"TestData\CMS\WebConfig\webConfigWithoutRecommendedValues.xml";
+        public string WebConfigWithoutRecommendedValues =>
+            @"TestData\CMS\WebConfig\webConfigWithoutRecommendedValues.xml";
 
         public SecuritySettingsAnalysisTests(int majorVersion) : base(majorVersion)
         {
-            mockReport = ArrangeProperties(new Report(
-                mockDatabaseService.Object,
-                mockInstanceService.Object,
-                mockCmsFileService.Object
-                ));
+            mockReport = ArrangeProperties(
+                new Report(
+                    mockDatabaseService.Object,
+                    mockInstanceService.Object,
+                    mockCmsFileService.Object
+                    )
+                );
         }
 
         [TestCase(
@@ -197,74 +203,143 @@ namespace KenticoInspector.Reports.Tests
         public void Should_ReturnGoodResult_When_SettingsKeysAndWebConfigWithRecommendedValues()
         {
             // Arrange
-            ArrangeDatabaseService(CmsSettingsKeysWithRecommendedValues, CmsSettingsCategoriesWithRecommendedValues);
+            ArrangeDatabaseService(
+                CmsSettingsKeysWithRecommendedValues,
+                CmsSettingsCategoriesWithRecommendedValues
+                );
+
             ArrangeCmsFileService(WebConfigWithRecommendedValues);
 
             // Act
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Good)
+                );
 
-            Assert.That(results.Summary, Is.EqualTo(mockReport.Metadata.Terms.Summaries.Good.ToString()));
+            Assert.That(
+                results.Summary,
+                Is.EqualTo(mockReport.Metadata.Terms.Summaries.Good.ToString())
+                );
         }
 
         [TestCase(
             Category = "Settings keys without recommended values and web.config with recommended values",
-            TestName = "Settings keys without recommended values and web.config with recommended values produce a warning result"
+            TestName =
+                "Settings keys without recommended values and web.config with recommended values produce a warning result"
             )]
-        public void Should_ReturnWarningResult_When_SettingsKeysWithoutRecommendedValuesAndWebConfigWithRecommendedValues()
+        public void
+            Should_ReturnWarningResult_When_SettingsKeysWithoutRecommendedValuesAndWebConfigWithRecommendedValues()
         {
             // Arrange
-            ArrangeDatabaseService(CmsSettingsKeysWithoutRecommendedValues, CmsSettingsCategoriesWithoutRecommendedValues);
+            ArrangeDatabaseService(
+                CmsSettingsKeysWithoutRecommendedValues,
+                CmsSettingsCategoriesWithoutRecommendedValues
+                );
+
             ArrangeCmsFileService(WebConfigWithRecommendedValues);
 
             // Act
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
-            Assert.That(results.Summary, Is.EqualTo(mockReport.Metadata.Terms.Summaries.Warning.ToString()));
-            Assert.That(results.Data.First<TableResult<CmsSettingsKeyResult>>().Rows.Count(), Is.EqualTo(5));
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Warning)
+                );
+
+            Assert.That(
+                results.Summary,
+                Is.EqualTo(mockReport.Metadata.Terms.Summaries.Warning.ToString())
+                );
+
+            Assert.That(
+                results.Data.First<TableResult<CmsSettingsKeyResult>>()
+                    .Rows.Count(),
+                Is.EqualTo(5)
+                );
         }
 
         [TestCase(
             Category = "Settings keys with recommended values and web.config without recommended values",
-            TestName = "Settings keys with recommended values and web.config without recommended values produce a warning result"
+            TestName =
+                "Settings keys with recommended values and web.config without recommended values produce a warning result"
             )]
-        public void Should_ReturnWarningResult_When_SettingsKeysWithRecommendedValuesAndWebConfigWithoutRecommendedValues()
+        public void
+            Should_ReturnWarningResult_When_SettingsKeysWithRecommendedValuesAndWebConfigWithoutRecommendedValues()
         {
             // Arrange
-            ArrangeDatabaseService(CmsSettingsKeysWithRecommendedValues, CmsSettingsCategoriesWithRecommendedValues);
+            ArrangeDatabaseService(
+                CmsSettingsKeysWithRecommendedValues,
+                CmsSettingsCategoriesWithRecommendedValues
+                );
+
             ArrangeCmsFileService(WebConfigWithoutRecommendedValues);
 
             // Act
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
-            Assert.That(results.Summary, Is.EqualTo(mockReport.Metadata.Terms.Summaries.Warning.ToString()));
-            Assert.That(results.Data.First<TableResult<WebConfigSettingResult>>().Rows.Count(), Is.EqualTo(8));
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Warning)
+                );
+
+            Assert.That(
+                results.Summary,
+                Is.EqualTo(mockReport.Metadata.Terms.Summaries.Warning.ToString())
+                );
+
+            Assert.That(
+                results.Data.First<TableResult<WebConfigSettingResult>>()
+                    .Rows.Count(),
+                Is.EqualTo(8)
+                );
         }
 
         [TestCase(
             Category = "Settings keys without recommended values and web.config without recommended values",
-            TestName = "Settings keys without recommended values and web.config without recommended values produce a warning result"
+            TestName =
+                "Settings keys without recommended values and web.config without recommended values produce a warning result"
             )]
-        public void Should_ReturnWarningResult_When_SettingsKeysWithoutRecommendedValuesAndWebConfigWithoutRecommendedValues()
+        public void
+            Should_ReturnWarningResult_When_SettingsKeysWithoutRecommendedValuesAndWebConfigWithoutRecommendedValues()
         {
             // Arrange
-            ArrangeDatabaseService(CmsSettingsKeysWithoutRecommendedValues, CmsSettingsCategoriesWithoutRecommendedValues);
+            ArrangeDatabaseService(
+                CmsSettingsKeysWithoutRecommendedValues,
+                CmsSettingsCategoriesWithoutRecommendedValues
+                );
+
             ArrangeCmsFileService(WebConfigWithoutRecommendedValues);
 
             // Act
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Warning));
-            Assert.That(results.Summary, Is.EqualTo(mockReport.Metadata.Terms.Summaries.Warning.ToString()));
-            Assert.That(results.Data.First<TableResult<CmsSettingsKeyResult>>().Rows.Count(), Is.EqualTo(5));
-            Assert.That(results.Data.First<TableResult<WebConfigSettingResult>>().Rows.Count(), Is.EqualTo(8));
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Warning)
+                );
+
+            Assert.That(
+                results.Summary,
+                Is.EqualTo(mockReport.Metadata.Terms.Summaries.Warning.ToString())
+                );
+
+            Assert.That(
+                results.Data.First<TableResult<CmsSettingsKeyResult>>()
+                    .Rows.Count(),
+                Is.EqualTo(5)
+                );
+
+            Assert.That(
+                results.Data.First<TableResult<WebConfigSettingResult>>()
+                    .Rows.Count(),
+                Is.EqualTo(8)
+                );
         }
 
         private void ArrangeDatabaseService(
@@ -274,13 +349,17 @@ namespace KenticoInspector.Reports.Tests
         {
             var cmsSettingsKeysNames = new SettingsKeyAnalyzers(null!)
                 .Analyzers
-                .Select(analyzer => analyzer.Parameters[0].Name);
+                .Select(
+                    analyzer => analyzer.Parameters[0]
+                        .Name
+                    );
 
             mockDatabaseService.SetupExecuteSqlFromFile(
                 Scripts.GetSecurityCmsSettings,
                 nameof(cmsSettingsKeysNames),
                 cmsSettingsKeysNames,
-                cmsSettingsKeys);
+                cmsSettingsKeys
+                );
 
             var cmsSettingsCategoryIdsOnPaths = cmsSettingsCategories
                 .Select(category => category.CategoryID.ToString());
@@ -298,11 +377,21 @@ namespace KenticoInspector.Reports.Tests
             var webConfig = XDocument.Load(webConfigPath);
 
             mockCmsFileService
-                .Setup(p => p.GetXDocument(mockInstance.Path, DefaultKenticoPaths.WebConfigFile))
+                .Setup(
+                    p => p.GetXDocument(
+                        mockInstance.Path,
+                        DefaultKenticoPaths.WebConfigFile
+                        )
+                    )
                 .Returns(webConfig);
 
             mockCmsFileService
-                .Setup(p => p.GetResourceStringsFromResx(mockInstance.Path, DefaultKenticoPaths.PrimaryResxFile))
+                .Setup(
+                    p => p.GetResourceStringsFromResx(
+                        mockInstance.Path,
+                        DefaultKenticoPaths.PrimaryResxFile
+                        )
+                    )
                 .Returns(new Dictionary<string, string>());
         }
     }

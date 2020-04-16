@@ -6,7 +6,10 @@
 
         public string IssueType { get; }
 
-        public TransformationIssue(string codeSnippet, string issueType)
+        public TransformationIssue(
+            string codeSnippet,
+            string issueType
+            )
         {
             CodeSnippet = codeSnippet;
             IssueType = issueType;

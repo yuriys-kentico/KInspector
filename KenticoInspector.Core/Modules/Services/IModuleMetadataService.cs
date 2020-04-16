@@ -11,6 +11,10 @@ namespace KenticoInspector.Core.Modules.Services
 
         string CurrentCultureName { get; }
 
-        IModuleMetadata GetModuleMetadata(string moduleCodename, Type metadataTermsType, IEnumerable<Tags> tags);
+        IModuleMetadata GetModuleMetadata(
+            string moduleCodename,
+            Type metadataTermsType,
+            IEnumerable<Tags> tags
+            );
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace KenticoInspector.Reports.PageTypeFieldAnalysis.Models
+﻿namespace KenticoInspector.Reports.PageTypeFieldAnalysis.Models.Data
 {
     public class CmsPageTypeField
     {
@@ -12,7 +12,8 @@
         {
             if (obj is CmsPageTypeField comparingField)
             {
-                var fieldsAreEqual = comparingField.FieldName == FieldName && comparingField.FieldDataType == FieldDataType;
+                var fieldsAreEqual = comparingField.FieldName == FieldName &&
+                    comparingField.FieldDataType == FieldDataType;
 
                 return fieldsAreEqual;
             }
@@ -22,7 +23,7 @@
 
         public override int GetHashCode()
         {
-            int hCode = (FieldName + FieldDataType).GetHashCode();
+            var hCode = (FieldName + FieldDataType).GetHashCode();
 
             return hCode;
         }

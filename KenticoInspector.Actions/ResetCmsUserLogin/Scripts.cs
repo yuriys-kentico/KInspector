@@ -2,6 +2,6 @@
 {
     public static class Scripts
     {
-        public static string BaseDirectory = $"{nameof(ResetCmsUserLogin)}/Scripts";
+        private static readonly string baseDirectory = $"{nameof(ResetCmsUserLogin)}/Scripts";
     }
 }

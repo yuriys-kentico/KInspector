@@ -2,9 +2,9 @@
 {
     public static class Scripts
     {
-        public static string BaseDirectory = $"{nameof(SecuritySettingsAnalysis)}/Scripts";
+        private static readonly string baseDirectory = $"{nameof(SecuritySettingsAnalysis)}/Scripts";
 
-        public static string GetSecurityCmsSettings = $"{BaseDirectory}/{nameof(GetSecurityCmsSettings)}.sql";
-        public static string GetCmsSettingsCategories = $"{BaseDirectory}/{nameof(GetCmsSettingsCategories)}.sql";
+        public static string GetSecurityCmsSettings = $"{baseDirectory}/{nameof(GetSecurityCmsSettings)}.sql";
+        public static string GetCmsSettingsCategories = $"{baseDirectory}/{nameof(GetCmsSettingsCategories)}.sql";
     }
 }

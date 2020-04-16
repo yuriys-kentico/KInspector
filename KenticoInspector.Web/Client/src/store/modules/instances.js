@@ -1,4 +1,4 @@
-import api from '../../services';
+import api from "../../services";
 
 const state = {
   items: [],
@@ -24,53 +24,53 @@ const getters = {
 
   getInstanceDisplayName: state => guid => {
     const name = state.items.find(item => item.guid === guid).name;
-    return name ? name : '(UNNAMED)';
+    return name ? name : "(UNNAMED)";
   }
 };
 
 const actions = {
   async getInstances({ commit }) {
-    commit('setItems', await api.getInstances());
+    commit("setItems", await api.getInstances());
   },
 
   async upsertInstance({ commit, dispatch }, instance) {
-    commit('setUpserting', true);
+    commit("setUpserting", true);
     try {
       const newInstance = await api.upsertInstance(instance);
-      dispatch('getInstances');
+      dispatch("getInstances");
       return newInstance;
     } catch (error) {
-      commit('setUpsertingError', error);
+      commit("setUpsertingError", error);
     }
 
-    commit('setUpserting', false);
+    commit("setUpserting", false);
   },
 
   async deleteInstance({ dispatch }, guid) {
     await api.deleteInstance(guid);
-    await dispatch('getInstances');
+    await dispatch("getInstances");
   },
 
   async getInstanceDetails({ commit }, guid) {
-    commit('setConnecting', true);
+    commit("setConnecting", true);
 
     try {
       const instanceDetails = await api.getInstanceDetails(guid);
-      commit('setCurrentInstanceDetails', instanceDetails);
+      commit("setCurrentInstanceDetails", instanceDetails);
     } catch (error) {
-      commit('setConnectionError', error);
+      commit("setConnectionError", error);
     }
 
-    commit('setConnecting', false);
+    commit("setConnecting", false);
   },
 
   cancelConnecting: ({ commit }) => {
-    commit('setConnecting', false);
-    commit('setConnectionError', null);
+    commit("setConnecting", false);
+    commit("setConnectionError", null);
   },
 
   disconnect: ({ commit }) => {
-    commit('setCurrentInstanceDetails', null);
+    commit("setCurrentInstanceDetails", null);
   }
 };
 

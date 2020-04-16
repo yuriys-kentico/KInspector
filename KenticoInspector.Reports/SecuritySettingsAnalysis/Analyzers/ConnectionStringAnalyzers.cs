@@ -13,15 +13,18 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
     {
         public override IEnumerable<Expression<Func<XElement, WebConfigSettingResult?>>> Analyzers
             => new List<Expression<Func<XElement, WebConfigSettingResult?>>>
-        {
-            CMSConnectionString => AnalyzeUsingExpression(
-                CMSConnectionString,
-                connectionString
-                    => connectionString != null && !connectionString.Contains("user id=sa;", StringComparison.InvariantCultureIgnoreCase),
-                ReportTerms.RecommendedValues.NotSaUser,
-                ReportTerms.RecommendationReasons.ConnectionStrings.SaUser
-                ),
-        };
+            {
+                CMSConnectionString => AnalyzeUsingExpression(
+                    CMSConnectionString,
+                    connectionString
+                        => connectionString != null && !connectionString.Contains(
+                            "user id=sa;",
+                            StringComparison.InvariantCultureIgnoreCase
+                            ),
+                    ReportTerms.RecommendedValues.NotSaUser,
+                    ReportTerms.RecommendationReasons.ConnectionStrings.SaUser
+                    )
+            };
 
         public ConnectionStringAnalyzers(Terms reportTerms) : base(reportTerms)
         {
@@ -34,13 +37,16 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
             Term recommendationReason
             )
         {
-            var attributeName = valueIsRecommended.Parameters[0].Name;
+            var attributeName = valueIsRecommended.Parameters[0]
+                .Name;
 
-            var keyValue = connectionString.Attribute(attributeName)?.Value;
+            var keyValue = connectionString.Attribute(attributeName)
+                ?.Value;
 
             if (valueIsRecommended.Compile()(keyValue)) return null;
 
-            var keyName = connectionString.Attribute("name").Value;
+            var keyName = connectionString.Attribute("name")
+                .Value;
 
             return new WebConfigSettingResult(connectionString)
             {

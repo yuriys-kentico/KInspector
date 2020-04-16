@@ -26,7 +26,8 @@ namespace KenticoInspector.Reports.UnusedPageTypeSummary
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
-            var classesNotInViewCmsTreeJoined = databaseService.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClassNotInViewCmsTreeJoined);
+            var classesNotInViewCmsTreeJoined =
+                databaseService.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClassNotInViewCmsTreeJoined);
 
             return CompileResults(classesNotInViewCmsTreeJoined);
         }
@@ -34,19 +35,23 @@ namespace KenticoInspector.Reports.UnusedPageTypeSummary
         private ReportResults CompileResults(IEnumerable<CmsClass> classesNotInViewCmsTreeJoined)
         {
             if (!classesNotInViewCmsTreeJoined.Any())
-            {
                 return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.GoodSummary
                 };
-            }
 
             var count = classesNotInViewCmsTreeJoined.Count();
 
-            return new ReportResults(ResultsStatus.Information)
+            return new ReportResults
             {
-                Summary = Metadata.Terms.InformationSummary.With(new { count }),
-                Data = classesNotInViewCmsTreeJoined.AsResult().WithLabel(Metadata.Terms.TableNames.UnusedPageTypes)
+                Summary = Metadata.Terms.InformationSummary.With(
+                    new
+                    {
+                        count
+                    }
+                    ),
+                Data = classesNotInViewCmsTreeJoined.AsResult()
+                    .WithLabel(Metadata.Terms.TableNames.UnusedPageTypes)
             };
         }
     }

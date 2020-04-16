@@ -5,8 +5,8 @@ using KenticoInspector.Core.Modules;
 using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Core.Modules.Models.Results.Data;
 using KenticoInspector.Modules;
-using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Data;
 using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Models;
+using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Models.Data;
 
 using static KenticoInspector.Core.Modules.Models.Tags;
 
@@ -25,18 +25,17 @@ namespace KenticoInspector.Reports.DatabaseTableSizeAnalysis
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
-            var top25LargestTables = databaseService.ExecuteSqlFromFile<DatabaseTableSize>(Scripts.GetTop25LargestTables);
+            var top25LargestTables =
+                databaseService.ExecuteSqlFromFile<DatabaseTableSize>(Scripts.GetTop25LargestTables);
 
             return CompileResults(top25LargestTables);
         }
 
-        private ReportResults CompileResults(IEnumerable<DatabaseTableSize> top25LargestTables)
+        private ReportResults CompileResults(IEnumerable<DatabaseTableSize> top25LargestTables) => new ReportResults
         {
-            return new ReportResults(ResultsStatus.Information)
-            {
-                Summary = Metadata.Terms.InformationSummary,
-                Data = top25LargestTables.AsResult().WithLabel(Metadata.Terms.TableNames.Top25Results)
-            };
-        }
+            Summary = Metadata.Terms.InformationSummary,
+            Data = top25LargestTables.AsResult()
+                .WithLabel(Metadata.Terms.TableNames.Top25Results)
+        };
     }
 }

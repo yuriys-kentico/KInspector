@@ -12,7 +12,8 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
 
         public WebPart(XElement webPartXml)
         {
-            ControlId = webPartXml.Attribute("controlid").Value;
+            ControlId = webPartXml.Attribute("controlid")
+                .Value;
 
             Properties = webPartXml.Elements("property")
                 .Where(WebPartProperty.PropertyXmlContainsTransformation)
@@ -23,7 +24,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
         public void RemovePropertiesWithoutTransformations()
         {
             Properties = Properties
-                        .Where(WebPartProperty.HasIssues);
+                .Where(WebPartProperty.HasIssues);
         }
     }
 }

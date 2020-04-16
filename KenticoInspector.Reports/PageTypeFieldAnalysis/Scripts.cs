@@ -2,8 +2,8 @@
 {
     public static class Scripts
     {
-        public static string BaseDirectory = $"{nameof(PageTypeFieldAnalysis)}/Scripts";
+        private static readonly string baseDirectory = $"{nameof(PageTypeFieldAnalysis)}/Scripts";
 
-        public static string GetCmsPageTypeFields = $"{BaseDirectory}/{nameof(GetCmsPageTypeFields)}.sql";
+        public static string GetCmsPageTypeFields = $"{baseDirectory}/{nameof(GetCmsPageTypeFields)}.sql";
     }
 }

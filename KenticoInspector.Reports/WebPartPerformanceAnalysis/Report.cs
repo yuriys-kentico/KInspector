@@ -9,6 +9,7 @@ using KenticoInspector.Core.Modules.Models.Results.Data;
 using KenticoInspector.Modules;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models;
 using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models.Data;
+using KenticoInspector.Reports.WebPartPerformanceAnalysis.Models.Results;
 
 using static KenticoInspector.Core.Modules.Models.Tags;
 
@@ -23,23 +24,42 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
             _databaseService = databaseService;
         }
 
-        [Tags(Performance, PortalEngine)]
+        [Tags(
+            Performance,
+            PortalEngine
+            )]
         [SupportsVersions("10 - 12.0")]
         public override ReportResults GetResults()
         {
-            var pageTemplatesWithWebPartsWithColumnsProperty = _databaseService.ExecuteSqlFromFile<CmsPageTemplate>(Scripts.GetCmsPageTemplatesWithWebPartsWithColumnsProperty);
+            var pageTemplatesWithWebPartsWithColumnsProperty =
+                _databaseService.ExecuteSqlFromFile<CmsPageTemplate>(
+                    Scripts
+                        .GetCmsPageTemplatesWithWebPartsWithColumnsProperty
+                    );
 
             var pageTemplatesWithWebPartsWithColumnsPropertyIds = pageTemplatesWithWebPartsWithColumnsProperty
                 .Select(pageTemplate => pageTemplate.PageTemplateID);
 
-            var treeNodesUsingPageTemplates = _databaseService.ExecuteSqlFromFile<CmsTreeNode>(Scripts.GetTreeNodesUsingPageTemplates, new { pageTemplatesWithWebPartsWithColumnsPropertyIds });
+            var treeNodesUsingPageTemplates = _databaseService.ExecuteSqlFromFile<CmsTreeNode>(
+                Scripts.GetTreeNodesUsingPageTemplates,
+                new
+                {
+                    pageTemplatesWithWebPartsWithColumnsPropertyIds
+                }
+                );
 
-            var templateAnalysisResults = GetTemplateAnalysisResults(pageTemplatesWithWebPartsWithColumnsProperty, treeNodesUsingPageTemplates);
+            var templateAnalysisResults = GetTemplateAnalysisResults(
+                pageTemplatesWithWebPartsWithColumnsProperty,
+                treeNodesUsingPageTemplates
+                );
 
             return CompileResults(templateAnalysisResults);
         }
 
-        private IEnumerable<TemplateAnalysisResult> GetTemplateAnalysisResults(IEnumerable<CmsPageTemplate> pageTemplates, IEnumerable<CmsTreeNode> treeNodesUsingPageTemplates)
+        private IEnumerable<TemplateAnalysisResult> GetTemplateAnalysisResults(
+            IEnumerable<CmsPageTemplate> pageTemplates,
+            IEnumerable<CmsTreeNode> treeNodesUsingPageTemplates
+            )
         {
             var results = new List<TemplateAnalysisResult>();
 
@@ -48,46 +68,49 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
                 var treeNodesUsingPageTemplate = treeNodesUsingPageTemplates
                     .Where(treeNode => treeNode.DocumentPageTemplateID == pageTemplate.PageTemplateID);
 
-                if (!treeNodesUsingPageTemplate.Any())
-                {
-                    continue;
-                }
+                if (!treeNodesUsingPageTemplate.Any()) continue;
 
-                var webPartsWithIssues = ExtractWebPartsWithEmptyColumnsProperty(pageTemplate, treeNodesUsingPageTemplate);
+                var webPartsWithIssues =
+                    ExtractWebPartsWithEmptyColumnsProperty(
+                        pageTemplate,
+                        treeNodesUsingPageTemplate
+                        );
 
-                if (!webPartsWithIssues.Any())
-                {
-                    continue;
-                }
+                if (!webPartsWithIssues.Any()) continue;
 
-                results.Add(new TemplateAnalysisResult
-                {
-                    PageTemplateID = pageTemplate.PageTemplateID,
-                    PageTemplateDisplayName = pageTemplate.PageTemplateDisplayName,
-                    PageTemplateCodeName = pageTemplate.PageTemplateCodeName,
-                    TreeNodesWithIssues = treeNodesUsingPageTemplate,
-                    WebPartsWithIssues = webPartsWithIssues
-                });
+                results.Add(
+                    new TemplateAnalysisResult
+                    {
+                        PageTemplateID = pageTemplate.PageTemplateID,
+                        PageTemplateDisplayName = pageTemplate.PageTemplateDisplayName,
+                        PageTemplateCodeName = pageTemplate.PageTemplateCodeName,
+                        TreeNodesWithIssues = treeNodesUsingPageTemplate,
+                        WebPartsWithIssues = webPartsWithIssues
+                    }
+                    );
             }
 
             return results;
         }
 
-        private IEnumerable<WebPartAnalysisResult> ExtractWebPartsWithEmptyColumnsProperty(CmsPageTemplate template, IEnumerable<CmsTreeNode> treeNodes)
+        private IEnumerable<WebPartAnalysisResult> ExtractWebPartsWithEmptyColumnsProperty(
+            CmsPageTemplate template,
+            IEnumerable<CmsTreeNode> treeNodes
+            )
         {
             var emptyColumnsWebPartProperties = template
                 .PageTemplateWebParts?
                 .Descendants("property")
-                .Where(property => property
-                    .Attribute("name")
-                    .Value == "columns"
-                )
+                .Where(
+                    property => property
+                        .Attribute("name")
+                        .Value == "columns"
+                    )
                 .Where(property => string.IsNullOrWhiteSpace(property.Value));
 
             var webPartXmls = emptyColumnsWebPartProperties.Ancestors("webpart");
 
             foreach (var webPartXml in webPartXmls)
-            {
                 yield return new WebPartAnalysisResult
                 {
                     WebPartControlId = webPartXml
@@ -99,18 +122,15 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
                     PageTemplateId = template.PageTemplateID,
                     TreeNodes = treeNodes
                 };
-            }
         }
 
         private ReportResults CompileResults(IEnumerable<TemplateAnalysisResult> templateAnalysisResults)
         {
             if (!templateAnalysisResults.Any())
-            {
                 return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.GoodSummary
                 };
-            }
 
             var webPartsWithIssues = templateAnalysisResults
                 .SelectMany(x => x.WebPartsWithIssues);
@@ -124,12 +144,22 @@ namespace KenticoInspector.Reports.WebPartPerformanceAnalysis
 
             return new ReportResults(ResultsStatus.Warning)
             {
-                Summary = Metadata.Terms.WarningSummary.With(new { affectedDocumentCount, affectedTemplateCount, affectedWebPartCount }),
+                Summary = Metadata.Terms.WarningSummary.With(
+                    new
+                    {
+                        affectedDocumentCount,
+                        affectedTemplateCount,
+                        affectedWebPartCount
+                    }
+                    ),
                 Data =
                 {
-                    templateAnalysisResults.AsResult().WithLabel(Metadata.Terms.TableNames.TemplatesWithIssues),
-                    webPartsWithIssues.AsResult().WithLabel(Metadata.Terms.TableNames.WebPartsWithIssues),
-                    treeNodesWithIssues.AsResult().WithLabel(Metadata.Terms.TableNames.TreeNodesWithIssues)
+                    templateAnalysisResults.AsResult()
+                        .WithLabel(Metadata.Terms.TableNames.TemplatesWithIssues),
+                    webPartsWithIssues.AsResult()
+                        .WithLabel(Metadata.Terms.TableNames.WebPartsWithIssues),
+                    treeNodesWithIssues.AsResult()
+                        .WithLabel(Metadata.Terms.TableNames.TreeNodesWithIssues)
                 }
             };
         }

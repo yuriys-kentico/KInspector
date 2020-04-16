@@ -50,7 +50,7 @@ namespace KenticoInspector.Core.Tests.Mocks
                 10 => Kentico10,
                 11 => Kentico11,
                 12 => Kentico12,
-                _ => throw new Exception($"Version '{majorVersion}' not supported."),
+                var _ => throw new Exception($"Version '{majorVersion}' not supported.")
             };
         }
     }

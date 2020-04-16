@@ -11,60 +11,55 @@ namespace KenticoInspector.Instances.Repositories
 {
     public class VersionRepository : IVersionRepository
     {
-        private readonly IDatabaseService databaseService;
-
         private const string getCmsSettingsPath = @"Scripts/GetCmsSettings.sql";
 
         private const string administrationDllToCheck = "CMS.DataEngine.dll";
         private const string relativeAdministrationDllPath = "bin";
         private const string relativeHotfixFileFolderPath = "App_Data\\Install";
         private const string hotfixFile = "Hotfix.txt";
+        private readonly IDatabaseService databaseService;
 
         public VersionRepository(IDatabaseService databaseService)
         {
             this.databaseService = databaseService;
         }
 
-        public Version GetKenticoAdministrationVersion(Instance instance)
-        {
-            return GetKenticoAdministrationVersion(instance.Path);
-        }
+        public Version GetKenticoAdministrationVersion(Instance instance) => GetKenticoAdministrationVersion(instance.Path);
 
         public Version GetKenticoAdministrationVersion(string rootPath)
         {
-            if (!Directory.Exists(rootPath))
-            {
-                throw new DirectoryNotFoundException();
-            }
+            if (!Directory.Exists(rootPath)) throw new DirectoryNotFoundException();
 
-            var binDirectory = Path.Combine(rootPath, relativeAdministrationDllPath);
+            var binDirectory = Path.Combine(
+                rootPath,
+                relativeAdministrationDllPath
+                );
 
-            if (!Directory.Exists(binDirectory))
-            {
-                throw new DirectoryNotFoundException();
-            }
+            if (!Directory.Exists(binDirectory)) throw new DirectoryNotFoundException();
 
-            var dllFileToCheck = Path.Combine(binDirectory, administrationDllToCheck);
+            var dllFileToCheck = Path.Combine(
+                binDirectory,
+                administrationDllToCheck
+                );
 
-            if (!File.Exists(dllFileToCheck))
-            {
-                throw new DirectoryNotFoundException();
-            }
+            if (!File.Exists(dllFileToCheck)) throw new DirectoryNotFoundException();
 
             var fileVersionInfo = FileVersionInfo.GetVersionInfo(dllFileToCheck);
-
             var hotfix = "0";
 
-            var hotfixDirectory = Path.Combine(rootPath, relativeHotfixFileFolderPath);
+            var hotfixDirectory = Path.Combine(
+                rootPath,
+                relativeHotfixFileFolderPath
+                );
 
             if (Directory.Exists(hotfixDirectory))
             {
-                var hotfixFile = Path.Combine(hotfixDirectory, VersionRepository.hotfixFile);
+                var hotfixFile = Path.Combine(
+                    hotfixDirectory,
+                    VersionRepository.hotfixFile
+                    );
 
-                if (File.Exists(hotfixFile))
-                {
-                    hotfix = File.ReadAllText(hotfixFile);
-                }
+                if (File.Exists(hotfixFile)) hotfix = File.ReadAllText(hotfixFile);
             }
 
             var version = $"{fileVersionInfo.FileMajorPart}.{fileVersionInfo.FileMinorPart}.{hotfix}";
@@ -72,10 +67,7 @@ namespace KenticoInspector.Instances.Repositories
             return new Version(version);
         }
 
-        public Version GetKenticoDatabaseVersion(Instance instance)
-        {
-            return GetKenticoDatabaseVersion(instance.DatabaseSettings);
-        }
+        public Version GetKenticoDatabaseVersion(Instance instance) => GetKenticoDatabaseVersion(instance.DatabaseSettings);
 
         public Version GetKenticoDatabaseVersion(DatabaseSettings databaseSettings)
         {

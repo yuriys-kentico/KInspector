@@ -14,11 +14,11 @@ namespace KenticoInspector.Modules.Services
 {
     public class ModuleService : IModuleService
     {
-        private readonly IReportRepository reportRepository;
         private readonly IActionRepository actionRepository;
-        private readonly IInstanceService instanceService;
         private readonly IDatabaseService databaseService;
+        private readonly IInstanceService instanceService;
         private readonly IModuleMetadataService moduleMetadataService;
+        private readonly IReportRepository reportRepository;
 
         public ModuleService(
             IReportRepository reportRepository,
@@ -38,29 +38,30 @@ namespace KenticoInspector.Modules.Services
         public IEnumerable<IAction> GetActions(Guid instanceGuid)
         {
             instanceService.SetCurrentInstance(instanceGuid);
-
             var actions = actionRepository.GetActions();
 
             foreach (var action in actions)
-            {
                 action.SetModuleProperties(
                     GetModuleCodeName,
                     GetSupportedVersions,
                     GetModuleMetadata
                     );
-            }
 
             return actions;
         }
 
-        public ActionResults GetActionResults(string reportCodeName, Guid instanceGuid, string optionsJson)
+        public ActionResults GetActionResults(
+            string reportCodeName,
+            Guid instanceGuid,
+            string optionsJson
+            )
         {
             var instance = instanceService.SetCurrentInstance(instanceGuid);
             databaseService.Configure(instance.DatabaseSettings);
 
-            var action = actionRepository.GetActions()
-                .Where(action => GetModuleCodeName(action.GetType()) == reportCodeName)
-                .First();
+            var action = actionRepository
+                .GetActions()
+                .First(action => GetModuleCodeName(action.GetType()) == reportCodeName);
 
             action.SetModuleProperties(
                 GetModuleCodeName,
@@ -74,29 +75,29 @@ namespace KenticoInspector.Modules.Services
         public IEnumerable<IReport> GetReports(Guid instanceGuid)
         {
             instanceService.SetCurrentInstance(instanceGuid);
-
             var reports = reportRepository.GetReports();
 
             foreach (var report in reports)
-            {
                 report.SetModuleProperties(
                     GetModuleCodeName,
                     GetSupportedVersions,
                     GetModuleMetadata
                     );
-            }
 
             return reports;
         }
 
-        public ReportResults GetReportResults(string reportCodeName, Guid instanceGuid)
+        public ReportResults GetReportResults(
+            string reportCodeName,
+            Guid instanceGuid
+            )
         {
             var instance = instanceService.SetCurrentInstance(instanceGuid);
             databaseService.Configure(instance.DatabaseSettings);
 
-            var report = reportRepository.GetReports()
-                .Where(report => GetModuleCodeName(report.GetType()) == reportCodeName)
-                .First();
+            var report = reportRepository
+                .GetReports()
+                .First(report => GetModuleCodeName(report.GetType()) == reportCodeName);
 
             report.SetModuleProperties(
                 GetModuleCodeName,
@@ -121,7 +122,10 @@ namespace KenticoInspector.Modules.Services
         {
             if (typeof(IReport).IsAssignableFrom(moduleType))
             {
-                var method = moduleType.GetRuntimeMethod(nameof(IReport.GetResults), Array.Empty<Type>())
+                var method = moduleType.GetRuntimeMethod(
+                        nameof(IReport.GetResults),
+                        Array.Empty<Type>()
+                        )
                     ?? throw new InvalidOperationException($"Report of type '{moduleType}' does not have '{nameof(IReport.GetResults)}'.");
 
                 var attribute = method.GetCustomAttribute<SupportsVersionsAttribute>()
@@ -135,7 +139,13 @@ namespace KenticoInspector.Modules.Services
                 var optionsType = moduleType.BaseType?.GetGenericArguments()[1]
                     ?? throw new InvalidOperationException($"Action of type '{moduleType}' does not have an options type.");
 
-                var method = moduleType.GetRuntimeMethod(nameof(IAction.GetResults), new[] { optionsType })
+                var method = moduleType.GetRuntimeMethod(
+                        nameof(IAction.GetResults),
+                        new[]
+                        {
+                            optionsType
+                        }
+                        )
                     ?? throw new InvalidOperationException($"Action of type '{moduleType}' does not have '{nameof(IAction.GetResults)}'.");
 
                 var attribute = method.GetCustomAttribute<SupportsVersionsAttribute>()
@@ -156,7 +166,10 @@ namespace KenticoInspector.Modules.Services
 
             if (typeof(IReport).IsAssignableFrom(moduleType))
             {
-                var method = moduleType.GetRuntimeMethod(nameof(IReport.GetResults), Array.Empty<Type>())
+                var method = moduleType.GetRuntimeMethod(
+                        nameof(IReport.GetResults),
+                        Array.Empty<Type>()
+                        )
                     ?? throw new InvalidOperationException($"Report of type '{moduleType}' does not have '{nameof(IReport.GetResults)}'.");
 
                 var attribute = method.GetCustomAttribute<TagsAttribute>()
@@ -169,7 +182,13 @@ namespace KenticoInspector.Modules.Services
                 var optionsType = moduleType.BaseType?.GetGenericArguments()[1]
                     ?? throw new InvalidOperationException($"Action of type '{moduleType}' does not have an options type.");
 
-                var method = moduleType.GetRuntimeMethod(nameof(IAction.GetResults), new[] { optionsType })
+                var method = moduleType.GetRuntimeMethod(
+                        nameof(IAction.GetResults),
+                        new[]
+                        {
+                            optionsType
+                        }
+                        )
                     ?? throw new InvalidOperationException($"Action of type '{moduleType}' does not have '{nameof(IAction.GetResults)}'.");
 
                 var attribute = method.GetCustomAttribute<TagsAttribute>()
@@ -186,7 +205,7 @@ namespace KenticoInspector.Modules.Services
                 GetModuleCodeName(moduleType),
                 moduleBaseType.GetGenericArguments()[0],
                 tags
-            );
+                );
         }
     }
 }

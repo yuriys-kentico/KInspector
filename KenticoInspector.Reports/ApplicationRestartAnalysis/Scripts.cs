@@ -2,8 +2,9 @@
 {
     public static class Scripts
     {
-        public static string BaseDirectory = $"{nameof(ApplicationRestartAnalysis)}/Scripts";
+        private static readonly string baseDirectory = $"{nameof(ApplicationRestartAnalysis)}/Scripts";
 
-        public static string GetCmsEventLogsWithStartOrEndCode = $"{BaseDirectory}/{nameof(GetCmsEventLogsWithStartOrEndCode)}.sql";
+        public static string GetCmsEventLogsWithStartOrEndCode =
+            $"{baseDirectory}/{nameof(GetCmsEventLogsWithStartOrEndCode)}.sql";
     }
 }

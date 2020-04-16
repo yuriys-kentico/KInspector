@@ -6,13 +6,14 @@ using Newtonsoft.Json;
 
 namespace KenticoInspector.Modules.Models
 {
-    public class ModuleMetadata<T> : IModuleMetadata where T : new()
+    public class ModuleMetadata<T> : IModuleMetadata
+        where T : new()
     {
+        [JsonIgnore]
+        public T Terms { get; set; } = new T();
+
         public ModuleDetails Details { get; set; } = new ModuleDetails();
 
         public Dictionary<string, string> Tags { get; set; } = new Dictionary<string, string>();
-
-        [JsonIgnore]
-        public T Terms { get; set; } = new T();
     }
 }

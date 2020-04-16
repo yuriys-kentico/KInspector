@@ -15,18 +15,25 @@ namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
 {
     public class Report : AbstractReport<Terms>
     {
-        private readonly IInstanceService instanceService;
-        private readonly HttpClient httpClient;
-
         public const string RobotsTxtRelative = "robots.txt";
+        private readonly HttpClient httpClient;
+        private readonly IInstanceService instanceService;
 
-        public Report(IInstanceService instanceService, HttpClient? httpClient = null)
+        public Report(
+            IInstanceService instanceService,
+            HttpClient? httpClient = null
+            )
         {
             this.instanceService = instanceService;
 
             var httpClientHandler = new HttpClientHandler
             {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+                ServerCertificateCustomValidationCallback = (
+                    message,
+                    cert,
+                    chain,
+                    errors
+                    ) => true
             };
 
             this.httpClient = httpClient ?? new HttpClient(httpClientHandler);
@@ -37,14 +44,21 @@ namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
         public override ReportResults GetResults()
         {
             var instance = instanceService.CurrentInstance;
-
             var instanceUri = new UriBuilder(instance.Url).Uri;
 
-            var testUri = new Uri(instanceUri, RobotsTxtRelative);
+            var testUri = new Uri(
+                instanceUri,
+                RobotsTxtRelative
+                );
 
-            var uriStatusCode = GetUriStatusCode(testUri).Result;
+            var uriStatusCode = GetUriStatusCode(testUri)
+                .Result;
 
-            return CompileResults(testUri, uriStatusCode, HttpStatusCode.OK);
+            return CompileResults(
+                testUri,
+                uriStatusCode,
+                HttpStatusCode.OK
+                );
         }
 
         private async Task<HttpStatusCode> GetUriStatusCode(Uri testUri)
@@ -54,21 +68,34 @@ namespace KenticoInspector.Reports.RobotsTxtConfigurationSummary
             return response.StatusCode;
         }
 
-        private ReportResults CompileResults(Uri testUri, HttpStatusCode uriStatusCode, HttpStatusCode statusCodeWithoutIssues)
+        private ReportResults CompileResults(
+            Uri testUri,
+            HttpStatusCode uriStatusCode,
+            HttpStatusCode statusCodeWithoutIssues
+            )
         {
             if (uriStatusCode == statusCodeWithoutIssues)
-            {
                 return new ReportResults(ResultsStatus.Good)
                 {
-                    Summary = Metadata.Terms.GoodSummary.With(new { testUri })
+                    Summary = Metadata.Terms.GoodSummary.With(
+                        new
+                        {
+                            testUri
+                        }
+                        )
                 };
-            }
 
-            int uriStatusInteger = (int)uriStatusCode;
+            var uriStatusInteger = (int) uriStatusCode;
 
             return new ReportResults(ResultsStatus.Warning)
             {
-                Summary = Metadata.Terms.WarningSummary.With(new { testUri, uriStatusInteger })
+                Summary = Metadata.Terms.WarningSummary.With(
+                    new
+                    {
+                        testUri,
+                        uriStatusInteger
+                    }
+                    )
             };
         }
     }

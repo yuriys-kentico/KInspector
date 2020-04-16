@@ -17,15 +17,15 @@ namespace KenticoInspector.Core.TokenExpressions
         {
             TokenExpressionTypePatterns = assembly
                 .GetTypes()
-                .Where(TypeIsMarkedWithTokenExpressionAttribute)
-                .Select(AsTokenExpressionTypePattern);
+                .Where(typeIsMarkedWithTokenExpressionAttribute)
+                .Select(asTokenExpressionTypePattern);
 
-            static bool TypeIsMarkedWithTokenExpressionAttribute(Type type)
-            {
-                return type.IsDefined(typeof(TokenExpressionAttribute), false);
-            }
+            static bool typeIsMarkedWithTokenExpressionAttribute(Type type) => type.IsDefined(
+                typeof(TokenExpressionAttribute),
+                false
+                );
 
-            static (Type type, string) AsTokenExpressionTypePattern(Type type)
+            static (Type type, string) asTokenExpressionTypePattern(Type type)
             {
                 var pattern = type
                     .GetCustomAttributes<TokenExpressionAttribute>(false)
@@ -40,64 +40,91 @@ namespace KenticoInspector.Core.TokenExpressions
                     $"(^{pattern}$)"
                 };
 
-                var joinedPattern = string.Join(Pipe, patternVariants);
+                var joinedPattern = string.Join(
+                    Pipe,
+                    patternVariants
+                    );
 
                 return (type, joinedPattern);
             }
         }
 
-        internal static string ResolveTokenExpressions(string term, object tokenValues)
+        internal static string ResolveTokenExpressions(
+            string term,
+            object tokenValues
+            )
         {
             var allTokenExpressionPatterns = TokenExpressionTypePatterns
                 .Select(tokenExpressionTypePattern => tokenExpressionTypePattern.pattern)
                 .Where(pattern => !string.IsNullOrEmpty(pattern));
 
-            var joinedTokenExpressionPatterns = string.Join(Pipe, allTokenExpressionPatterns);
+            var joinedTokenExpressionPatterns = string.Join(
+                Pipe,
+                allTokenExpressionPatterns
+                );
 
             var tokenDictionary = GetValuesDictionary(tokenValues);
 
-            var resolvedExpressions = Regex.Split(term, joinedTokenExpressionPatterns)
-                .Select(tokenExpression => ResolveTokenExpression(tokenExpression, tokenDictionary));
+            var resolvedExpressions = Regex.Split(
+                    term,
+                    joinedTokenExpressionPatterns
+                    )
+                .Select(
+                    tokenExpression => ResolveTokenExpression(
+                        tokenExpression,
+                        tokenDictionary
+                        )
+                    );
 
-            return string.Join(string.Empty, resolvedExpressions);
+            return string.Join(
+                string.Empty,
+                resolvedExpressions
+                );
         }
 
         private static IDictionary<string, object?> GetValuesDictionary(object tokenValues)
         {
-            if (tokenValues is IDictionary<string, object?> dictionary)
-            {
-                return dictionary;
-            }
+            if (tokenValues is IDictionary<string, object?> dictionary) return dictionary;
 
             return tokenValues
                 .GetType()
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(prop => prop.GetIndexParameters().Length == 0 && prop.GetMethod != null)
-                .ToDictionary(property => property.Name, property => property.GetValue(tokenValues));
+                .Where(
+                    prop => prop.GetIndexParameters()
+                        .Length == 0 && prop.GetMethod != null
+                    )
+                .ToDictionary(
+                    property => property.Name,
+                    property => property.GetValue(tokenValues)
+                    );
         }
 
-        private static string ResolveTokenExpression(string tokenExpression, IDictionary<string, object?> tokenDictionary)
+        private static string ResolveTokenExpression(
+            string tokenExpression,
+            IDictionary<string, object?> tokenDictionary
+            )
         {
             var (leadingChar, innerTokenExpression, trailingChar) = GetSplitExpression(tokenExpression);
-
             string? resolvedExpression = null;
 
-            if (TokenExpressionTypePatterns == null)
-            {
-                throw new Exception($"'{nameof(TokenExpressionTypePatterns)}' should be set using '{nameof(RegisterTokenExpressions)}'.");
-            }
+            if (TokenExpressionTypePatterns == null) throw new Exception($"'{nameof(TokenExpressionTypePatterns)}' should be set using '{nameof(RegisterTokenExpressions)}'.");
 
             foreach (var (tokenExpressionType, pattern) in TokenExpressionTypePatterns)
-            {
-                if (Regex.IsMatch(innerTokenExpression, pattern))
+                if (Regex.IsMatch(
+                    innerTokenExpression,
+                    pattern
+                    ))
                 {
-                    var expressionObject = FormatterServices.GetUninitializedObject(tokenExpressionType) as ITokenExpression;
+                    var expressionObject =
+                        FormatterServices.GetUninitializedObject(tokenExpressionType) as ITokenExpression;
 
-                    resolvedExpression = expressionObject?.Resolve(innerTokenExpression, tokenDictionary);
+                    resolvedExpression = expressionObject?.Resolve(
+                        innerTokenExpression,
+                        tokenDictionary
+                        );
 
                     break;
                 }
-            }
 
             return $"{leadingChar}{resolvedExpression ?? innerTokenExpression}{trailingChar}";
         }
@@ -110,30 +137,16 @@ namespace KenticoInspector.Core.TokenExpressions
                 case 1:
                     return (null, tokenExpression, null);
 
-                case 2:
                 default:
                     var tokenExpressionSpan = tokenExpression.AsSpan();
-
                     char? leadingChar = tokenExpressionSpan[0];
                     char? trailingChar = tokenExpressionSpan[tokenExpression.Length - 1];
 
-                    if (!LeadingChars.Contains(leadingChar.Value))
-                    {
-                        leadingChar = null;
-                    }
-                    else
-                    {
-                        tokenExpression = tokenExpression.Substring(1);
-                    }
+                    if (!LeadingChars.Contains(leadingChar.Value)) leadingChar = null;
+                    else tokenExpression = tokenExpression.Substring(1);
 
-                    if (!TrailingChars.Contains(trailingChar.Value))
-                    {
-                        trailingChar = null;
-                    }
-                    else
-                    {
-                        tokenExpression = tokenExpression[0..^1];
-                    }
+                    if (!TrailingChars.Contains(trailingChar.Value)) trailingChar = null;
+                    else tokenExpression = tokenExpression[..^1];
 
                     return (leadingChar, tokenExpression, trailingChar);
             }

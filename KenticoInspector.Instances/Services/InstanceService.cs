@@ -9,29 +9,30 @@ namespace KenticoInspector.Instances.Services
 {
     public class InstanceService : IInstanceService
     {
-        private Instance? currentInstance = null;
+        private readonly IDatabaseService databaseService;
 
         private readonly IInstanceRepository instanceRepository;
         private readonly ISiteRepository siteRepository;
         private readonly IVersionRepository versionRepository;
-        private readonly IDatabaseService databaseService;
-
-        public Instance CurrentInstance
-        {
-            get => currentInstance ?? throw new InvalidOperationException();
-            private set => currentInstance = value;
-        }
+        private Instance? currentInstance;
 
         public InstanceService(
             IInstanceRepository instanceRepository,
             IVersionRepository versionRepository,
             ISiteRepository siteRepository,
-            IDatabaseService databaseService)
+            IDatabaseService databaseService
+            )
         {
             this.instanceRepository = instanceRepository;
             this.versionRepository = versionRepository;
             this.siteRepository = siteRepository;
             this.databaseService = databaseService;
+        }
+
+        public Instance CurrentInstance
+        {
+            get => currentInstance ?? throw new InvalidOperationException();
+            private set => currentInstance = value;
         }
 
         public bool DeleteInstance(Guid instanceGuid) => instanceRepository.DeleteInstance(instanceGuid);
@@ -55,7 +56,6 @@ namespace KenticoInspector.Instances.Services
         public InstanceDetails GetInstanceDetails(Instance? instance = null)
         {
             instance ??= CurrentInstance ?? throw new ArgumentNullException(nameof(instance));
-
             databaseService.Configure(instance.DatabaseSettings);
 
             return new InstanceDetails

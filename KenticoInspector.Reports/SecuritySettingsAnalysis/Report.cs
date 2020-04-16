@@ -20,9 +20,9 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
 {
     public class Report : AbstractReport<Terms>
     {
+        private readonly ICmsFileService cmsFileService;
         private readonly IDatabaseService databaseService;
         private readonly IInstanceService instanceService;
-        private readonly ICmsFileService cmsFileService;
 
         public Report(
             IDatabaseService databaseService,
@@ -41,11 +41,17 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
         {
             var cmsSettingsKeysNames = new SettingsKeyAnalyzers(null!)
                 .Analyzers
-                .Select(analyzer => analyzer.Parameters[0].Name);
+                .Select(
+                    analyzer => analyzer.Parameters[0]
+                        .Name
+                    );
 
             var cmsSettingsKeys = databaseService.ExecuteSqlFromFile<CmsSettingsKey>(
                 Scripts.GetSecurityCmsSettings,
-                new { cmsSettingsKeysNames }
+                new
+                {
+                    cmsSettingsKeysNames
+                }
                 );
 
             var cmsSettingsKeyResults = GetCmsSettingsKeyResults(cmsSettingsKeys);
@@ -56,35 +62,52 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
 
             var cmsSettingsCategories = databaseService.ExecuteSqlFromFile<CmsSettingsCategory>(
                 Scripts.GetCmsSettingsCategories,
-                new { cmsSettingsCategoryIdsOnPaths }
+                new
+                {
+                    cmsSettingsCategoryIdsOnPaths
+                }
                 );
 
             var sites = instanceService
                 .GetInstanceDetails()
                 .Sites
-                .Append(new CmsSite
-                {
-                    SiteId = 0,
-                    SiteName = Metadata.Terms.GlobalSiteName
-                });
+                .Append(
+                    new CmsSite
+                    {
+                        SiteId = 0,
+                        SiteName = Metadata.Terms.GlobalSiteName
+                    }
+                    );
 
             var instancePath = instanceService.CurrentInstance.Path;
 
-            var resxValues = cmsFileService.GetResourceStringsFromResx(instancePath, DefaultKenticoPaths.PrimaryResxFile);
+            var resxValues =
+                cmsFileService.GetResourceStringsFromResx(
+                    instancePath,
+                    DefaultKenticoPaths.PrimaryResxFile
+                    );
 
             var localizedCmsSettingsKeyResults = cmsSettingsKeyResults
-                .Select(cmsSettingsKeyResult => new CmsSettingsKeyResult(
-                    cmsSettingsKeyResult,
-                    cmsSettingsCategories,
-                    sites,
-                    resxValues
-                    ));
+                .Select(
+                    cmsSettingsKeyResult => new CmsSettingsKeyResult(
+                        cmsSettingsKeyResult,
+                        cmsSettingsCategories,
+                        sites,
+                        resxValues
+                        )
+                    );
 
-            var webConfigXml = cmsFileService.GetXDocument(instancePath, DefaultKenticoPaths.WebConfigFile);
+            var webConfigXml = cmsFileService.GetXDocument(
+                instancePath,
+                DefaultKenticoPaths.WebConfigFile
+                );
 
             var webConfigSettingsResults = GetWebConfigSettingsResults(webConfigXml);
 
-            return CompileResults(localizedCmsSettingsKeyResults, webConfigSettingsResults);
+            return CompileResults(
+                localizedCmsSettingsKeyResults,
+                webConfigSettingsResults
+                );
         }
 
         private IEnumerable<CmsSettingsKeyResult> GetCmsSettingsKeyResults(IEnumerable<CmsSettingsKey> cmsSettingsKeys)
@@ -93,12 +116,13 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
 
             foreach (var analyzer in analyzersObject.Analyzers)
             {
-                var analysisResult = analyzersObject.GetAnalysis(analyzer, cmsSettingsKeys, key => key.KeyName);
+                var analysisResult = analyzersObject.GetAnalysis(
+                    analyzer,
+                    cmsSettingsKeys,
+                    key => key.KeyName
+                    );
 
-                if (analysisResult is CmsSettingsKeyResult cmsSettingsKeyResult)
-                {
-                    yield return cmsSettingsKeyResult;
-                }
+                if (analysisResult is { } cmsSettingsKeyResult) yield return cmsSettingsKeyResult;
             }
         }
 
@@ -135,12 +159,15 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
 
             foreach (var analyzer in analyzersObject.Analyzers)
             {
-                var analysisResult = analyzersObject.GetAnalysis(analyzer, appSettings, key => key.Attribute("key")?.Value);
+                var analysisResult =
+                    analyzersObject.GetAnalysis(
+                        analyzer,
+                        appSettings,
+                        key => key.Attribute("key")
+                            ?.Value
+                        );
 
-                if (analysisResult is WebConfigSettingResult appSettingResult)
-                {
-                    yield return appSettingResult;
-                }
+                if (analysisResult is { } appSettingResult) yield return appSettingResult;
             }
         }
 
@@ -150,16 +177,20 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
 
             foreach (var analyzer in analyzersObject.Analyzers)
             {
-                var analysisResult = analyzersObject.GetAnalysis(analyzer, systemWebElements, key => key.Name.LocalName);
+                var analysisResult =
+                    analyzersObject.GetAnalysis(
+                        analyzer,
+                        systemWebElements,
+                        key => key.Name.LocalName
+                        );
 
-                if (analysisResult is WebConfigSettingResult systemWebElementsResult)
-                {
-                    yield return systemWebElementsResult;
-                }
+                if (analysisResult is { } systemWebElementsResult) yield return systemWebElementsResult;
             }
         }
 
-        private IEnumerable<WebConfigSettingResult> GetConnectionStringsResults(IEnumerable<XElement> connectionStringElements)
+        private IEnumerable<WebConfigSettingResult> GetConnectionStringsResults(
+            IEnumerable<XElement> connectionStringElements
+            )
         {
             var analyzersObject = new ConnectionStringAnalyzers(Metadata.Terms);
 
@@ -168,13 +199,11 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
                 var analysisResult = analyzersObject.GetAnalysis(
                     analyzer,
                     connectionStringElements,
-                    key => key.Attribute("name")?.Value
+                    key => key.Attribute("name")
+                        ?.Value
                     );
 
-                if (analysisResult is WebConfigSettingResult connectionStringResult)
-                {
-                    yield return connectionStringResult;
-                }
+                if (analysisResult is { } connectionStringResult) yield return connectionStringResult;
             }
         }
 
@@ -184,27 +213,29 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis
             )
         {
             if (!cmsSettingsKeyResults.Any() && !webConfigSettingsResults.Any())
-            {
                 return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.Summaries.Good
                 };
-            }
 
             var cmsSettingsKeyResultsCount = cmsSettingsKeyResults.Count();
             var webConfigSettingsResultsCount = webConfigSettingsResults.Count();
 
             return new ReportResults(ResultsStatus.Warning)
             {
-                Summary = Metadata.Terms.Summaries.Warning.With(new
-                {
-                    cmsSettingsKeyResultsCount,
-                    webConfigSettingsResultsCount
-                }),
+                Summary = Metadata.Terms.Summaries.Warning.With(
+                    new
+                    {
+                        cmsSettingsKeyResultsCount,
+                        webConfigSettingsResultsCount
+                    }
+                    ),
                 Data =
                 {
-                    cmsSettingsKeyResults.AsResult().WithLabel(Metadata.Terms.TableTitles.AdminSecuritySettings),
-                    webConfigSettingsResults.AsResult().WithLabel(Metadata.Terms.TableTitles.WebConfigSecuritySettings)
+                    cmsSettingsKeyResults.AsResult()
+                        .WithLabel(Metadata.Terms.TableTitles.AdminSecuritySettings),
+                    webConfigSettingsResults.AsResult()
+                        .WithLabel(Metadata.Terms.TableTitles.WebConfigSecuritySettings)
                 }
             };
         }

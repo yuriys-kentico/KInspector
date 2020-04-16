@@ -12,39 +12,46 @@ using KenticoInspector.Modules.Models;
 
 using Moq;
 
-namespace KenticoInspector.Reports.Tests
+namespace KenticoInspector.Reports.Tests.AbstractClasses
 {
     public abstract class AbstractReportTests<ReportType, TermsType>
         where ReportType : AbstractReport<TermsType>
         where TermsType : new()
     {
+        protected Mock<ICmsFileService> mockCmsFileService;
+        protected Mock<IDatabaseService> mockDatabaseService;
         protected Instance mockInstance;
         protected InstanceDetails mockInstanceDetails;
-        protected Mock<IDatabaseService> mockDatabaseService;
         protected Mock<IInstanceService> mockInstanceService;
-        protected Mock<ICmsFileService> mockCmsFileService;
 
         protected AbstractReportTests(int majorVersion)
         {
             TokenExpressionResolver.RegisterTokenExpressions(typeof(TokenExpressionResolver).Assembly);
-
             mockInstance = MockInstances.Get(majorVersion);
-            mockInstanceDetails = MockInstanceDetails.Get(majorVersion, mockInstance);
+
+            mockInstanceDetails = MockInstanceDetails.Get(
+                majorVersion,
+                mockInstance
+                );
 
             mockInstanceService = MockIInstanceService.Get();
-            mockInstanceService.SetupCurrentInstance(mockInstance, mockInstanceDetails);
+
+            mockInstanceService.SetupCurrentInstance(
+                mockInstance,
+                mockInstanceDetails
+                );
 
             mockDatabaseService = MockIDatabaseService.Get();
             mockDatabaseService.SetupConfigure(mockInstance);
-
             mockCmsFileService = MockICmsFileService.Get();
         }
 
-        protected T ArrangeProperties<T>(T module) where T : IModule
+        protected T ArrangeProperties<T>(T module)
+            where T : IModule
         {
             var moduleType = module.GetType();
 
-            var fakeMetadata = new ModuleMetadata<TermsType>()
+            var fakeMetadata = new ModuleMetadata<TermsType>
             {
                 Terms = new TermsType()
             };
@@ -53,8 +60,8 @@ namespace KenticoInspector.Reports.Tests
 
             module.SetModuleProperties(
                 GetModuleCodeName,
-                (moduleType) => ("*", ""),
-                (moduleType) => fakeMetadata
+                moduleType => ("*", ""),
+                moduleType => fakeMetadata
                 );
 
             return module;
@@ -70,26 +77,31 @@ namespace KenticoInspector.Reports.Tests
             return fullNameSpace[indexAfterLastPeriod..];
         }
 
-        private static void UpdatePropertiesOfObject<T>(T objectToUpdate) where T : new()
+        private static void UpdatePropertiesOfObject<T>(T objectToUpdate)
+            where T : new()
         {
-            var objectProperties = objectToUpdate?.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var objectProperties = objectToUpdate?.GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             if (objectProperties != null)
-            {
                 foreach (var property in objectProperties)
-                {
                     if (property.PropertyType == typeof(Term))
                     {
-                        property.SetValue(objectToUpdate, (Term)property.Name);
+                        property.SetValue(
+                            objectToUpdate,
+                            (Term)property.Name
+                            );
                     }
                     else if (property.PropertyType.IsClass)
                     {
                         var childObject = Activator.CreateInstance(property.PropertyType);
                         UpdatePropertiesOfObject(childObject);
-                        property.SetValue(objectToUpdate, childObject);
+
+                        property.SetValue(
+                            objectToUpdate,
+                            childObject
+                            );
                     }
-                }
-            }
         }
     }
 }

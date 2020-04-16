@@ -7,7 +7,8 @@ using KenticoInspector.Reports.SecuritySettingsAnalysis.Models;
 
 namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
 {
-    public abstract class AbstractAnalyzers<TData, TResult> where TResult : class
+    public abstract class AbstractAnalyzers<TData, TResult>
+        where TResult : class
     {
         protected Terms ReportTerms { get; }
 
@@ -28,40 +29,47 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
 
             foreach (var setting in settings)
             {
-                var expectedSettingName = analyzer.Parameters[0].Name;
+                var expectedSettingName = analyzer.Parameters[0]
+                    .Name;
 
-                if (Match(expectedSettingName, getSettingName(setting)))
-                {
-                    result = analyzer.Compile()(setting) as TResult ?? result;
-                }
+                if (Match(
+                    expectedSettingName,
+                    getSettingName(setting)
+                    )) result = analyzer.Compile()(setting) ?? result;
             }
 
             return result;
         }
 
-        protected virtual bool Match(string analyzerName, string? name)
-        {
-            return analyzerName.Equals(name, StringComparison.InvariantCulture);
-        }
+        protected virtual bool Match(
+            string analyzerName,
+            string? name
+            ) => analyzerName.Equals(
+            name,
+            StringComparison.InvariantCulture
+            );
 
         protected virtual TResult? AnalyzeUsingExpression(
             TData element,
             Expression<Func<string?, bool>> valueIsRecommended,
             string recommendedValue,
             Term recommendationReason
-            )
-        {
-            throw new NotImplementedException();
-        }
+            ) => throw new NotImplementedException();
 
-        protected static bool IsNullOrEquals(string? value, string equals)
-        {
-            return value == null || Equals(value, equals);
-        }
+        protected static bool IsNullOrEquals(
+            string? value,
+            string equals
+            ) => value == null || Equals(
+            value,
+            equals
+            );
 
-        protected static bool Equals(string? value, string equals)
-        {
-            return value != null && value.Equals(equals, StringComparison.InvariantCultureIgnoreCase);
-        }
+        protected static bool Equals(
+            string? value,
+            string equals
+            ) => value != null && value.Equals(
+            equals,
+            StringComparison.InvariantCultureIgnoreCase
+            );
     }
 }

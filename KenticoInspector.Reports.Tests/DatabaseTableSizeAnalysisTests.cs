@@ -4,8 +4,9 @@ using System.Linq;
 using KenticoInspector.Core.Modules.Models.Results;
 using KenticoInspector.Core.Modules.Models.Results.Data;
 using KenticoInspector.Reports.DatabaseTableSizeAnalysis;
-using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Data;
 using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Models;
+using KenticoInspector.Reports.DatabaseTableSizeAnalysis.Models.Data;
+using KenticoInspector.Reports.Tests.AbstractClasses;
 
 using NUnit.Framework;
 
@@ -23,6 +24,24 @@ namespace KenticoInspector.Reports.Tests
             mockReport = ArrangeProperties(new Report(mockDatabaseService.Object));
         }
 
+        private List<DatabaseTableSize> GetCleanResults(int count)
+        {
+            var results = new List<DatabaseTableSize>();
+
+            for (var i = 0; i < count; i++)
+                results.Add(
+                    new DatabaseTableSize
+                    {
+                        TableName = $"table {i}",
+                        Rows = i,
+                        BytesPerRow = i,
+                        SizeInMB = i
+                    }
+                    );
+
+            return results;
+        }
+
         [Test]
         public void Should_ReturnInformationResult()
         {
@@ -37,26 +56,16 @@ namespace KenticoInspector.Reports.Tests
             var results = mockReport.GetResults();
 
             // Assert
-            Assert.That(results.Data.First<TableResult<DatabaseTableSize>>().Rows.Count(), Is.EqualTo(25));
-            Assert.That(results.Status, Is.EqualTo(ResultsStatus.Information));
-        }
+            Assert.That(
+                results.Data.First<TableResult<DatabaseTableSize>>()
+                    .Rows.Count(),
+                Is.EqualTo(25)
+                );
 
-        private List<DatabaseTableSize> GetCleanResults(int count)
-        {
-            var results = new List<DatabaseTableSize>();
-
-            for (var i = 0; i < count; i++)
-            {
-                results.Add(new DatabaseTableSize()
-                {
-                    TableName = $"table {i}",
-                    Rows = i,
-                    BytesPerRow = i,
-                    SizeInMB = i
-                });
-            }
-
-            return results;
+            Assert.That(
+                results.Status,
+                Is.EqualTo(ResultsStatus.Information)
+                );
         }
     }
 }

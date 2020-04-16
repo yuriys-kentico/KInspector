@@ -2,8 +2,8 @@
 {
     public static class Scripts
     {
-        public static string BaseDirectory = $"{nameof(TemplateLayoutAnalysis)}/Scripts";
+        private static readonly string baseDirectory = $"{nameof(TemplateLayoutAnalysis)}/Scripts";
 
-        public static string GetCmsPageTemplates = $"{BaseDirectory}/{nameof(GetCmsPageTemplates)}.sql";
+        public static string GetCmsPageTemplates = $"{baseDirectory}/{nameof(GetCmsPageTemplates)}.sql";
     }
 }

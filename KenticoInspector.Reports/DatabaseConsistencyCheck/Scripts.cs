@@ -2,8 +2,8 @@
 {
     public static class Scripts
     {
-        public static string BaseDirectory = $"{nameof(DatabaseConsistencyCheck)}/Scripts";
+        private static readonly string baseDirectory = $"{nameof(DatabaseConsistencyCheck)}/Scripts";
 
-        public static string GetCheckDbResults = $"{BaseDirectory}/{nameof(GetCheckDbResults)}.sql";
+        public static string GetCheckDbResults = $"{baseDirectory}/{nameof(GetCheckDbResults)}.sql";
     }
 }

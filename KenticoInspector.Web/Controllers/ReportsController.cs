@@ -21,6 +21,14 @@ namespace KenticoInspector.Web.Controllers
         public IActionResult GetReports(Guid instanceGuid) => Ok(moduleService.GetReports(instanceGuid));
 
         [HttpGet("{codename}/results/{instanceGuid}")]
-        public IActionResult GetReportResults(string codename, Guid instanceGuid) => Ok(moduleService.GetReportResults(codename, instanceGuid));
+        public IActionResult GetReportResults(
+            string codename,
+            Guid instanceGuid
+            ) => Ok(
+            moduleService.GetReportResults(
+                codename,
+                instanceGuid
+                )
+            );
     }
 }

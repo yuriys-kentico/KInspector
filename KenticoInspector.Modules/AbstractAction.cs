@@ -25,8 +25,8 @@ namespace KenticoInspector.Modules
             return GetResults(options);
         }
 
-        public abstract ActionResults GetResults(TOptions options);
+        protected abstract ActionResults GetResults(TOptions options);
 
-        public abstract ActionResults GetInvalidOptionsResults();
+        protected abstract ActionResults GetInvalidOptionsResults();
     }
 }

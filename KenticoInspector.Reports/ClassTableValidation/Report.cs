@@ -33,28 +33,26 @@ namespace KenticoInspector.Reports.ClassTableValidation
         public override ReportResults GetResults()
         {
             var instanceDetails = instanceService.GetInstanceDetails();
-
             var tableWhitelist = GetTableWhitelist(instanceDetails.DatabaseVersion);
 
-            var tablesWithMissingClass = databaseService.ExecuteSqlFromFile<DatabaseTable>(
-                Scripts.GetTablesWithMissingClass
-            );
+            var tablesWithMissingClass = databaseService.ExecuteSqlFromFile<DatabaseTable>(Scripts.GetTablesWithMissingClass);
 
-            var tablesWithMissingClassNotInWhitelist = GetTablesNotInWhitelist(tablesWithMissingClass, tableWhitelist);
+            var tablesWithMissingClassNotInWhitelist = GetTablesNotInWhitelist(
+                tablesWithMissingClass,
+                tableWhitelist
+                );
 
-            var cmsClassesWithMissingTable = databaseService.ExecuteSqlFromFile<CmsClass>(
-                Scripts.GetCmsClassesWithMissingTable
-            );
+            var cmsClassesWithMissingTable = databaseService.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClassesWithMissingTable);
 
-            return CompileResults(tablesWithMissingClassNotInWhitelist, cmsClassesWithMissingTable);
+            return CompileResults(
+                tablesWithMissingClassNotInWhitelist,
+                cmsClassesWithMissingTable
+                );
         }
 
         private static IEnumerable<string> GetTableWhitelist(Version version)
         {
-            if (version.Major >= 10)
-            {
-                yield return "CI_Migration";
-            }
+            if (version.Major >= 10) yield return "CI_Migration";
         }
 
         private static IEnumerable<DatabaseTable> GetTablesNotInWhitelist(
@@ -63,10 +61,8 @@ namespace KenticoInspector.Reports.ClassTableValidation
             )
         {
             if (tableWhitelist.Any())
-            {
                 return tablesWithMissingClass
                     .Where(table => !tableWhitelist.Contains(table.TableName));
-            }
 
             return tablesWithMissingClass;
         }
@@ -77,23 +73,29 @@ namespace KenticoInspector.Reports.ClassTableValidation
             )
         {
             if (!tablesWithMissingClass.Any() && !cmsClassesWithMissingTable.Any())
-            {
                 return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.Summaries.Good
                 };
-            }
 
             var tablesWithMissingClassCount = tablesWithMissingClass.Count();
             var cmsClassesWithMissingTableCount = cmsClassesWithMissingTable.Count();
 
             return new ReportResults(ResultsStatus.Error)
             {
-                Summary = Metadata.Terms.Summaries.Error.With(new { tablesWithMissingClassCount, cmsClassesWithMissingTableCount }),
+                Summary = Metadata.Terms.Summaries.Error.With(
+                    new
+                    {
+                        tablesWithMissingClassCount,
+                        cmsClassesWithMissingTableCount
+                    }
+                    ),
                 Data =
                 {
-                    tablesWithMissingClass.AsResult().WithLabel(Metadata.Terms.TableTitles.DatabaseTablesWithMissingKenticoClasses),
-                    cmsClassesWithMissingTable.AsResult().WithLabel(Metadata.Terms.TableTitles.KenticoClassesWithMissingDatabaseTables)
+                    tablesWithMissingClass.AsResult()
+                        .WithLabel(Metadata.Terms.TableTitles.DatabaseTablesWithMissingKenticoClasses),
+                    cmsClassesWithMissingTable.AsResult()
+                        .WithLabel(Metadata.Terms.TableTitles.KenticoClassesWithMissingDatabaseTables)
                 }
             };
         }

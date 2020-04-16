@@ -18,15 +18,16 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
             TransformationFullName = propertyXml.Value;
         }
 
-        private static string GetNameFromPropertyXml(XElement propertyXml)
-        {
-            return propertyXml.Attribute("name").Value;
-        }
+        private static string GetNameFromPropertyXml(XElement propertyXml) => propertyXml.Attribute("name")
+            .Value;
 
         public static bool PropertyXmlContainsTransformation(XElement propertyXml)
         {
             var propertyXmlContainsTransformation = GetNameFromPropertyXml(propertyXml)
-                .Contains("transformation", StringComparison.InvariantCultureIgnoreCase);
+                .Contains(
+                    "transformation",
+                    StringComparison.InvariantCultureIgnoreCase
+                    );
 
             var propertyXmlIsNotEmpty = !string.IsNullOrEmpty(propertyXml.Value);
 
@@ -36,10 +37,7 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
 
         public static bool HasIssues(WebPartProperty property)
         {
-            if (property.Transformation == null)
-            {
-                return false;
-            }
+            if (property.Transformation == null) return false;
 
             return property
                 .Transformation

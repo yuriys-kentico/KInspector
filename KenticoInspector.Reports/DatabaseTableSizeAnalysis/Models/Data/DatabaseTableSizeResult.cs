@@ -1,4 +1,4 @@
-﻿namespace KenticoInspector.Reports.DatabaseTableSizeAnalysis.Data
+﻿namespace KenticoInspector.Reports.DatabaseTableSizeAnalysis.Models.Data
 {
     public class DatabaseTableSize
     {

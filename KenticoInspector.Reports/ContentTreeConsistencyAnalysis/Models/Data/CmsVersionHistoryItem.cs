@@ -26,10 +26,7 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data
         {
             get
             {
-                if (_coupledDataId == -1 && NodeXml != null)
-                {
-                    _coupledDataId = GetCoupledDataId();
-                }
+                if (_coupledDataId == -1 && NodeXml != null) _coupledDataId = GetCoupledDataId();
 
                 return _coupledDataId;
             }
@@ -39,10 +36,16 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis.Models.Data
         {
             var foreignKeyRaw = NodeXml
                 .Descendants("DocumentForeignKeyValue")
-                .FirstOrDefault()?
+                .FirstOrDefault()
+                ?
                 .Value;
 
-            return int.TryParse(foreignKeyRaw, out int foreignKey) ? foreignKey : -1;
+            return int.TryParse(
+                foreignKeyRaw,
+                out var foreignKey
+                )
+                ? foreignKey
+                : -1;
         }
     }
 }

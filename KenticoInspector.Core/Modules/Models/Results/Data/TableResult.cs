@@ -7,7 +7,8 @@ using KenticoInspector.Core.TokenExpressions.Models;
 
 namespace KenticoInspector.Core.Modules.Models.Results.Data
 {
-    public class TableResult<T> : Result where T : notnull
+    public class TableResult<T> : Result
+        where T : notnull
     {
         public IEnumerable<T> Rows { get; }
 
@@ -16,15 +17,14 @@ namespace KenticoInspector.Core.Modules.Models.Results.Data
         internal TableResult(IEnumerable<T> rows)
         {
             foreach (var row in rows)
-            {
-                foreach (var property in row.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
-                {
-                    if (property.GetIndexParameters().Length == 0 && property.GetValue(row) is string stringValue)
-                    {
-                        property.SetValue(row, HttpUtility.HtmlEncode(stringValue));
-                    }
-                }
-            }
+            foreach (var property in row.GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                if (property.GetIndexParameters()
+                    .Length == 0 && property.GetValue(row) is string stringValue)
+                    property.SetValue(
+                        row,
+                        HttpUtility.HtmlEncode(stringValue)
+                        );
 
             Rows = rows;
         }

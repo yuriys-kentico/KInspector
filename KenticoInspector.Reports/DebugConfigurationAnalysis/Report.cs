@@ -17,15 +17,15 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
 {
     public class Report : AbstractReport<Terms>
     {
+        private readonly ICmsFileService _cmsFileService;
         private readonly IDatabaseService _databaseService;
         private readonly IInstanceService _instanceService;
-        private readonly ICmsFileService _cmsFileService;
 
         public Report(
             IDatabaseService databaseService,
             IInstanceService instanceService,
             ICmsFileService cmsFileService
-        )
+            )
         {
             _databaseService = databaseService;
             _instanceService = instanceService;
@@ -38,64 +38,115 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
         {
             var instance = _instanceService.CurrentInstance;
 
-            var databaseSettingsValues = _databaseService.ExecuteSqlFromFile<CmsSettingsKey>(Scripts.GetCMSSettingsKeysForDebug);
+            var databaseSettingsValues =
+                _databaseService.ExecuteSqlFromFile<CmsSettingsKey>(Scripts.GetCMSSettingsKeysForDebug);
 
-            var resxValues = _cmsFileService.GetResourceStringsFromResx(instance.Path, DefaultKenticoPaths.PrimaryResxFile);
+            var resxValues =
+                _cmsFileService.GetResourceStringsFromResx(
+                    instance.Path,
+                    DefaultKenticoPaths.PrimaryResxFile
+                    );
 
-            ResolveSettingsDisplayNames(databaseSettingsValues, resxValues);
+            ResolveSettingsDisplayNames(
+                databaseSettingsValues,
+                resxValues
+                );
 
-            var webConfig = _cmsFileService.GetXDocument(instance.Path, DefaultKenticoPaths.WebConfigFile);
+            var webConfig = _cmsFileService.GetXDocument(
+                instance.Path,
+                DefaultKenticoPaths.WebConfigFile
+                );
 
-            var compilationDebugIsEnabled = GetBooleanValueofSectionAttribute(webConfig, "system.web", "compilation", "debug");
-            var traceIsEnabled = GetBooleanValueofSectionAttribute(webConfig, "system.web", "trace", "enabled");
+            var compilationDebugIsEnabled =
+                GetBooleanValueofSectionAttribute(
+                    webConfig,
+                    "system.web",
+                    "compilation",
+                    "debug"
+                    );
 
-            return CompileResults(databaseSettingsValues, compilationDebugIsEnabled, traceIsEnabled);
+            var traceIsEnabled = GetBooleanValueofSectionAttribute(
+                webConfig,
+                "system.web",
+                "trace",
+                "enabled"
+                );
+
+            return CompileResults(
+                databaseSettingsValues,
+                compilationDebugIsEnabled,
+                traceIsEnabled
+                );
         }
 
-        private static void ResolveSettingsDisplayNames(IEnumerable<CmsSettingsKey> databaseSettingsValues, IDictionary<string, string> resxValues)
+        private static void ResolveSettingsDisplayNames(
+            IEnumerable<CmsSettingsKey> databaseSettingsValues,
+            IDictionary<string, string> resxValues
+            )
         {
             foreach (var databaseSettingsValue in databaseSettingsValues)
             {
                 var key = databaseSettingsValue.KeyDisplayName
-                    .Replace("{$", string.Empty)
-                    .Replace("$}", string.Empty)
+                    .Replace(
+                        "{$",
+                        string.Empty
+                        )
+                    .Replace(
+                        "$}",
+                        string.Empty
+                        )
                     .ToLowerInvariant();
 
-                if (resxValues.TryGetValue(key, out string? value))
-                {
-                    databaseSettingsValue.KeyDisplayName = value;
-                }
+                if (resxValues.TryGetValue(
+                    key,
+                    out var value
+                    )) databaseSettingsValue.KeyDisplayName = value;
             }
         }
 
-        private static bool GetBooleanValueofSectionAttribute(XDocument webConfig, string subSection, string element, string attributeName)
+        private static bool GetBooleanValueofSectionAttribute(
+            XDocument webConfig,
+            string subSection,
+            string element,
+            string attributeName
+            )
         {
             var valueRaw = webConfig
                 .Descendants(subSection)
                 .FirstOrDefault()
-                .Element(element)?
-                .Attribute(attributeName)?
+                .Element(element)
+                ?
+                .Attribute(attributeName)
+                ?
                 .Value;
 
-            bool.TryParse(valueRaw, out bool value);
+            bool.TryParse(
+                valueRaw,
+                out var value
+                );
 
             return value;
         }
 
-        private ReportResults CompileResults(IEnumerable<CmsSettingsKey> databaseSettingsKeys, bool compilationDebugIsEnabled, bool traceIsEnabled)
+        private ReportResults CompileResults(
+            IEnumerable<CmsSettingsKey> databaseSettingsKeys,
+            bool compilationDebugIsEnabled,
+            bool traceIsEnabled
+            )
         {
             var explicitlyEnabledSettings = databaseSettingsKeys
-                .Where(databaseSettingsKey => databaseSettingsKey.KeyValue == true && databaseSettingsKey.KeyDefaultValue == false);
+                .Where(
+                    databaseSettingsKey =>
+                        databaseSettingsKey.KeyValue && databaseSettingsKey.KeyDefaultValue == false
+                    );
 
             var compilationDebugAndTraceAreEnabled = compilationDebugIsEnabled || traceIsEnabled;
 
             if (!explicitlyEnabledSettings.Any() && !compilationDebugAndTraceAreEnabled)
-            {
                 return new ReportResults(ResultsStatus.Good)
                 {
                     Summary = Metadata.Terms.GoodSummary
                 };
-            }
 
             var results = new ReportResults(ResultsStatus.Warning);
 
@@ -103,16 +154,35 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
             {
                 var explicitlyEnabledSettingsCount = explicitlyEnabledSettings.Count();
 
-                results.Summary += Metadata.Terms.WarningSummary.With(new { explicitlyEnabledSettingsCount });
-                results.Data.Add(explicitlyEnabledSettings.AsResult().WithLabel(Metadata.Terms.TableNames.ExplicitlyEnabledSettings));
+                results.Summary += Metadata.Terms.WarningSummary.With(
+                    new
+                    {
+                        explicitlyEnabledSettingsCount
+                    }
+                    );
+
+                results.Data.Add(
+                    explicitlyEnabledSettings.AsResult()
+                        .WithLabel(Metadata.Terms.TableNames.ExplicitlyEnabledSettings)
+                    );
             }
 
-            results.Data.Add(databaseSettingsKeys.AsResult().WithLabel(Metadata.Terms.TableNames.Overview));
+            results.Data.Add(
+                databaseSettingsKeys.AsResult()
+                    .WithLabel(Metadata.Terms.TableNames.Overview)
+                );
 
             if (compilationDebugAndTraceAreEnabled)
             {
                 results.Status = ResultsStatus.Error;
-                results.Summary += Metadata.Terms.ErrorSummary.With(new { compilationDebugIsEnabled, traceIsEnabled });
+
+                results.Summary += Metadata.Terms.ErrorSummary.With(
+                    new
+                    {
+                        compilationDebugIsEnabled,
+                        traceIsEnabled
+                    }
+                    );
             }
 
             var webConfigSettingsKeys = new List<WebConfigSettingsKey>
@@ -133,7 +203,10 @@ namespace KenticoInspector.Reports.DebugConfigurationAnalysis
                 }
             };
 
-            results.Data.Add(webConfigSettingsKeys.AsResult().WithLabel(Metadata.Terms.TableNames.WebConfig));
+            results.Data.Add(
+                webConfigSettingsKeys.AsResult()
+                    .WithLabel(Metadata.Terms.TableNames.WebConfig)
+                );
 
             return results;
         }

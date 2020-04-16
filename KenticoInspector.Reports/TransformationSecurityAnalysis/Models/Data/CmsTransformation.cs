@@ -7,7 +7,7 @@ using KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Analysis;
 namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
 {
     /// <summary>
-    /// Represents a transformation used by a <see cref="WebPartProperty"/>.
+    ///     Represents a transformation used by a <see cref="WebPartProperty" />.
     /// </summary>
     [DebuggerDisplay("{FullName} Issues:{Issues.Count}")]
     public class CmsTransformation
@@ -31,14 +31,32 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis.Models.Data
             Issues = new List<TransformationIssue>();
         }
 
-        public void AddIssue(int snippetStartIndex, int snippetLength, string issueType, int snippetPadding = 5)
+        public void AddIssue(
+            int snippetStartIndex,
+            int snippetLength,
+            string issueType,
+            int snippetPadding = 5
+            )
         {
-            var startIndex = Math.Max(snippetStartIndex - snippetPadding, 0);
-            var length = Math.Min(TransformationCode.Length - startIndex, snippetLength + snippetPadding * 2);
+            var startIndex = Math.Max(
+                snippetStartIndex - snippetPadding,
+                0
+                );
+
+            var length = Math.Min(
+                TransformationCode.Length - startIndex,
+                snippetLength + snippetPadding * 2
+                );
 
             Issues.Add(
-                new TransformationIssue(TransformationCode.Substring(startIndex, length), issueType)
-            );
+                new TransformationIssue(
+                    TransformationCode.Substring(
+                        startIndex,
+                        length
+                        ),
+                    issueType
+                    )
+                );
         }
     }
 }

@@ -2,8 +2,12 @@
 {
     public static class Scripts
     {
-        public readonly static string BaseDirectory = $"{nameof(WebPartPerformanceAnalysis)}/Scripts/";
-        public readonly static string GetCmsPageTemplatesWithWebPartsWithColumnsProperty = $"{BaseDirectory}{nameof(GetCmsPageTemplatesWithWebPartsWithColumnsProperty)}.sql";
-        public readonly static string GetTreeNodesUsingPageTemplates = $"{BaseDirectory}{nameof(GetTreeNodesUsingPageTemplates)}.sql";
+        private static readonly string baseDirectory = $"{nameof(WebPartPerformanceAnalysis)}/Scripts/";
+
+        public static readonly string GetCmsPageTemplatesWithWebPartsWithColumnsProperty =
+            $"{baseDirectory}{nameof(GetCmsPageTemplatesWithWebPartsWithColumnsProperty)}.sql";
+
+        public static readonly string GetTreeNodesUsingPageTemplates =
+            $"{baseDirectory}{nameof(GetTreeNodesUsingPageTemplates)}.sql";
     }
 }
