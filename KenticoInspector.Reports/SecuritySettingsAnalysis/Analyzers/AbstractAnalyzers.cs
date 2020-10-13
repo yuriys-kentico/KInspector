@@ -71,5 +71,15 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
             equals,
             StringComparison.InvariantCultureIgnoreCase
             );
+
+        protected int ParseIntOrDefault(string value)
+        {
+            if (int.TryParse(value, out var intValue))
+            {
+                return intValue;
+            }
+
+            return default;
+        }
     }
 }

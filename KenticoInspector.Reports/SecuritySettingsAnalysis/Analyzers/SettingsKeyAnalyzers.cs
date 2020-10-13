@@ -76,7 +76,7 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
                     ),
                 CMSMaximumInvalidLogonAttempts => AnalyzeUsingExpression(
                     CMSMaximumInvalidLogonAttempts,
-                    value => value != null && int.Parse(value) <= 5,
+                    value => value != null && ParseIntOrDefault(value) <= 5,
                     ReportTerms.RecommendedValues.InvalidLogonAttempts,
                     ReportTerms.RecommendationReasons.SettingsKeys.CMSMaximumInvalidLogonAttempts
                     ),
@@ -119,13 +119,13 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
                     ),
                 CMSPolicyMinimalLength => AnalyzeUsingExpression(
                     CMSPolicyMinimalLength,
-                    value => value != null && int.Parse(value) >= 8,
+                    value => value != null && ParseIntOrDefault(value) >= 8,
                     ReportTerms.RecommendedValues.PasswordMinimalLength,
                     ReportTerms.RecommendationReasons.SettingsKeys.CMSPolicyMinimalLength
                     ),
                 CMSPolicyNumberOfNonAlphaNumChars => AnalyzeUsingExpression(
                     CMSPolicyNumberOfNonAlphaNumChars,
-                    value => value != null && int.Parse(value) >= 2,
+                    value => value != null && ParseIntOrDefault(value) >= 2,
                     ReportTerms.RecommendedValues.PasswordNumberOfNonAlphaNumChars,
                     ReportTerms.RecommendationReasons.SettingsKeys.CMSPolicyNumberOfNonAlphaNumChars
                     ),
@@ -140,7 +140,7 @@ namespace KenticoInspector.Reports.SecuritySettingsAnalysis.Analyzers
                     ),
                 CMSResetPasswordInterval => AnalyzeUsingExpression(
                     CMSResetPasswordInterval,
-                    value => value != null && int.Parse(value) >= 1 && int.Parse(value) <= 12,
+                    value => value != null && ParseIntOrDefault(value) >= 1 && ParseIntOrDefault(value) <= 12,
                     ReportTerms.RecommendedValues.ResetPasswordInterval,
                     ReportTerms.RecommendationReasons.SettingsKeys.CMSResetPasswordInterval
                     ),

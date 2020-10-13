@@ -7,4 +7,4 @@
     FROM CMS_PageTemplate
     
     WHERE 
-        PageTemplateID IN @DocumentPageTemplateIDs
+        PageTemplateID IN @idsBatch

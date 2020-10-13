@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
+using KenticoInspector.Core;
 using KenticoInspector.Core.Instances.Models;
 using KenticoInspector.Core.Instances.Services;
 using KenticoInspector.Core.Modules;
@@ -43,17 +44,13 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
             var transformationsWithIssues = GetTransformationsWithIssues(transformations);
             var treeNodes = databaseService.ExecuteSqlFromFile<CmsTreeNode>(Scripts.GetTreeNodes);
 
-            var DocumentPageTemplateIDs = treeNodes
+            var documentPageTemplateIDs = treeNodes
                 .Select(treeNode => treeNode.DocumentPageTemplateID);
 
-            var pageTemplates =
-                databaseService.ExecuteSqlFromFile<CmsPageTemplate>(
-                    Scripts.GetPageTemplates,
-                    new
-                    {
-                        DocumentPageTemplateIDs
-                    }
-                    );
+            var pageTemplates = databaseService.GetItemsWhereInManyIds<CmsPageTemplate>(
+                documentPageTemplateIDs,
+                Scripts.GetPageTemplates
+                );
 
             foreach (var pageTemplate in pageTemplates)
                 pageTemplate.TreeNodes = treeNodes
@@ -289,9 +286,9 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
 
                 if (pageTemplate.WebParts != null)
                     foreach (var webPart in pageTemplate.WebParts)
-                    foreach (var property in webPart.Properties)
-                        if (property.Transformation?.FullName == transformation?.FullName)
-                            templateCount++;
+                        foreach (var property in webPart.Properties)
+                            if (property.Transformation?.FullName == transformation?.FullName)
+                                templateCount++;
 
                 if (templateCount > 0) templateCount *= pageTemplate.TreeNodes.Count();
                 totalCount += templateCount;
@@ -304,19 +301,19 @@ namespace KenticoInspector.Reports.TransformationSecurityAnalysis
         {
             if (pageTemplate.WebParts != null)
                 foreach (var webPart in pageTemplate.WebParts)
-                foreach (var property in webPart.Properties)
-                    if (property.Transformation != null)
-                        yield return new TransformationUsageResult
-                        {
-                            PageTemplateID = pageTemplate.PageTemplateID,
-                            PageTemplateCodeName = pageTemplate.PageTemplateCodeName,
-                            PageTemplateDisplayName = pageTemplate.PageTemplateDisplayName,
-                            PageTemplateWebParts = pageTemplate.PageTemplateWebParts,
-                            WebPartControlId = webPart.ControlId,
-                            WebPartPropertyName = property.Name,
-                            TransformationID = property.Transformation.TransformationID,
-                            TransformationFullName = property.Transformation.FullName
-                        };
+                    foreach (var property in webPart.Properties)
+                        if (property.Transformation != null)
+                            yield return new TransformationUsageResult
+                            {
+                                PageTemplateID = pageTemplate.PageTemplateID,
+                                PageTemplateCodeName = pageTemplate.PageTemplateCodeName,
+                                PageTemplateDisplayName = pageTemplate.PageTemplateDisplayName,
+                                PageTemplateWebParts = pageTemplate.PageTemplateWebParts,
+                                WebPartControlId = webPart.ControlId,
+                                WebPartPropertyName = property.Name,
+                                TransformationID = property.Transformation.TransformationID,
+                                TransformationFullName = property.Transformation.FullName
+                            };
         }
     }
 }

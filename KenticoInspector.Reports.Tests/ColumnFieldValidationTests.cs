@@ -12,6 +12,8 @@ using KenticoInspector.Reports.ColumnFieldValidation.Models.Results;
 using KenticoInspector.Reports.Tests.AbstractClasses;
 
 using NUnit.Framework;
+using System.Xml.Linq;
+using System.IO;
 
 namespace KenticoInspector.Reports.Tests
 {
@@ -28,7 +30,7 @@ namespace KenticoInspector.Reports.Tests
             {
                 ClassName = "Class.1",
                 ClassTableName = "Class1",
-                ClassXmlSchema = FileHelper.GetXDocumentFromFile(@"TestData\CMS_Class\Class1\ClassXmlSchema.xml")
+                ClassXmlSchema = GetXDocumentFromFile(@"TestData\CMS_Class\Class1\ClassXmlSchema.xml")
             }
         };
 
@@ -38,8 +40,7 @@ namespace KenticoInspector.Reports.Tests
             {
                 ClassName = "Class.1",
                 ClassTableName = "Class1",
-                ClassXmlSchema =
-                    FileHelper.GetXDocumentFromFile(@"TestData\CMS_Class\Class1\ClassXmlSchemaWithAddedField.xml")
+                ClassXmlSchema = GetXDocumentFromFile(@"TestData\CMS_Class\Class1\ClassXmlSchemaWithAddedField.xml")
             }
         };
 
@@ -219,5 +220,7 @@ namespace KenticoInspector.Reports.Tests
                 tableColumns
                 );
         }
+
+        private static XDocument GetXDocumentFromFile(string path) => XDocument.Parse(File.ReadAllText(path));
     }
 }

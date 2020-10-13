@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using KenticoInspector.Core;
 using KenticoInspector.Core.Instances.Services;
 using KenticoInspector.Core.Modules;
 using KenticoInspector.Core.Modules.Models.Results;
@@ -105,7 +106,7 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
                 .Select(versionHistoryItem => versionHistoryItem.VersionClassID)
                 .Distinct();
 
-            var classItems = GetItemsWhereInManyIds<CmsClass>(
+            var classItems = databaseService.GetItemsWhereInManyIds<CmsClass>(
                 classIds,
                 Scripts.GetCmsClass
                 );
@@ -169,29 +170,19 @@ namespace KenticoInspector.Reports.ContentTreeConsistencyAnalysis
             const int maximumCountInParameters = 500;
 
             var idsBatches = manyIds
-                .Select(
-                    (
-                        id,
-                        index
-                        ) => (id, index)
-                    )
-                .GroupBy(
-                    group => group.index / maximumCountInParameters,
-                    group => group.id
-                    );
+                .Select((id, index) => (id, index))
+                .GroupBy(group => group.index / maximumCountInParameters, group => group.id);
 
             var items = new List<T>();
 
             foreach (var idsBatch in idsBatches)
-                items.AddRange(
-                    databaseService.ExecuteSqlFromFile<T>(
-                        sqlScriptRelativeFilePath,
-                        new
-                        {
-                            idsBatch
-                        }
-                        )
-                    );
+                items.AddRange(databaseService.ExecuteSqlFromFile<T>(
+                    sqlScriptRelativeFilePath,
+                    new
+                    {
+                        idsBatch
+                    }
+                    ));
 
             return items;
         }
